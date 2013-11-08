@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+  <category>Mesh</category>
+  <title>3DErrorMetric</title>
+  <description>
+   This module computes distance between 2 meshes
+  </description>
+  <version>0.1</version>
+  <documentation-url></documentation-url>
+  <license></license>
+  <contributor>Francois Budin, Juliette Pera</contributor>
+<acknowledgements>
+</acknowledgements>
+  <parameters>
+    <label>Input/Output</label>
+    <description>Input/output parameters</description>
+    <geometry fileExtensions="vtk">
+      <name>vtkFile1</name>
+      <label>VTK File 1</label>
+      <channel>input</channel>
+      <longflag>--vtkfile1</longflag>
+      <flag>-i</flag>
+      <description><![CDATA[.vtk Input file 1]]></description>
+    </geometry>
+    <geometry fileExtensions="vtk">
+      <name>vtkFile2</name>
+      <label>VTK File 2</label>
+      <channel>input</channel>
+      <longflag>--vtkfile2</longflag>
+      <flag>-j</flag>
+      <description><![CDATA[.vtk Input file 2]]></description>
+    </geometry>
+    <geometry fileExtensions="vtk">
+      <name>vtkOutput</name>
+      <label>VTK Output File</label>
+      <channel>output</channel>
+      <longflag>--output</longflag>
+      <flag>-o</flag>
+      <description><![CDATA[.vtk Output file]]></description>
+    </geometry>
+    <double>
+      <name>samplingStep</name>
+      <label>Sampling Step</label>
+      <longflag>--sampling_step</longflag>
+      <flag>-s</flag>
+      <default>0.5</default>
+      <description><![CDATA[Sampling Step]]></description>
+    </double>
+    <integer>
+      <name>minSampleFrequency</name>
+      <label>Minimum Sample Frequency</label>
+      <longflag>--minimum_sample_frequency</longflag>
+      <flag>-m</flag>
+      <default>2</default>
+      <description><![CDATA[Minimum Sample Frequency]]></description>
+    </integer>
+    <boolean>
+      <name>signedDistance</name>
+      <label>Signed Distance</label>
+      <longflag>--signed_distance</longflag>
+      <flag>-d</flag>
+      <default>0</default>
+      <description><![CDATA[Minimum Sample Frequency]]></description>
+    </boolean>
+  </parameters>
+</executable>
+
