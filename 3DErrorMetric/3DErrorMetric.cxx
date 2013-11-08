@@ -1,6 +1,10 @@
 // My library
 #include "3DErrorMetricCLP.h"
-#include "MeshValmet.h"
+#ifdef USE_VTK_FILTER
+  #include <vtkDistancePolyDataFilter.h>
+#else
+  #include "MeshValmet.h"
+#endif
 #include <vtkPolyDataWriter.h>
 #include <vtkXMLPolyDataWriter.h>
 #include <vtkPolyDataReader.h>
@@ -8,6 +12,8 @@
 #include <vtkPolyData.h>
 #include <vtkCommand.h>
 #include <vtkSmartPointer.h>
+#include <vtkCleanPolyData.h>
+#include <vtkTriangleFilter.h>
 
 //class ErrorObserver copied from http://www.vtk.org/Wiki/VTK/Examples/Cxx/Utilities/ObserveError
 class ErrorObserver : public vtkCommand
@@ -119,6 +125,10 @@ int ReadVTK( std::string input , vtkSmartPointer<vtkPolyData> &polyData )
 int main( int argc , char* argv[] )
 {
     PARSE_ARGS ;
+#ifdef USE_VTK_FILTER
+  std::cout<<"WARNING"<<std::endl ;
+  std::cout<<"\'samplingStep\' and \'minSampleFrequency\' are not used when compiled with USE_VTK_FILTER" << std::endl ;
+#endif
     if( vtkFile1.empty() || vtkFile2.empty() )
     {
       std::cout << "Specify 2 vtk input files" << std::endl ;
@@ -141,7 +151,18 @@ int main( int argc , char* argv[] )
     }
     TriangulateAndClean( inPolyData1 ) ;
     TriangulateAndClean( inPolyData2 ) ;
-
+#ifdef USE_VTK_FILTER
+    vtkSmartPointer<vtkDistancePolyDataFilter> distanceFilter =
+      vtkSmartPointer<vtkDistancePolyDataFilter>::New();
+ 
+    distanceFilter->SetInputData( 0, inPolyData1 ) ;
+    distanceFilter->SetInputData( 1, inPolyData2 ) ;
+    distanceFilter->SetSignedDistance( signedDistance ) ;
+    distanceFilter->Update();
+    vtkSmartPointer <vtkCleanPolyData> Cleaner = vtkSmartPointer <vtkCleanPolyData>::New() ;
+    Cleaner->SetInputData( distanceFilter->GetOutput() ) ;
+    Cleaner->Update() ;
+#else
     meshValmet errorComputeFilter ;
     errorComputeFilter.SetData1( inPolyData1 );
     errorComputeFilter.SetData2( inPolyData2 );
@@ -149,10 +170,13 @@ int main( int argc , char* argv[] )
     errorComputeFilter.SetSamplingStep( samplingStep ) ;
     errorComputeFilter.SetMinSampleFrequency( minSampleFrequency ) ;
     errorComputeFilter.CalculateError() ;
-
     vtkSmartPointer <vtkCleanPolyData> Cleaner = vtkSmartPointer <vtkCleanPolyData>::New() ;
     Cleaner->SetInputData( errorComputeFilter.GetFinalData() ) ;
     Cleaner->Update() ;
+#endif
+
+
+
 	  if (vtkOutput.rfind(".vtk") != std::string::npos )
 	  {
 			vtkSmartPointer<vtkPolyDataWriter> writer = vtkPolyDataWriter::New() ;
