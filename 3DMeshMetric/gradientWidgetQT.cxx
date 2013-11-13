@@ -30,6 +30,22 @@ gradientWidgetQT::gradientWidgetQT(QWidget *Qparent):QWidget(Qparent), arrowMovi
    setFocusPolicy(Qt::StrongFocus);
    viewRect = QRect(QPoint(0,0), QPoint(0,0));
    setMouseTracking(true);
+
+   colorPointStruct blue; blue.pos = 0; blue.b = 1; blue.g = 0; blue.r = 0;
+   colorPointStruct cyan; cyan.pos = 0.2; cyan.b = 1; cyan.g = 1; cyan.r = 0;
+   colorPointStruct green; green.pos = 0.5; green.b = 0; green.g = 1; green.r = 0;
+   colorPointStruct yellow; yellow.pos = 0.6; yellow.b = 0; yellow.g = 1; yellow.r = 1;
+   colorPointStruct red; red.pos = 1; red.b = 0; red.g = 0; red.r = 1;
+
+   std::vector <colorPointStruct> *list = new std::vector <colorPointStruct>;
+   list->push_back( blue );
+   list->push_back( cyan );
+   list->push_back( green );
+   list->push_back( yellow );
+   list->push_back( red );
+
+   setAllColors( list );
+
    update();
 }
 

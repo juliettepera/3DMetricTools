@@ -21,11 +21,26 @@ meshMetricGui::meshMetricGui( QWidget *parent , Qt::WFlags f , QString path )
 
     m_WidgetMesh = new QVTKWidget( this -> scrollAreaMesh );
 
+    //**********************************************************************
+    /*m_Gradient.setStart( widgetColor->rect().topLeft() );
+    m_Gradient.setFinalStop( widgetColor->rect().topRight() );
+
+    m_Gradient.setColorAt( 0 , Qt::blue );
+    m_Gradient.setColorAt( 0.4 , Qt::cyan );
+    m_Gradient.setColorAt( 0.5 , Qt::green );
+    m_Gradient.setColorAt( 0.6 , Qt::yellow );
+    m_Gradient.setColorAt( 1 , Qt::red );
+
+    QPalette p( widgetColor->palette() );
+    p.setBrush( QPalette::Background , QBrush( m_Gradient ) );
+    widgetColor->setPalette(p);*/
+    //**********************************************************************
+
+    m_MyWindowMesh.setSizeH( scrollAreaMesh -> height() );
+    m_MyWindowMesh.setSizeW( scrollAreaMesh -> width() );
 
     m_Path = path.toStdString();
-
     std::cout<< "Path: " <<m_Path << std::endl;
-
     InitIcon();
 
     // shortcuts
@@ -158,25 +173,35 @@ void meshMetricGui::InitIcon()
     listWidgetLoadedMesh -> setStyleSheet( QString::fromStdString( styleSheetLoadedMesh ) );
 }
 
-
-/*void meshMetricGui::resizeEvent( QResizeEvent *Qevent )
+void meshMetricGui::resizeEvent( QResizeEvent *Qevent )
 {
-    QMainWindow::resizeEvent( Qevent );
-    //resizeWidgetInArea();
-    //m_MyWindowMesh.updateWindow();
-    std::cout << " resize " << std::endl;
-}*/
+    if( m_NumberOfDisplay >= 1 )
+    {
+        int height , width , newHeight , newWidth;
+        int xheight , xwidth;
 
-/*void meshMetricGui::resizeWidgetInArea()
-{
-    QSize QSize_scrollArea = this->scrollAreaWidgetContents->size();
+        height = Qevent -> oldSize().height();
+        newHeight = Qevent -> size().height();
+        xheight = newHeight - height;
 
-    int scrollAreaWidth = QSize_scrollArea.width();
+        width = Qevent -> oldSize().width();
+        newWidth = Qevent -> size().width();
+        xwidth = newWidth - width;
 
-    int colNumber = getNumberOfColumns();
-    int rowNumber = getNumberOfRows(colNumber);
-    this->scrollAreaWidgetContents->resize(scrollAreaWidth,(scrollAreaWidth)*rowNumber/colNumber);
-}*/
+        int scrollH , scrollW;
+        scrollH = scrollAreaMesh->height();
+        scrollW = scrollAreaMesh->width();
+
+        scrollAreaMesh -> resize( scrollW+xwidth , scrollH+xheight );
+        m_MyWindowMesh.setSizeH( scrollAreaMesh -> height() );
+        m_MyWindowMesh.setSizeW( scrollAreaMesh -> width() );
+        m_WidgetMesh -> resize( scrollAreaMesh -> size() );
+    }
+    else
+    {
+        resize( minimumSize() );
+    }
+}
 
 // ****************************************** functions for loadind files
 void meshMetricGui::OpenBrowseWindowFile()
@@ -1033,7 +1058,7 @@ void meshMetricGui::ApplyDistance()
         m_MyWindowMesh.updateLut( 1 );
         m_MyWindowMesh.updateWindow();
 
-        //ChangeMeshSelected();
+        //paintColorBar();
     }
 }
 
@@ -1096,6 +1121,8 @@ void meshMetricGui::PreviousError()
                 m_MyWindowMesh.setLut( m_DataList[ m_MeshSelected ].getMapper()->GetLookupTable() );
                 m_MyWindowMesh.updateLut( 1 );
 
+                //widgetColor->changeCyan( (( -m_Delta/2.0 ) - m_Min)/( m_Max - m_Min ) );
+
             break;
 
             case 4:
@@ -1105,7 +1132,6 @@ void meshMetricGui::PreviousError()
         }        
     }
 }
-
 
 
 

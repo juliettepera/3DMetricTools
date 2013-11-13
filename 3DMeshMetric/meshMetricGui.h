@@ -16,6 +16,8 @@
 #include <QCheckBox>
 #include <QStyle>
 #include <QPalette>
+#include <QResizeEvent>
+#include <QLinearGradient>
 
 // VTK libraries
 #include <QVTKWidget.h>
@@ -43,8 +45,7 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
 
             void DisplayInit();
 
-            //void resizeEvent( QResizeEvent *Qevent );
-            //void resizeWidgetInArea();
+            void resizeEvent( QResizeEvent *Qevent );
 
     public slots:
 
@@ -155,6 +156,8 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             double m_Min;
             double m_Max;
             double m_Delta;
+
+            //QLinearGradient m_Gradient;
 };
 
 #endif

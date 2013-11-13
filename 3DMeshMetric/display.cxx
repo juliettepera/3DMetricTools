@@ -10,7 +10,7 @@ display::display()
     m_ScalarBar = vtkSmartPointer <vtkScalarBarActor>::New();
     m_Lut = vtkSmartPointer <vtkScalarsToColors>::New();
 
-    m_SizeH = 700 ; m_SizeW = 700;
+    m_SizeH = 550 ; m_SizeW = 550;
     m_CameraX = 0 ; m_CameraY = 0 ; m_CameraZ = 0;
 
     m_NumberOfMesh = 0;
@@ -30,8 +30,8 @@ void display::initWindow()
 
     m_RenderWindow -> AddRenderer( m_Renderer );
     m_MeshWidget -> SetRenderWindow( m_RenderWindow );
+    m_RenderWindow -> SetSize( m_SizeW , m_SizeH );
 
-    m_RenderWindow -> SetSize( m_SizeH , m_SizeW );
     m_Renderer -> ResetCamera();
 
     m_Marker -> SetOutlineColor( 0.9300, 0.5700, 0.1300 );
@@ -151,6 +151,8 @@ void display::changeBackgroundColor( double Red , double Green , double Blue )
     m_Renderer -> SetBackground( m_Red , m_Green , m_Blue );
 
 }
+
+
 
 
 
