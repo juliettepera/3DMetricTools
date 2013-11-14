@@ -22,7 +22,7 @@ ${QT_INCLUDE_DIR} ${MeshValmetLib_SOURCE_DIRECTORY} )
 add_definitions( -DQT_GUI_LIBS -DQT_CORE_LIB -DQT3_SUPPORT )
 
 # generate moc and ui files
-QT4_WRAP_CPP( QtProject_HEADERS_MOC meshMetricGui.h )
+QT4_WRAP_CPP( QtProject_HEADERS_MOC meshMetricGui.h colorBar.h)
 QT4_WRAP_UI( UI_FILES meshMetricGui.ui )
 
 # set the sources files
@@ -33,7 +33,7 @@ dataM.cxx
 processing.cxx
 display.cxx
 meshValmet.cxx
-#colorBar.cxx
+colorBar.cxx
 #ColormapWidget.cxx
 #gradientWidgetQT.cxx
 #gradientArrow.cxx

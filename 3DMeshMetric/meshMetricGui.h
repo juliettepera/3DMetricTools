@@ -27,6 +27,7 @@
 #include "processing.h"
 #include "display.h"
 #include "ui_meshMetricGui.h"
+#include "colorBar.h"
 
 // Other Libraries
 #include <string>
@@ -46,6 +47,7 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             void DisplayInit();
 
             void resizeEvent( QResizeEvent *Qevent );
+            double calculNewY( double x , double Min , double Max );
 
     public slots:
 
@@ -103,7 +105,7 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             void ChangeDisplayColorBar();
 
             void ApplyDistance();
-            void UpdateColor();
+            int UpdateColor();
 
             void PreviousError();
 
@@ -157,7 +159,6 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             double m_Max;
             double m_Delta;
 
-            //QLinearGradient m_Gradient;
 };
 
 #endif
