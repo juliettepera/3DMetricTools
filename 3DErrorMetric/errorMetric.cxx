@@ -1,5 +1,5 @@
 // My library
-#include "3DErrorMetricCLP.h"
+#include "errorMetricCLP.h"
 #ifdef USE_VTK_FILTER
   #include <vtkDistancePolyDataFilter.h>
 #else
