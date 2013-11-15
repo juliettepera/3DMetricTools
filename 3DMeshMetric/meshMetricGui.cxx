@@ -40,6 +40,9 @@ meshMetricGui::meshMetricGui( QWidget *parent , Qt::WFlags f , QString path )
     comboBoxSamplingStep -> addItems( List );
     comboBoxSamplingStep -> setCurrentItem( 1 );
 
+    comboBoxMeshB -> addItem( m_NotOkIcon , QString(" no file selected ") );
+    comboBoxMeshB -> setCurrentItem( 0 );
+
     // connections
     QObject::connect( actionQuit , SIGNAL( triggered() ) , qApp , SLOT( quit() ) );
 
@@ -316,7 +319,7 @@ void meshMetricGui::DeleteOneFile()
         m_Visibility.erase( m_Visibility.begin() + m_MeshSelected );
 
         delete listWidgetLoadedMesh->item( m_MeshSelected );
-        comboBoxMeshB -> removeItem( m_MeshSelected );
+        comboBoxMeshB -> removeItem( m_MeshSelected + 1 );
 
         m_MyWindowMesh.deleteData( m_MeshSelected );
 
@@ -886,16 +889,16 @@ void meshMetricGui::AvailableMesh()
     {
         if( IndiceOfMesh != m_SelectedItemA )
         {
-           comboBoxMeshB -> setItemIcon( IndiceOfMesh , m_OkIcon );
+           comboBoxMeshB -> setItemIcon( IndiceOfMesh + 1 , m_OkIcon );
            QStandardItemModel* Model = qobject_cast< QStandardItemModel* >( comboBoxMeshB -> model() );
-           QStandardItem* Item = Model -> item( IndiceOfMesh );
+           QStandardItem* Item = Model -> item( IndiceOfMesh + 1 );
            Item -> setSelectable( true );
         }
         else
         {
-           comboBoxMeshB ->setItemIcon( IndiceOfMesh , m_NotOkIcon );
+           comboBoxMeshB ->setItemIcon( IndiceOfMesh + 1 , m_NotOkIcon );
            QStandardItemModel* Model = qobject_cast< QStandardItemModel* >( comboBoxMeshB -> model() );
-           QStandardItem* Item = Model -> item( IndiceOfMesh );
+           QStandardItem* Item = Model -> item( IndiceOfMesh + 1 );
            Item -> setSelectable( false );
         }
     }
@@ -905,8 +908,9 @@ void meshMetricGui::SelectMeshB()
 {
     if( m_SelectedItemA != -1 )
     {
-        m_SelectedItemB = comboBoxMeshB -> currentItem();
+        m_SelectedItemB = comboBoxMeshB -> currentItem() - 1;
         pushButtonApply -> setEnabled( true );
+        std::cout << " item B " << m_SelectedItemB << " item A " << m_SelectedItemA << std::endl;
     }
     else
     {
@@ -1097,6 +1101,8 @@ void meshMetricGui::ApplyDistance()
             widgetColor->updateGradient();
         }
 
+        comboBoxMeshB -> setCurrentItem( 0 );
+
         ChangeMeshSelected();
     }
 }
@@ -1207,6 +1213,12 @@ void meshMetricGui::PreviousError()
                 m_DataList[ m_MeshSelected ].setColorBar( true );
                 checkBoxColorBar -> setChecked( true );
 
+                if( m_DataList[ m_MeshSelected ].getMin() < 0 )
+                {
+                    m_DataList[ m_MeshSelected ].setSignedDistance( true );
+
+                }
+
                 m_MyProcess.updateColor( m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() , m_Delta , m_DataList[ m_MeshSelected ] );
 
                 File = QString::fromStdString( m_DataList[ m_MeshSelected ].getName() );
@@ -1224,10 +1236,7 @@ void meshMetricGui::PreviousError()
                 m_MyWindowMesh.setLut( m_DataList[ m_MeshSelected ].getMapper()->GetLookupTable() );
                 m_MyWindowMesh.updateLut( 1 );
 
-                if( m_DataList[ m_MeshSelected ].getMin() < 0 )
-                {
-                    m_DataList[ m_MeshSelected ].setSignedDistance( true );
-                }
+
 
                 if( m_DataList[ m_MeshSelected ].getSignedDistance() == true )
                 {

@@ -513,8 +513,11 @@ void meshValmet::CreateLutError()
 
     double value = m_Delta/2.0;
     m_Lut -> SetColorSpaceToRGB();
-    m_Lut -> AddRGBSegment( m_Dmin , 0 , 0 , 1 , -value , 0 , 1 , 1 );
-    m_Lut -> AddRGBSegment( -value , 0 , 1 , 1 , 0 , 0 , 1 , 0 );
+    if( m_Pargs.signeddist == true )
+    {
+        m_Lut -> AddRGBSegment( m_Dmin , 0 , 0 , 1 , -value , 0 , 1 , 1 );
+        m_Lut -> AddRGBSegment( -value , 0 , 1 , 1 , 0 , 0 , 1 , 0 );
+    }
     m_Lut -> AddRGBSegment( 0 , 0 , 1 , 0 , value , 1 , 1 , 0 );
     m_Lut -> AddRGBSegment( value , 1 , 1 , 0 , m_Dmax , 1 , 0 , 0 );
 }

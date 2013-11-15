@@ -96,6 +96,7 @@ void processing::updateColor( double Min , double Max , double Delta ,  dataM &D
     m_MyMeshValmet.SetMin( Min );
     m_MyMeshValmet.SetMax( Max );
     m_MyMeshValmet.SetDelta( Delta );
+    m_MyMeshValmet.SetSignedDistance( Data1.getSignedDistance() );
 
     m_MyMeshValmet.CreateLutError();
 
