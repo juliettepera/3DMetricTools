@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 2.8)
 # name of the project
 project( 3DMetricTools )
 

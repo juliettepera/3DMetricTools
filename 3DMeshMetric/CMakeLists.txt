@@ -1,14 +1,7 @@
-#/tools/Qt/Qt4.8.2/Qt4.8.2_linux64_THL/bin/qmake                                                                                                                                                           
-#/tools/VTK/VTK_6.0.0/VTK_6.0.0_linux64_dyn_release_Qt4.8.2_Python2.7.5/lib/cmake/vtk-6.0   
-
 # name of the project
 project( meshMetric )
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/icons DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} )
-
-# find the VTK headers
-find_package( VTK 6 REQUIRED )
-include( ${VTK_USE_FILE} )
 
 # find the QT4 headers
 find_package( Qt4 REQUIRED ) 
@@ -34,10 +27,6 @@ processing.cxx
 display.cxx
 meshValmet.cxx
 colorBar.cxx
-#ColormapWidget.cxx
-#gradientWidgetQT.cxx
-#gradientArrow.cxx
-#colorPointStruct.h
 ${QtProject_HEADERS_MOC}
 ${UI_FILES}
 )
