@@ -37,7 +37,7 @@ SETIFEMPTY( INSTALL_LIBRARY_DESTINATION bin )
 SETIFEMPTY( INSTALL_ARCHIVE_DESTINATION lib )
 
 # find the VTK headers
-find_package( VTK REQUIRED )
+find_package( VTK 6 REQUIRED )
 include( ${VTK_USE_FILE} )
 
 option( Build_Static "Static libraries and executables only" ON )
