@@ -14,7 +14,7 @@
   <parameters>
     <label>Input/Output</label>
     <description>Input/output parameters</description>
-    <geometry fileExtensions="vtk">
+    <geometry fileExtensions=".vtk">
       <name>vtkFile1</name>
       <label>VTK File 1</label>
       <channel>input</channel>
@@ -22,7 +22,7 @@
       <flag>-i</flag>
       <description><![CDATA[.vtk Input file 1]]></description>
     </geometry>
-    <geometry fileExtensions="vtk">
+    <geometry fileExtensions=".vtk">
       <name>vtkFile2</name>
       <label>VTK File 2</label>
       <channel>input</channel>
@@ -30,7 +30,7 @@
       <flag>-j</flag>
       <description><![CDATA[.vtk Input file 2]]></description>
     </geometry>
-    <geometry fileExtensions="vtk">
+    <geometry fileExtensions=".vtk">
       <name>vtkOutput</name>
       <label>VTK Output File</label>
       <channel>output</channel>
