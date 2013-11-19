@@ -1,20 +1,6 @@
 #ifndef DATAM_H
 #define DATAM_H
 
-/* CLASS WHERE ALL THE DATA NEEDED FOR ONE FILE ARE STOCKED --> NO PROCESSING DONE HERE
- *  -> NAME
- *  -> POLYDATA ( NORMAL + ERROR )
- *  -> MAPPER
- *  -> ACTOR
- *  -> FILE PROPERTIES
- *  -> SMOOTHING FILTER
- *  -> SMOOTHING PARAMETERS
- *  -> DOWNSAMPLING FILTER
- *  -> DOWNSAMPLING PARAMETERS
- *  -> ERROR COMPUTER ( COMMING SOON... )
- *  -> ERROR PARAMETERS
- */
-
 // VTK libraries
 #include <vtkSmartPointer.h>
 #include <vtkPolyData.h>
@@ -37,67 +23,93 @@
 #include <iostream>
 #include <vector>
 
-
-
 class dataM
 {
     public:
         dataM( std::string Name = "" );
+
+        /* set and get the name of the file
+         */
+        void setName( std::string Name );
+        std::string getName();
+
+        /* set and get the polydata file
+         */
+        void setPolyData(vtkSmartPointer<vtkPolyData> OldData );
+        vtkSmartPointer<vtkPolyData> getPolyData();
+
+        /* get the mapper and actor used to display the polydata
+         */
+        vtkSmartPointer <vtkPolyDataMapper> getMapper();
+        vtkSmartPointer <vtkActor> getActor();
+
+        /* Set and get the different properties of the data
+         */
+        void setOpacity( double Opacity );
+        void setColor( double Red , double Green , double Blue );
+        void setType( int Type );
+
+        double getOpacity();
+        double getRed();
+        double getBlue();
+        double getGreen();
+        int getType();
+
+        /* set and get the parameters for the distance computation
+         */
+        void setNameB( std::string NameB );
+        void setMinSamplingFrequency(int MinSamplingFrequency );
+        void setSamplingStep( double SamplingStep );
+        void setSignedDistance( bool SignedDistance );
+        void setDisplayError( bool DisplayError );
+
+        std::string getNameB();
+        int getMinSamplingFrequency();
+        double getSamplingStep();
+        bool getSignedDistance();
+        bool getDisplayError();
+
+        /* set and get the parameters used to compute the color bar
+         */
+        void setLut( vtkSmartPointer <vtkColorTransferFunction> Lut );
+        void setMin( double Dmin );
+        void setMax( double Dmax );
+        void setColorBar( bool ColorBar );
+
+        vtkSmartPointer <vtkColorTransferFunction> getLut();
+        double getMin();
+        double getMax();
+        bool getColorBar();
+
+        /* Read the file
+         * Pass by a cleaner and triangler filter
+         * Then connect to the mapper and actor
+         */
         void initialization();
+
+        /* Update the actor properties
+         * the opacity and color
+         */
         void updateActorProperties();
+
+        /* update the type of display
+         * surface, triangle and points
+         */
         int updateTypeOfDisplay();
+
+        /* Change the polydata input of the mapper
+         */
         int changeMapperInput();
+
+        /* change the scalar use to display the color map
+         */
         void changeActivScalar();
-
-        // Set the basic data
-            void setName( std::string Name );
-            void setPolyData(vtkSmartPointer<vtkPolyData> OldData );
-
-        // Get the basic data
-            std::string getName();
-            vtkSmartPointer <vtkPolyDataMapper> getMapper();
-            vtkSmartPointer <vtkActor> getActor();
-            vtkSmartPointer<vtkPolyData> getPolyData();
-
-        // Set the File properties
-            void setOpacity( double Opacity );
-            void setColor( double Red , double Green , double Blue );
-            void setType( int Type );
-
-        // Get the file properties
-            double getOpacity();
-            double getRed();
-            double getBlue();
-            double getGreen();
-            int getType();
-
-        // Set the error parameters
-            void setMinSamplingFrequency(int MinSamplingFrequency );
-            void setSamplingStep( double SamplingStep );
-            void setSignedDistance( bool SignedDistance );
-            void setColorBar( bool ColorBar );
-            void setDisplayError( bool DisplayError );
-            void setLut( vtkSmartPointer <vtkColorTransferFunction> Lut );
-            void setMin( double Dmin );
-            void setMax( double Dmax );
-            void setNameB( std::string NameB );
-
-        // Get the error parameters
-            int getMinSamplingFrequency();
-            double getSamplingStep();
-            bool getSignedDistance();
-            bool getColorBar();
-            bool getDisplayError();
-            vtkSmartPointer <vtkColorTransferFunction> getLut();
-            double getMin();
-            double getMax();
-            std::string getNameB();
 
     private:
         std::string m_Name;
+        vtkSmartPointer <vtkPolyData> m_PolyData;
         vtkSmartPointer <vtkPolyDataMapper> m_Mapper;
         vtkSmartPointer <vtkActor> m_Actor;
-        vtkSmartPointer <vtkPolyData> m_PolyData;
 
         double m_Opacity;
         double m_Red;
@@ -105,21 +117,17 @@ class dataM
         double m_Green;
         int m_Type;
 
-        //int m_NumberOfIterationSmooth;
-        //vtkSmartPointer <vtkSmoothPolyDataFilter> m_Smoother;
-
-        //double m_Decimate;
-        //vtkSmartPointer <vtkDecimatePro> m_Decimer;
-
-        bool m_DisplayError;
+        std::string m_NameB;
         int m_MinSamplingFrequency;
         double m_SamplingStep;
         bool m_SignedDistance;
-        bool m_ColorBar;
+        bool m_DisplayError;
+
         vtkSmartPointer <vtkColorTransferFunction> m_Lut;
         double m_Dmin;
         double m_Dmax;
-        std::string m_NameB;
+        bool m_ColorBar;
+
 };
 
 #endif
