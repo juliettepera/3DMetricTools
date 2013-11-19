@@ -25,6 +25,7 @@ class colorBar: public QWidget
         void setSize( QPoint topLeft , QPoint bottomRight );
         void changeCyan( double NewPosition );
         void changeYellow( double NewPosition );
+        void changeGreen();
         void initGradientSigned();
         void initGradientAbsolute();
         void updateGradient();
@@ -35,9 +36,11 @@ class colorBar: public QWidget
         QPixmap *m_Background;
         QGradientStop m_Cyan;
         QGradientStop m_Yellow;
+        QGradientStop m_Green;
         QGradientStops m_List;
         int m_ItCyan;
         int m_ItYellow;
+        int m_ItGreen;
 };
 
 

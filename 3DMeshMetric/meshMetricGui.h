@@ -26,8 +26,8 @@
 #include "dataM.h"
 #include "processing.h"
 #include "display.h"
-#include "ui_meshMetricGui.h"
 #include "colorBar.h"
+#include "ui_meshMetricGui.h"
 
 // Other Libraries
 #include <string>
@@ -39,34 +39,47 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
     Q_OBJECT
 
     public:
-    meshMetricGui(QWidget * parent = 0 , Qt::WFlags f = 0 , QString path = "" );
+            meshMetricGui(QWidget * parent = 0 , Qt::WFlags f = 0 , QString path = "" );
 
-        // functions for the icons
-            void InitIcon();
-
-            void DisplayInit();
-
-            void resizeEvent( QResizeEvent *Qevent );
-            double calculNewY( double x , double Min , double Max );
+            void InitIcon(); // init all the icons
+            void DisplayInit(); // display the files when they are loaded
+            void resizeEvent( QResizeEvent *Qevent ); // resize the window
+            void PreviousError(); // check if there is a previous error loaded
+            double calculNewY( double x , double Min , double Max ); // calcul the new position when delta change
 
     public slots:
 
-        // functions for loadind/saving files
+            /* Load a file or repository
+             * Save a file
+             * Delete one or all the files
+             */
             void OpenBrowseWindowFile();
             void OpenBrowseWindowRepository();
             void SaveFile();
-
-        // functions for delete files
             void DeleteOneFile();
             void DeleteAllFiles();
 
-        // functions for display files
+            /* display or not the file links to the check box eye
+             * change the selected mesh
+             */
+            void UpdateDisplayedMesh( QListWidgetItem* itemClicked );
+            void ChangeMeshSelected();
+
+            /* Change the parameters of a file
+             * Reload to the original a file
+             * Hide all files or display all files
+             * Change the background color
+             */
+            void ChangeValueOpacity();
+            void ChooseColor();
+            void ChangeTypeOfDisplay();
+            void ResetSelectedFile();
             void DisplayAll();
             void HideAll();
-
             void ChooseColorBackground();
 
-        // functions to change the camera
+            /* Change the position of the camera
+             */
             void buttonFrontClicked();
             void buttonBackClicked();
             void buttonRightClicked();
@@ -74,58 +87,44 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             void buttonUpClicked();
             void buttonDownClicked();
 
-        // functions to change files properties
-            void ChangeMeshSelected();
-            void UpdateDisplayedMesh( QListWidgetItem* itemClicked );
-            void ResetSelectedFile();
-            void ChangeValueOpacity();
-            void ChooseColor();
-            void ChangeTypeOfDisplay();
-
-        // functions for the smoothing
+            /* Change the parameter for the smoothing
+             * Compute the smoothing
+             */
             void ChangeNumberOfIteration();
             void ApplySmoothing();
 
-        // functions for the down sampling
+            /* Change the parameter for the down sampling
+             * Compute the down-sampling
+             */
             void ChangeDecimate();
             void ApplyDecimate();
 
-        // function for the distance
+            /* List the available file for the distance computation
+             * file selected for the computation
+             * Change the parameters for the distance computation
+             * Compute the distance
+             * Display or not the error
+             */
             void AvailableMesh();
             void SelectMeshB();
-
             void ChangeMinSampleFrequency();
             void ChangeSamplingStep();
             void ChangeSignedDistance();
+            void ApplyDistance();
+            void ChangeDisplayError();
+
+            /* Change the parameters for the color map
+             * Update the color map
+             * Display or not the color map
+             */
             void ChangeValueMin();
             void ChangeValueMax();
             void ChangeValueDelta();
-
-            void ChangeDisplayError();
+            int UpdateColor();
             void ChangeDisplayColorBar();
 
-            void ApplyDistance();
-            int UpdateColor();
-
-            void PreviousError();
-
     private:
-        // attributs for the files
-            int m_NumberOfMesh;
-            int m_MeshSelected;
-            std::vector <dataM::dataM> m_DataList;
-            QColor m_Color;
-            QColor m_ColorBg;
-
-        // attributs for the display
-            int m_CameraX;
-            int m_CameraY;
-            int m_CameraZ;
-            int m_NumberOfDisplay;
-            QVTKWidget *m_WidgetMesh;
-            display m_MyWindowMesh;
-
-        // attributs for the icons
+            // attibuts for the icons
             std::string m_Path;
             QIcon m_VisibleIcon;
             QIcon m_UnvisibleIcon;
@@ -146,15 +145,35 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             QString m_Display;
             QString m_Reset;
 
-        // attributs for the smoothing, down sampling , error
-            int m_SelectedItemA;
-            int m_SelectedItemB;
+            // attibuts for the display
+            int m_NumberOfDisplay;
+            QVTKWidget *m_WidgetMesh;
+            display m_MyWindowMesh;
+            QColor m_ColorBg;
+
+            // attributs for the lists of file
+            int m_NumberOfMesh;
+            int m_MeshSelected;
+            std::vector <dataM::dataM> m_DataList;
+            QColor m_Color;
+
+            // attributs for the camera
+            int m_CameraX;
+            int m_CameraY;
+            int m_CameraZ;
+
+            //attributs for the filters
             processing m_MyProcess;
             int m_nbIteration;
             double m_nbDecimate;
+
+            // attibuts for the distance computation
+            int m_SelectedItemA;
+            int m_SelectedItemB;
             std::vector <bool> m_ErrorComputed;
             std::vector <bool> m_Visibility;
 
+            // attributs for the color bar computation
             double m_Min;
             double m_Max;
             double m_Delta;

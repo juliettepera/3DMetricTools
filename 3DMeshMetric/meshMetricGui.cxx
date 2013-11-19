@@ -96,7 +96,7 @@ meshMetricGui::meshMetricGui( QWidget *parent , Qt::WFlags f , QString path )
     QObject::connect( pushButtonUpdateColor , SIGNAL( clicked() ) , this , SLOT( UpdateColor() ) );
 }
 
-// ****************************************** functions for the icons
+//*************************************************************************************************
 void meshMetricGui::InitIcon()
 {
     std::string visible = m_Path;
@@ -162,6 +162,31 @@ void meshMetricGui::InitIcon()
     listWidgetLoadedMesh -> setStyleSheet( QString::fromStdString( styleSheetLoadedMesh ) );
 }
 
+
+//*************************************************************************************************
+void meshMetricGui::DisplayInit()
+{
+    if( m_NumberOfDisplay == 0 )
+    {
+       m_MyWindowMesh.setSizeH(  scrollAreaMesh -> height()  );
+       m_MyWindowMesh.setSizeW( scrollAreaMesh -> width() );
+       m_MyWindowMesh.setMeshWidget( m_WidgetMesh );
+    }
+
+    m_MyWindowMesh.initWindow();
+    m_MyWindowMesh.updateWindow();
+    m_NumberOfDisplay++;
+
+    groupBoxCamera -> setEnabled( true );
+    listWidgetLoadedMesh -> setEnabled( true );
+    pushButtonDelete -> setEnabled( true );
+    pushButtonDisplayAll -> setEnabled( true );
+    pushButtonHideAll -> setEnabled( true );
+    actionBackgroundColor -> setEnabled( true );
+}
+
+
+//*************************************************************************************************
 void meshMetricGui::resizeEvent( QResizeEvent *Qevent )
 {
     if( m_NumberOfDisplay >= 1 )
@@ -192,7 +217,109 @@ void meshMetricGui::resizeEvent( QResizeEvent *Qevent )
     }
 }
 
-// ****************************************** functions for loadind files
+
+//*************************************************************************************************
+void meshMetricGui::PreviousError()
+{
+    if( ! m_DataList.empty() && m_MeshSelected != -1 )
+    {
+        int out = m_MyProcess.CheckPreviousError( m_DataList[ m_MeshSelected ] );
+        QMessageBox MsgBox;
+        QFileInfo File;
+
+        switch( out )
+        {
+            case 1:
+                MsgBox.setText( " the original scalar is missing ");
+                MsgBox.exec();
+            break;
+
+            case 2:
+                MsgBox.setText( " the error scalar is missing ");
+                MsgBox.exec();
+            break;
+
+            case 3:
+                m_ErrorComputed[ m_MeshSelected ] = true;
+                m_DataList[ m_MeshSelected ].setDisplayError( true );
+                m_DataList[ m_MeshSelected ].setColorBar( true );
+                checkBoxColorBar -> setChecked( true );
+
+                if( m_DataList[ m_MeshSelected ].getMin() < 0 )
+                {
+                    m_DataList[ m_MeshSelected ].setSignedDistance( true );
+
+                }
+
+                m_MyProcess.updateColor( m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() , m_Delta , m_DataList[ m_MeshSelected ] );
+
+                File = QString::fromStdString( m_DataList[ m_MeshSelected ].getName() );
+                lineEditA -> setText( File.fileName() );
+                lineEditB -> setText( QString::fromStdString( " Unknown " ) );
+                m_DataList[ m_MeshSelected ].setNameB( "Unknown" );
+
+                lineEditMin -> setText( QString::number( m_DataList[ m_MeshSelected ].getMin() ) );
+                lineEditMax -> setText( QString::number( m_DataList[ m_MeshSelected ].getMax() ) );
+
+                doubleSpinBoxMin -> setValue( m_DataList[ m_MeshSelected ].getMin() );
+                doubleSpinBoxMax -> setValue( m_DataList[ m_MeshSelected ].getMax() );
+
+                m_Min = m_DataList[ m_MeshSelected ].getMin();
+                m_Max = m_DataList[ m_MeshSelected ].getMax();
+
+                m_Delta = rint( (m_Max - m_Min)/2.0 );
+                if( m_Delta > 1 )
+                {
+                    m_Delta = 1;
+                }
+                if( m_Delta < 0.02)
+                {
+                    m_Delta = 0.02;
+                }
+
+                doubleSpinBoxDelta -> setValue( m_Delta );
+
+                m_MyWindowMesh.setLut( m_DataList[ m_MeshSelected ].getMapper()->GetLookupTable() );
+                m_MyWindowMesh.updateLut( 1 );
+
+
+
+                if( m_DataList[ m_MeshSelected ].getSignedDistance() == true )
+                {
+                    widgetColor->initGradientSigned();
+                    widgetColor->changeCyan( calculNewY( ( -m_Delta/2.0 ) , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() ) );
+                    widgetColor->changeYellow( calculNewY( ( m_Delta/2.0 ) , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() ) );
+                    widgetColor->changeGreen();
+                    widgetColor->updateGradient();
+                }
+                else
+                {
+                    widgetColor->initGradientAbsolute();
+                    widgetColor->changeYellow( calculNewY( ( m_Delta/2.0 ) , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() ) );
+                    widgetColor->updateGradient();
+                }
+
+            break;
+
+            case 4:
+                MsgBox.setText( " problem ");
+                MsgBox.exec();
+            break;
+        }
+    }
+}
+
+
+//*************************************************************************************************
+double meshMetricGui::calculNewY( double x , double Min , double Max )
+{
+    double Y = 0;
+    Y = ( x - Min )/( Max - Min );
+    return Y;
+}
+
+
+//*************************************************************************************************
 void meshMetricGui::OpenBrowseWindowFile()
 {
     QStringList browseMesh = QFileDialog::getOpenFileNames( this , "Open a VTK file" , QString() , "vtk mesh (*.vtk)" );
@@ -240,6 +367,8 @@ void meshMetricGui::OpenBrowseWindowFile()
     }
 }
 
+
+//*************************************************************************************************
 void meshMetricGui::OpenBrowseWindowRepository()
 {
     QString path;
@@ -295,6 +424,8 @@ void meshMetricGui::OpenBrowseWindowRepository()
     }
 }
 
+
+//*************************************************************************************************
 void meshMetricGui::SaveFile()
 {
     if( !m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
@@ -309,7 +440,7 @@ void meshMetricGui::SaveFile()
 }
 
 
-// ****************************************** functions for delete files
+//*************************************************************************************************
 void meshMetricGui::DeleteOneFile()
 {
     if( !m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
@@ -387,6 +518,7 @@ void meshMetricGui::DeleteOneFile()
 }
 
 
+//*************************************************************************************************
 void meshMetricGui::DeleteAllFiles()
 {
     if( ! m_DataList.empty() && m_NumberOfDisplay != 0 )
@@ -407,6 +539,8 @@ void meshMetricGui::DeleteAllFiles()
         checkBoxError -> setChecked( false );
         listWidgetLoadedMesh -> clear();
         comboBoxMeshB -> clear();
+        comboBoxMeshB -> addItem( m_NotOkIcon , QString(" no file selected ") );
+        comboBoxMeshB -> setCurrentItem( 0 );
         lineEditMeshA -> clear();
         m_DataList.clear();
         m_ErrorComputed.clear();
@@ -430,141 +564,7 @@ void meshMetricGui::DeleteAllFiles()
 }
 
 
-// ****************************************** functions for display files
-void meshMetricGui::DisplayInit()
-{
-    if( m_NumberOfDisplay == 0 )
-    {
-       m_MyWindowMesh.setSizeH(  scrollAreaMesh -> height()  );
-       m_MyWindowMesh.setSizeW( scrollAreaMesh -> width() );
-       m_MyWindowMesh.setMeshWidget( m_WidgetMesh );
-    }
-
-    m_MyWindowMesh.initWindow();
-    m_MyWindowMesh.updateWindow();
-    m_NumberOfDisplay++;
-
-    groupBoxCamera -> setEnabled( true );
-    listWidgetLoadedMesh -> setEnabled( true );
-    pushButtonDelete -> setEnabled( true );
-    pushButtonDisplayAll -> setEnabled( true );
-    pushButtonHideAll -> setEnabled( true );
-    actionBackgroundColor -> setEnabled( true );
-}
-
-void meshMetricGui::DisplayAll()
-{
-    int IndiceOfMesh;
-    for( IndiceOfMesh = 0 ; IndiceOfMesh < m_NumberOfMesh ; IndiceOfMesh++ )
-    {
-       m_DataList[ IndiceOfMesh ].setOpacity( 1.0 );
-       horizontalSliderOpacity -> setValue( m_DataList[ IndiceOfMesh ].getOpacity()*100 );
-       lcdNumberOpacity -> display( m_DataList[ IndiceOfMesh ].getOpacity() );
-       listWidgetLoadedMesh -> item( IndiceOfMesh ) -> setCheckState( Qt::Checked );
-       m_DataList[ IndiceOfMesh ].updateActorProperties();
-       m_Visibility[ IndiceOfMesh ] = true;
-    }
-    m_MyWindowMesh.updateWindow();
-}
-
-void meshMetricGui::HideAll()
-{
-    int IndiceOfMesh;
-    for( IndiceOfMesh = 0 ; IndiceOfMesh < m_NumberOfMesh ; IndiceOfMesh++ )
-    {
-        m_DataList[ IndiceOfMesh ].setOpacity( 0.0 );
-        horizontalSliderOpacity -> setValue( 0.0 );
-        lcdNumberOpacity -> display( 0.0 );
-        listWidgetLoadedMesh -> item( IndiceOfMesh ) -> setCheckState( Qt::Unchecked );
-        m_DataList[ IndiceOfMesh ].updateActorProperties();
-        m_Visibility[ IndiceOfMesh ] = false;
-    }
-    m_MyWindowMesh.updateWindow();
-}
-
-void meshMetricGui::ChooseColorBackground()
-{
-    if( m_NumberOfDisplay != 0 )
-    {
-        m_ColorBg = QColorDialog::getColor( Qt::white , this );
-
-        if( m_ColorBg.isValid() )
-        {
-            m_MyWindowMesh.changeBackgroundColor( m_ColorBg.redF() , m_ColorBg.greenF() , m_ColorBg.blueF() );
-            m_MyWindowMesh.updateWindow();
-        }
-    }
-}
-
-// ****************************************** functions to change the camera
-void meshMetricGui::buttonUpClicked()
-{
-    m_CameraX = 0 ; m_CameraY = 0 ; m_CameraZ = 1;
-
-    m_MyWindowMesh.setCameraX( m_CameraX );
-    m_MyWindowMesh.setCameraY( m_CameraY );
-    m_MyWindowMesh.setCameraZ( m_CameraZ );
-    m_MyWindowMesh.updatePositionCamera();
-    m_MyWindowMesh.updateWindow();
-}
-
-void meshMetricGui::buttonDownClicked()
-{
-    m_CameraX = 0 ; m_CameraY = 0 ; m_CameraZ = -1;
-
-    m_MyWindowMesh.setCameraX( m_CameraX );
-    m_MyWindowMesh.setCameraY( m_CameraY );
-    m_MyWindowMesh.setCameraZ( m_CameraZ );
-    m_MyWindowMesh.updatePositionCamera();
-    m_MyWindowMesh.updateWindow();
-}
-
-void meshMetricGui::buttonRightClicked()
-{
-    m_CameraX = 1 ; m_CameraY = 0 ; m_CameraZ = 0;
-
-    m_MyWindowMesh.setCameraX( m_CameraX );
-    m_MyWindowMesh.setCameraY( m_CameraY );
-    m_MyWindowMesh.setCameraZ( m_CameraZ );
-    m_MyWindowMesh.updatePositionCamera();
-    m_MyWindowMesh.updateWindow();
-}
-
-void meshMetricGui::buttonLeftClicked()
-{
-    m_CameraX = -1 ; m_CameraY = 0 ; m_CameraZ = 0;
-
-    m_MyWindowMesh.setCameraX( m_CameraX );
-    m_MyWindowMesh.setCameraY( m_CameraY );
-    m_MyWindowMesh.setCameraZ( m_CameraZ );
-    m_MyWindowMesh.updatePositionCamera();
-    m_MyWindowMesh.updateWindow();
-}
-
-void meshMetricGui::buttonBackClicked()
-{
-    m_CameraX = 0 ; m_CameraY = -1 ; m_CameraZ = 0;
-
-    m_MyWindowMesh.setCameraX( m_CameraX );
-    m_MyWindowMesh.setCameraY( m_CameraY );
-    m_MyWindowMesh.setCameraZ( m_CameraZ );
-    m_MyWindowMesh.updatePositionCamera();
-    m_MyWindowMesh.updateWindow();
-}
-
-void meshMetricGui::buttonFrontClicked()
-{
-    m_CameraX = 0 ; m_CameraY = 1 ; m_CameraZ = 0;
-
-    m_MyWindowMesh.setCameraX( m_CameraX );
-    m_MyWindowMesh.setCameraY( m_CameraY );
-    m_MyWindowMesh.setCameraZ( m_CameraZ );
-    m_MyWindowMesh.updatePositionCamera();
-    m_MyWindowMesh.updateWindow();
-}
-
-
-// ****************************************** functions to change files properties
+//*************************************************************************************************
 void meshMetricGui::UpdateDisplayedMesh( QListWidgetItem *itemClicked )
 {
     QListWidgetItem* CurrentItem = itemClicked;
@@ -601,6 +601,8 @@ void meshMetricGui::UpdateDisplayedMesh( QListWidgetItem *itemClicked )
     horizontalSliderOpacity -> setValue( m_DataList[ ItemRow ].getOpacity()*100 );
 }
 
+
+//*************************************************************************************************
 void meshMetricGui::ChangeMeshSelected()
 {
    actionSaveFile -> setEnabled( true );
@@ -621,7 +623,7 @@ void meshMetricGui::ChangeMeshSelected()
    }
    m_nbIteration = 200;
    m_nbDecimate = 10;
-   m_MeshSelected = listWidgetLoadedMesh -> currentRow();   
+   m_MeshSelected = listWidgetLoadedMesh -> currentRow();
 
    horizontalSliderOpacity -> setValue( m_DataList[ m_MeshSelected ].getOpacity()*100 );
    lcdNumberOpacity -> display( m_DataList[ m_MeshSelected ].getOpacity() );
@@ -677,7 +679,7 @@ void meshMetricGui::ChangeMeshSelected()
 
        if( m_DataList[ m_MeshSelected ].getDisplayError() == true )
        {
-           checkBoxError -> setChecked( true );           
+           checkBoxError -> setChecked( true );
        }
        else if( m_DataList[ m_MeshSelected ].getDisplayError() == false )
        {
@@ -703,6 +705,15 @@ void meshMetricGui::ChangeMeshSelected()
 
        doubleSpinBoxMin -> setValue( m_DataList[ m_MeshSelected ].getMin() );
        doubleSpinBoxMax -> setValue( m_DataList[ m_MeshSelected ].getMax() );
+       m_Delta = rint( (m_DataList[ m_SelectedItemA ].getMax() - m_DataList[ m_SelectedItemA ].getMin())/2.0 );
+       if( m_Delta > 1 )
+       {
+           m_Delta = 1;
+       }
+       if( m_Delta < 0.02)
+       {
+           m_Delta = 0.02;
+       }
        doubleSpinBoxDelta -> setValue( m_Delta );
 
        if( m_DataList[ m_MeshSelected ].getSignedDistance() == true )
@@ -710,6 +721,7 @@ void meshMetricGui::ChangeMeshSelected()
             widgetColor->initGradientSigned();
             widgetColor->changeCyan( calculNewY( ( -m_Delta/2.0 ) , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() ) );
             widgetColor->changeYellow( calculNewY( ( m_Delta/2.0 ) , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() ) );
+            widgetColor->changeGreen();
             widgetColor->updateGradient();
        }
        else
@@ -738,26 +750,8 @@ void meshMetricGui::ChangeMeshSelected()
    m_MyWindowMesh.updateWindow();
 }
 
-void meshMetricGui::ResetSelectedFile()
-{
-    if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
-    {
-        m_DataList[ m_MeshSelected ].initialization();
-        m_MyWindowMesh.updateWindow();
-    }
-    m_DataList[ m_MeshSelected ].setOpacity( 1.0 );
-    lcdNumberOpacity -> display( m_DataList[ m_MeshSelected ].getOpacity() );
-    horizontalSliderOpacity -> setValue( 100 );
-    m_Visibility[ m_MeshSelected ] = true;
 
-    m_DataList[ m_MeshSelected ].updateActorProperties();
-    listWidgetLoadedMesh -> item( m_MeshSelected ) -> setCheckState( Qt::Checked );
-
-    m_ErrorComputed[ m_MeshSelected ] = false;
-    checkBoxError -> setEnabled( false );
-    checkBoxError -> setChecked( false );
-}
-
+//*************************************************************************************************
 void meshMetricGui::ChangeValueOpacity()
 {
     if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
@@ -782,6 +776,8 @@ void meshMetricGui::ChangeValueOpacity()
     }
 }
 
+
+//*************************************************************************************************
 void meshMetricGui::ChooseColor()
 {
     if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
@@ -797,6 +793,8 @@ void meshMetricGui::ChooseColor()
     }
 }
 
+
+//*************************************************************************************************
 void meshMetricGui::ChangeTypeOfDisplay()
 {
     if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
@@ -819,7 +817,161 @@ void meshMetricGui::ChangeTypeOfDisplay()
     }
 }
 
-// ****************************************** functions for the smoothing
+
+//*************************************************************************************************
+void meshMetricGui::ResetSelectedFile()
+{
+    if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
+    {
+        m_DataList[ m_MeshSelected ].setOpacity( 1.0 );
+        m_DataList[ m_MeshSelected ].initialization();
+        m_MyWindowMesh.updateWindow();
+    }
+
+    lcdNumberOpacity -> display( m_DataList[ m_MeshSelected ].getOpacity() );
+    horizontalSliderOpacity -> setValue( 100 );
+    m_Visibility[ m_MeshSelected ] = true;
+
+    listWidgetLoadedMesh -> item( m_MeshSelected ) -> setCheckState( Qt::Checked );
+
+    m_ErrorComputed[ m_MeshSelected ] = false;
+    checkBoxError -> setEnabled( false );
+    checkBoxError -> setChecked( false );
+
+    checkBoxColorBar -> setChecked( false );
+    tabWidgetError -> setCurrentWidget( tabDistance );
+}
+
+
+//*************************************************************************************************
+void meshMetricGui::DisplayAll()
+{
+    int IndiceOfMesh;
+    for( IndiceOfMesh = 0 ; IndiceOfMesh < m_NumberOfMesh ; IndiceOfMesh++ )
+    {
+       m_DataList[ IndiceOfMesh ].setOpacity( 1.0 );
+       horizontalSliderOpacity -> setValue( m_DataList[ IndiceOfMesh ].getOpacity()*100 );
+       lcdNumberOpacity -> display( m_DataList[ IndiceOfMesh ].getOpacity() );
+       listWidgetLoadedMesh -> item( IndiceOfMesh ) -> setCheckState( Qt::Checked );
+       m_DataList[ IndiceOfMesh ].updateActorProperties();
+       m_Visibility[ IndiceOfMesh ] = true;
+    }
+    m_MyWindowMesh.updateWindow();
+}
+
+
+//*************************************************************************************************
+void meshMetricGui::HideAll()
+{
+    int IndiceOfMesh;
+    for( IndiceOfMesh = 0 ; IndiceOfMesh < m_NumberOfMesh ; IndiceOfMesh++ )
+    {
+        m_DataList[ IndiceOfMesh ].setOpacity( 0.0 );
+        horizontalSliderOpacity -> setValue( 0.0 );
+        lcdNumberOpacity -> display( 0.0 );
+        listWidgetLoadedMesh -> item( IndiceOfMesh ) -> setCheckState( Qt::Unchecked );
+        m_DataList[ IndiceOfMesh ].updateActorProperties();
+        m_Visibility[ IndiceOfMesh ] = false;
+    }
+    m_MyWindowMesh.updateWindow();
+}
+
+
+//*************************************************************************************************
+void meshMetricGui::ChooseColorBackground()
+{
+    if( m_NumberOfDisplay != 0 )
+    {
+        m_ColorBg = QColorDialog::getColor( Qt::white , this );
+
+        if( m_ColorBg.isValid() )
+        {
+            m_MyWindowMesh.changeBackgroundColor( m_ColorBg.redF() , m_ColorBg.greenF() , m_ColorBg.blueF() );
+            m_MyWindowMesh.updateWindow();
+        }
+    }
+}
+
+
+//*************************************************************************************************
+void meshMetricGui::buttonUpClicked()
+{
+    m_CameraX = 0 ; m_CameraY = 0 ; m_CameraZ = 1;
+
+    m_MyWindowMesh.setCameraX( m_CameraX );
+    m_MyWindowMesh.setCameraY( m_CameraY );
+    m_MyWindowMesh.setCameraZ( m_CameraZ );
+    m_MyWindowMesh.updatePositionCamera();
+    m_MyWindowMesh.updateWindow();
+}
+
+
+//*************************************************************************************************
+void meshMetricGui::buttonDownClicked()
+{
+    m_CameraX = 0 ; m_CameraY = 0 ; m_CameraZ = -1;
+
+    m_MyWindowMesh.setCameraX( m_CameraX );
+    m_MyWindowMesh.setCameraY( m_CameraY );
+    m_MyWindowMesh.setCameraZ( m_CameraZ );
+    m_MyWindowMesh.updatePositionCamera();
+    m_MyWindowMesh.updateWindow();
+}
+
+
+//*************************************************************************************************
+void meshMetricGui::buttonRightClicked()
+{
+    m_CameraX = 1 ; m_CameraY = 0 ; m_CameraZ = 0;
+
+    m_MyWindowMesh.setCameraX( m_CameraX );
+    m_MyWindowMesh.setCameraY( m_CameraY );
+    m_MyWindowMesh.setCameraZ( m_CameraZ );
+    m_MyWindowMesh.updatePositionCamera();
+    m_MyWindowMesh.updateWindow();
+}
+
+
+//*************************************************************************************************
+void meshMetricGui::buttonLeftClicked()
+{
+    m_CameraX = -1 ; m_CameraY = 0 ; m_CameraZ = 0;
+
+    m_MyWindowMesh.setCameraX( m_CameraX );
+    m_MyWindowMesh.setCameraY( m_CameraY );
+    m_MyWindowMesh.setCameraZ( m_CameraZ );
+    m_MyWindowMesh.updatePositionCamera();
+    m_MyWindowMesh.updateWindow();
+}
+
+
+//*************************************************************************************************
+void meshMetricGui::buttonBackClicked()
+{
+    m_CameraX = 0 ; m_CameraY = -1 ; m_CameraZ = 0;
+
+    m_MyWindowMesh.setCameraX( m_CameraX );
+    m_MyWindowMesh.setCameraY( m_CameraY );
+    m_MyWindowMesh.setCameraZ( m_CameraZ );
+    m_MyWindowMesh.updatePositionCamera();
+    m_MyWindowMesh.updateWindow();
+}
+
+
+//*************************************************************************************************
+void meshMetricGui::buttonFrontClicked()
+{
+    m_CameraX = 0 ; m_CameraY = 1 ; m_CameraZ = 0;
+
+    m_MyWindowMesh.setCameraX( m_CameraX );
+    m_MyWindowMesh.setCameraY( m_CameraY );
+    m_MyWindowMesh.setCameraZ( m_CameraZ );
+    m_MyWindowMesh.updatePositionCamera();
+    m_MyWindowMesh.updateWindow();
+}
+
+
+//*************************************************************************************************
 void meshMetricGui::ChangeNumberOfIteration()
 {
     if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
@@ -829,6 +981,8 @@ void meshMetricGui::ChangeNumberOfIteration()
     }
 }
 
+
+//*************************************************************************************************
 void meshMetricGui::ApplySmoothing()
 {
     if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
@@ -844,12 +998,12 @@ void meshMetricGui::ApplySmoothing()
 
         m_MyWindowMesh.updateWindow();
 
-        pushButtonRunSmoothing -> setEnabled( false );
         spinBoxIteration -> setValue( 200 );
     }
 }
 
-// ****************************************** functions for the downSampling
+
+//*************************************************************************************************
 void meshMetricGui::ChangeDecimate()
 {
     if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
@@ -859,6 +1013,8 @@ void meshMetricGui::ChangeDecimate()
     }
 }
 
+
+//*************************************************************************************************
 void meshMetricGui::ApplyDecimate()
 {
     if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
@@ -874,12 +1030,12 @@ void meshMetricGui::ApplyDecimate()
 
         m_MyWindowMesh.updateWindow();
 
-        pushButtonRunDecimate -> setEnabled( false );
         spinBoxDecimate -> setValue( 10 );
     }
 }
 
-// ****************************************** functions for the distance
+
+//*************************************************************************************************
 void meshMetricGui::AvailableMesh()
 {
     m_SelectedItemA = m_MeshSelected;
@@ -904,6 +1060,8 @@ void meshMetricGui::AvailableMesh()
     }
 }
 
+
+//*************************************************************************************************
 void meshMetricGui::SelectMeshB()
 {
     if( m_SelectedItemA != -1 )
@@ -920,6 +1078,8 @@ void meshMetricGui::SelectMeshB()
     }
 }
 
+
+//*************************************************************************************************
 void meshMetricGui::ChangeMinSampleFrequency()
 {
     if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
@@ -928,6 +1088,8 @@ void meshMetricGui::ChangeMinSampleFrequency()
     }
 }
 
+
+//*************************************************************************************************
 void meshMetricGui::ChangeSamplingStep()
 {
     if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
@@ -938,6 +1100,8 @@ void meshMetricGui::ChangeSamplingStep()
     }
 }
 
+
+//*************************************************************************************************
 void meshMetricGui::ChangeSignedDistance()
 {
     if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
@@ -953,103 +1117,8 @@ void meshMetricGui::ChangeSignedDistance()
     }
 }
 
-void meshMetricGui::ChangeDisplayError()
-{
-    if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
-    {
-        if( checkBoxError -> isChecked() )
-        {
-            m_DataList[ m_MeshSelected ].setDisplayError( true );
-        }
-        else if( ! checkBoxError -> isChecked() )
-        {
-            m_DataList[ m_MeshSelected ].setDisplayError( false );
-        }
 
-        m_DataList[ m_MeshSelected ].changeActivScalar();
-        m_MyWindowMesh.updateWindow();
-    }
-}
-
-void meshMetricGui::ChangeDisplayColorBar()
-{
-    if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
-    {
-        if( checkBoxColorBar -> isChecked() )
-        {
-            m_DataList[ m_MeshSelected ].setColorBar( true );
-            m_MyWindowMesh.updateLut( 1 );
-        }
-        else if( ! checkBoxColorBar -> isChecked() )
-        {
-            m_DataList[ m_MeshSelected ].setColorBar( false );
-            m_MyWindowMesh.updateLut( 0 );
-        }
-        m_MyWindowMesh.updateWindow();
-    }
-}
-
-void meshMetricGui::ChangeValueMin()
-{
-    if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
-    {
-        if( m_DataList[ m_MeshSelected ].getSignedDistance() == true )
-        {
-            m_Min = doubleSpinBoxMin -> value();
-        }
-        else
-        {
-            doubleSpinBoxMin -> setValue( m_DataList[ m_MeshSelected ].getMin() );
-        }
-    }
-}
-
-void meshMetricGui::ChangeValueMax()
-{
-    if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
-    {
-        m_Max = doubleSpinBoxMax -> value();
-    }
-}
-
-void meshMetricGui::ChangeValueDelta()
-{
-    if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
-    {
-        if( m_DataList[ m_MeshSelected ].getSignedDistance() == true )
-        {
-            if( doubleSpinBoxDelta -> value() < fabs( m_DataList[ m_MeshSelected ].getMin()) &&
-                    doubleSpinBoxDelta -> value() < m_DataList[ m_MeshSelected ].getMax()  &&
-                        doubleSpinBoxDelta -> value() > 0 )
-            {
-                m_Delta = doubleSpinBoxDelta -> value();
-            }
-            else
-            {
-                QMessageBox MsgBox;
-                MsgBox.setText( " Delta is a valu:\n\tstrictely positive\n\tinferior at Max\n\tinferior at |Min|\nPlease, choose a different value");
-                MsgBox.exec();
-                doubleSpinBoxDelta -> setValue( 1.0 );
-            }
-        }
-        else
-        {
-            if( doubleSpinBoxDelta -> value() < m_DataList[ m_MeshSelected ].getMax()  &&
-                    doubleSpinBoxDelta -> value() > 0 )
-            {
-                m_Delta = doubleSpinBoxDelta -> value();
-            }
-            else
-            {
-                QMessageBox MsgBox;
-                MsgBox.setText( " Delta is a valu:\n\tstrictely positive\n\tinferior at Max\nPlease, choose a different value");
-                MsgBox.exec();
-                doubleSpinBoxDelta -> setValue( 1.0 );
-            }
-        }
-    }
-}
-
+//*************************************************************************************************
 void meshMetricGui::ApplyDistance()
 {
     if( m_SelectedItemA != -1 && m_SelectedItemB != -1 )
@@ -1081,6 +1150,15 @@ void meshMetricGui::ApplyDistance()
 
         doubleSpinBoxMin -> setValue( m_DataList[ m_SelectedItemA ].getMin() );
         doubleSpinBoxMax -> setValue( m_DataList[ m_SelectedItemA ].getMax() );
+        m_Delta = rint( (m_DataList[ m_SelectedItemA ].getMax() - m_DataList[ m_SelectedItemA ].getMin())/2.0 );
+        if( m_Delta > 1 )
+        {
+            m_Delta = 1;
+        }
+        if( m_Delta < 0.02)
+        {
+            m_Delta = 0.02;
+        }
         doubleSpinBoxDelta -> setValue( m_Delta );
 
         m_MyWindowMesh.setLut( m_DataList[ m_SelectedItemA ].getMapper()->GetLookupTable() );
@@ -1092,6 +1170,7 @@ void meshMetricGui::ApplyDistance()
             widgetColor->initGradientSigned();
             widgetColor->changeCyan( calculNewY( ( -m_Delta/2.0 ) , m_DataList[ m_SelectedItemA ].getMin() , m_DataList[ m_SelectedItemA ].getMax() ) );
             widgetColor->changeYellow( calculNewY( ( m_Delta/2.0 ) , m_DataList[ m_SelectedItemA ].getMin() , m_DataList[ m_SelectedItemA ].getMax() ) );
+            widgetColor->changeGreen();
             widgetColor->updateGradient();
         }
         else
@@ -1107,6 +1186,95 @@ void meshMetricGui::ApplyDistance()
     }
 }
 
+
+//*************************************************************************************************
+void meshMetricGui::ChangeDisplayError()
+{
+    if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
+    {
+        if( checkBoxError -> isChecked() )
+        {
+            m_DataList[ m_MeshSelected ].setDisplayError( true );
+        }
+        else if( ! checkBoxError -> isChecked() )
+        {
+            m_DataList[ m_MeshSelected ].setDisplayError( false );
+        }
+
+        m_DataList[ m_MeshSelected ].changeActivScalar();
+        m_MyWindowMesh.updateWindow();
+    }
+}
+
+
+//*************************************************************************************************
+void meshMetricGui::ChangeValueMin()
+{
+    if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
+    {
+        if( m_DataList[ m_MeshSelected ].getSignedDistance() == true )
+        {
+            m_Min = doubleSpinBoxMin -> value();
+        }
+        else
+        {
+            doubleSpinBoxMin -> setValue( m_DataList[ m_MeshSelected ].getMin() );
+        }
+    }
+}
+
+
+//*************************************************************************************************
+void meshMetricGui::ChangeValueMax()
+{
+    if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
+    {
+        m_Max = doubleSpinBoxMax -> value();
+    }
+}
+
+
+//*************************************************************************************************
+void meshMetricGui::ChangeValueDelta()
+{
+    if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
+    {
+        if( m_DataList[ m_MeshSelected ].getSignedDistance() == true )
+        {
+            if( doubleSpinBoxDelta -> value() < fabs( 2*m_DataList[ m_MeshSelected ].getMin()) &&
+                    doubleSpinBoxDelta -> value() < 2*m_DataList[ m_MeshSelected ].getMax()  &&
+                        doubleSpinBoxDelta -> value() > 0 )
+            {
+                m_Delta = doubleSpinBoxDelta -> value();
+            }
+            else
+            {
+                QMessageBox MsgBox;
+                MsgBox.setText( " Delta/2 is a value:\n\tstrictly positive\n\tinferior at Max\n\tinferior at |Min|\nPlease, choose a different value");
+                MsgBox.exec();
+                doubleSpinBoxDelta -> setValue( 1.0 );
+            }
+        }
+        else
+        {
+            if( doubleSpinBoxDelta -> value() < 2*m_DataList[ m_MeshSelected ].getMax()  &&
+                    doubleSpinBoxDelta -> value() > 0 )
+            {
+                m_Delta = doubleSpinBoxDelta -> value();
+            }
+            else
+            {
+                QMessageBox MsgBox;
+                MsgBox.setText( " Delta/2 is a value:\n\tstrictly positive\n\tinferior at Max\nPlease, choose a different value");
+                MsgBox.exec();
+                doubleSpinBoxDelta -> setValue( 1.0 );
+            }
+        }
+    }
+}
+
+
+//*************************************************************************************************
 int meshMetricGui::UpdateColor()
 {
     if( ! m_DataList.empty() && m_MeshSelected != -1  && m_MeshSelected != -1 && m_ErrorComputed[ m_MeshSelected ] == true )
@@ -1146,6 +1314,7 @@ int meshMetricGui::UpdateColor()
                widgetColor->initGradientSigned();
                widgetColor->changeCyan( calculNewY( ( -m_Delta/2.0 ) , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() ) );
                widgetColor->changeYellow( calculNewY( ( m_Delta/2.0 ) , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() ) );
+               widgetColor->changeGreen();
                widgetColor->updateGradient();
 
                return 0;
@@ -1187,96 +1356,22 @@ int meshMetricGui::UpdateColor()
 }
 
 
-void meshMetricGui::PreviousError()
+//*************************************************************************************************
+void meshMetricGui::ChangeDisplayColorBar()
 {
-    if( ! m_DataList.empty() && m_MeshSelected != -1 )
+    if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
     {
-        int out = m_MyProcess.CheckPreviousError( m_DataList[ m_MeshSelected ] );
-        QMessageBox MsgBox;
-        QFileInfo File;
-
-        switch( out )
+        if( checkBoxColorBar -> isChecked() )
         {
-            case 1:               
-                MsgBox.setText( " the original scalar is missing ");
-                MsgBox.exec();
-            break;
-
-            case 2:
-                MsgBox.setText( " the error scalar is missing ");
-                MsgBox.exec();
-            break;
-
-            case 3:             
-                m_ErrorComputed[ m_MeshSelected ] = true;
-                m_DataList[ m_MeshSelected ].setDisplayError( true );
-                m_DataList[ m_MeshSelected ].setColorBar( true );
-                checkBoxColorBar -> setChecked( true );
-
-                if( m_DataList[ m_MeshSelected ].getMin() < 0 )
-                {
-                    m_DataList[ m_MeshSelected ].setSignedDistance( true );
-
-                }
-
-                m_MyProcess.updateColor( m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() , m_Delta , m_DataList[ m_MeshSelected ] );
-
-                File = QString::fromStdString( m_DataList[ m_MeshSelected ].getName() );
-                lineEditA -> setText( File.fileName() );
-                lineEditB -> setText( QString::fromStdString( " Unknown " ) );
-                m_DataList[ m_MeshSelected ].setNameB( "Unknown" );
-
-                lineEditMin -> setText( QString::number( m_DataList[ m_MeshSelected ].getMin() ) );
-                lineEditMax -> setText( QString::number( m_DataList[ m_MeshSelected ].getMax() ) );
-
-                doubleSpinBoxMin -> setValue( m_DataList[ m_MeshSelected ].getMin() );
-                doubleSpinBoxMax -> setValue( m_DataList[ m_MeshSelected ].getMax() );
-                doubleSpinBoxDelta -> setValue( m_Delta );
-
-                m_MyWindowMesh.setLut( m_DataList[ m_MeshSelected ].getMapper()->GetLookupTable() );
-                m_MyWindowMesh.updateLut( 1 );
-
-
-
-                if( m_DataList[ m_MeshSelected ].getSignedDistance() == true )
-                {
-                    widgetColor->initGradientSigned();
-                    widgetColor->changeCyan( calculNewY( ( -m_Delta/2.0 ) , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() ) );
-                    widgetColor->changeYellow( calculNewY( ( m_Delta/2.0 ) , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() ) );
-                    widgetColor->updateGradient();
-                }
-                else
-                {
-                    widgetColor->initGradientAbsolute();
-                    widgetColor->changeYellow( calculNewY( ( m_Delta/2.0 ) , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() ) );
-                    widgetColor->updateGradient();
-                }
-
-            break;
-
-            case 4:
-                MsgBox.setText( " problem ");
-                MsgBox.exec();
-            break;
-        }        
+            m_DataList[ m_MeshSelected ].setColorBar( true );
+            m_MyWindowMesh.updateLut( 1 );
+        }
+        else if( ! checkBoxColorBar -> isChecked() )
+        {
+            m_DataList[ m_MeshSelected ].setColorBar( false );
+            m_MyWindowMesh.updateLut( 0 );
+        }
+        m_MyWindowMesh.updateWindow();
     }
 }
-
-double meshMetricGui::calculNewY( double x , double Min , double Max )
-{
-    double Y = 0;
-    Y = ( x - Min )/( Max - Min );
-    std::cout << " y = " << Y << std::endl;
-    return Y;
-}
-
-
-
-
-
-
-
-
-
-
 

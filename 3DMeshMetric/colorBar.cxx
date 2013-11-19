@@ -12,13 +12,9 @@ colorBar::colorBar( QWidget *Qparent ):QWidget( Qparent )
     m_Yellow.second = Qt::yellow;
     m_ItYellow = 0;
 
-    /*m_List.push_back( QGradientStop( 0 , Qt::blue ) );
-    m_List.push_back( m_Cyan );
-    m_List.push_back( QGradientStop( 0.5 , Qt::green ) );
-    m_List.push_back( m_Yellow );
-    m_List.push_back( QGradientStop( 1 , Qt::red ) );
-
-    m_Gradient.setStops( m_List );*/
+    m_Green.first = 0.5;
+    m_Green.second = Qt::green;
+    m_ItGreen = 0;
 }
 
 void colorBar::paintEvent(QPaintEvent *)
@@ -61,6 +57,13 @@ void colorBar::changeYellow( double NewPosition )
    m_List.replace( m_ItYellow , m_Yellow );
 }
 
+void colorBar::changeGreen()
+{
+    double NewPosition = (m_Yellow.first + m_Cyan.first)/2.0;
+    m_Green.first = NewPosition;
+    m_List.replace( m_ItGreen , m_Green );
+}
+
 void colorBar::updateGradient()
 {
     m_Gradient.setStops( m_List );
@@ -73,13 +76,13 @@ void colorBar::initGradientSigned()
 
     m_List.push_back( QGradientStop( 0 , Qt::blue ) );
     m_List.push_back( m_Cyan );
-    m_List.push_back( QGradientStop( 0.5 , Qt::green ) );
+    m_List.push_back( m_Green );
     m_List.push_back( m_Yellow );
     m_List.push_back( QGradientStop( 1 , Qt::red ) );
 
     m_Gradient.setStops( m_List );
 
-    m_ItCyan = 1; m_ItYellow = 3;
+    m_ItCyan = 1; m_ItGreen = 2 ; m_ItYellow = 3;
 }
 
 void colorBar::initGradientAbsolute()
