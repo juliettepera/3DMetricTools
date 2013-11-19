@@ -291,12 +291,14 @@ void meshMetricGui::PreviousError()
                     widgetColor->changeYellow( calculNewY( ( m_Delta/2.0 ) , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() ) );
                     widgetColor->changeGreen();
                     widgetColor->updateGradient();
+                    lineEditType -> setText( QString( "Signed distance" ) );
                 }
                 else
                 {
                     widgetColor->initGradientAbsolute();
                     widgetColor->changeYellow( calculNewY( ( m_Delta/2.0 ) , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() ) );
                     widgetColor->updateGradient();
+                    lineEditType -> setText( QString( "Absolute distance" ) );
                 }
 
             break;
@@ -723,12 +725,14 @@ void meshMetricGui::ChangeMeshSelected()
             widgetColor->changeYellow( calculNewY( ( m_Delta/2.0 ) , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() ) );
             widgetColor->changeGreen();
             widgetColor->updateGradient();
+            lineEditType -> setText( QString( "Signed distance" ) );
        }
        else
        {
            widgetColor->initGradientAbsolute();
            widgetColor->changeYellow( calculNewY( ( m_Delta/2.0 ) , m_DataList[ m_SelectedItemA ].getMin() , m_DataList[ m_SelectedItemA ].getMax() ) );
            widgetColor->updateGradient();
+           lineEditType -> setText( QString( "Absolute distance" ) );
        }
 
    }
@@ -742,6 +746,7 @@ void meshMetricGui::ChangeMeshSelected()
        lineEditMin -> clear();
        lineEditA -> clear();
        lineEditB -> clear();
+       lineEditType -> clear();
        doubleSpinBoxMax -> setValue( 0.0 );
        doubleSpinBoxMin -> setValue( 0.0 );
        doubleSpinBoxDelta -> setValue( 1.0 );
@@ -1172,12 +1177,14 @@ void meshMetricGui::ApplyDistance()
             widgetColor->changeYellow( calculNewY( ( m_Delta/2.0 ) , m_DataList[ m_SelectedItemA ].getMin() , m_DataList[ m_SelectedItemA ].getMax() ) );
             widgetColor->changeGreen();
             widgetColor->updateGradient();
+            lineEditType -> setText( QString( "Signed distance" ) );
         }
         else
         {
             widgetColor->initGradientAbsolute();
             widgetColor->changeYellow( calculNewY( ( m_Delta/2.0 ) , m_DataList[ m_SelectedItemA ].getMin() , m_DataList[ m_SelectedItemA ].getMax() ) );
             widgetColor->updateGradient();
+            lineEditType -> setText( QString( "Absolute distance" ) );
         }
 
         comboBoxMeshB -> setCurrentItem( 0 );

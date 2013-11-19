@@ -1,16 +1,6 @@
 #ifndef PROCESSING_H
 #define PROCESSING_H
 
-/* CLASS WHERE ALL THE PROCESS IS DONE THANK TO THE DATA STOCKED ON DATA
- *  -> DO THE SMOOTHING
- *  -> DO THE DOWNSAMPLING
- *  -> DO THE ERROR
- */
-
-// My libraries
-#include "dataM.h"
-#include "meshValmet.h"
-
 // QT libraries
 #include <QMessageBox>
 
@@ -21,6 +11,10 @@
 #include <vtkPolyDataWriter.h>
 #include <vtkDataArray.h>
 
+// My libraries
+#include "dataM.h"
+#include "meshValmet.h"
+
 // OTHER libraries
 #include <string>
 #include <iostream>
@@ -30,13 +24,36 @@ class processing
 {
     public:
         processing();
+
+        /* computing the smoothing
+         */
         vtkSmartPointer <vtkPolyData> processSmoothing(vtkSmartPointer<vtkPolyData> polyData , int nbIteration );
+
+        /* computing the down sampling
+         */
         vtkSmartPointer <vtkPolyData> processDownSampling( vtkSmartPointer <vtkPolyData> polyData , double nbDecimate );
+
+        /* computing the distance
+         */
         int processError(dataM &Data1 , dataM &Data2 );
-        void updateColor(double Min , double Max, double Delta , dataM &Data1);
-        int testPolyData( vtkSmartPointer <vtkPolyData> inData , vtkSmartPointer <vtkPolyData> outData );
-        void SaveFile( std::string Name , dataM &Data1 );
+
+        /* search if there is an error in the file
+         */
         int CheckPreviousError( dataM &Data1 );
+
+        /* save the file
+         */
+        void SaveFile( std::string Name , dataM &Data1 );
+
+        /* update the color map
+         */
+        void updateColor(double Min , double Max, double Delta , dataM &Data1);
+
+        /* function for testing equality between two datas
+         */
+        int testPolyData( vtkSmartPointer <vtkPolyData> inData , vtkSmartPointer <vtkPolyData> outData );
+
+
 
     private:
         meshValmet m_MyMeshValmet;
