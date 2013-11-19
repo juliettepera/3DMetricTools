@@ -2,22 +2,82 @@
 
 display::display()
 {
-    m_Renderer = vtkSmartPointer <vtkRenderer>::New();
-    m_RenderWindow = vtkSmartPointer <vtkRenderWindow>::New();
-    m_Camera = vtkSmartPointer <vtkCamera>::New();
-    m_Axes = vtkSmartPointer <vtkAxesActor>::New();
-    m_Marker = vtkSmartPointer <vtkOrientationMarkerWidget>::New();
-    m_ScalarBar = vtkSmartPointer <vtkScalarBarActor>::New();
-    m_Lut = vtkSmartPointer <vtkScalarsToColors>::New();
-
     m_SizeH = 550 ; m_SizeW = 550;
+
+    m_Red = 1.0 ; m_Green = 0.898 ; m_Blue = 0.8;
+
     m_CameraX = 0 ; m_CameraY = 0 ; m_CameraZ = 0;
 
     m_NumberOfMesh = 0;
 
-    m_Red = 1.0 ; m_Green = 0.898 ; m_Blue = 0.8;
+    m_Renderer = vtkSmartPointer <vtkRenderer>::New();
+    m_RenderWindow = vtkSmartPointer <vtkRenderWindow>::New();
+
+    m_Camera = vtkSmartPointer <vtkCamera>::New();
+    m_Axes = vtkSmartPointer <vtkAxesActor>::New();
+    m_Marker = vtkSmartPointer <vtkOrientationMarkerWidget>::New();
+    m_ScalarBar = vtkSmartPointer <vtkScalarBarActor>::New();
+    m_Lut = vtkSmartPointer <vtkScalarsToColors>::New();    
 }
 
+
+//*************************************************************************************************
+void display::setCameraX( int x )
+{
+    m_CameraX = x;
+}
+
+void display::setCameraY( int y )
+{
+    m_CameraY = y;
+}
+
+void display::setCameraZ( int z )
+{
+    m_CameraZ = z;
+}
+
+
+//*************************************************************************************************
+void display::setMeshWidget( QVTKWidget *MeshWidget )
+{
+    m_MeshWidget = MeshWidget;
+}
+
+
+//*************************************************************************************************
+void display::setSizeH( int Height )
+{
+    m_SizeH = Height;
+}
+
+void display::setSizeW( int Width )
+{
+    m_SizeW = Width;
+}
+
+
+//*************************************************************************************************
+void display::changeBackgroundColor( double Red , double Green , double Blue )
+{
+    m_Red = Red;
+    m_Green = Green;
+    m_Blue = Blue;
+    m_Renderer -> SetBackground( m_Red , m_Green , m_Blue );
+
+}
+
+
+//*************************************************************************************************
+void display::setLut( vtkSmartPointer <vtkScalarsToColors> Lut )
+{
+    m_Lut = vtkSmartPointer <vtkScalarsToColors>::New();
+    m_Lut = Lut;
+    m_ScalarBar -> SetLookupTable( m_Lut );
+}
+
+
+//*************************************************************************************************
 void display::initWindow()
 {
     m_Renderer -> SetBackground( m_Red , m_Green , m_Blue );
@@ -56,23 +116,31 @@ void display::initWindow()
 
 }
 
+
+//*************************************************************************************************
 void display::updateWindow()
 {
     m_RenderWindow -> Render();
     m_MeshWidget -> show();
 }
 
+
+//*************************************************************************************************
 void display::updateLut( int Visibility )
 {
     m_ScalarBar -> SetVisibility( Visibility );
 }
 
+
+//*************************************************************************************************
 void display::addData( vtkSmartPointer <vtkActor> Actor )
 {
     m_ActorList.push_back( Actor );
     m_NumberOfMesh++;
 }
 
+
+//*************************************************************************************************
 void display::deleteData( int IndiceOfMesh )
 {
     m_Renderer -> RemoveActor( m_ActorList[ IndiceOfMesh ] );
@@ -81,6 +149,8 @@ void display::deleteData( int IndiceOfMesh )
     updateWindow();
 }
 
+
+//*************************************************************************************************
 void display::deleteAll()
 {
     int IndiceOfMesh;
@@ -94,6 +164,8 @@ void display::deleteAll()
     updateWindow();
 }
 
+
+//*************************************************************************************************
 void display::updatePositionCamera()
 {
     m_Renderer -> ResetCamera();
@@ -105,66 +177,3 @@ void display::updatePositionCamera()
     m_Camera -> SetRoll(.001);
 
 }
-
-void display::setCameraX( int x )
-{
-    m_CameraX = x;
-}
-
-void display::setCameraY( int y )
-{
-    m_CameraY = y;
-}
-
-void display::setCameraZ( int z )
-{
-    m_CameraZ = z;
-}
-
-void display::setSizeH( int Height )
-{
-    m_SizeH = Height;
-}
-
-void display::setSizeW( int Width )
-{
-    m_SizeW = Width;
-}
-
-void display::setMeshWidget( QVTKWidget *MeshWidget )
-{
-    m_MeshWidget = MeshWidget;
-}
-
-void display::setLut( vtkSmartPointer <vtkScalarsToColors> Lut )
-{
-    m_Lut = vtkSmartPointer <vtkScalarsToColors>::New();
-    m_Lut = Lut;
-    m_ScalarBar -> SetLookupTable( m_Lut );
-}
-
-void display::changeBackgroundColor( double Red , double Green , double Blue )
-{
-    m_Red = Red;
-    m_Green = Green;
-    m_Blue = Blue;
-    m_Renderer -> SetBackground( m_Red , m_Green , m_Blue );
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
