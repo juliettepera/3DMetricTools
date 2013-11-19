@@ -1257,7 +1257,10 @@ void meshMetricGui::ChangeValueDelta()
             else
             {
                 QMessageBox MsgBox;
-                MsgBox.setText( " Delta/2 is a value:\n\tstrictly positive\n\tinferior at Max\n\tinferior at |Min|\nPlease, choose a different value");
+                std::string text( " Delta is a value:\n\tstrictly positive\n\tinferior to " );
+                QString value = QString::number( min( 2*m_DataList[ m_MeshSelected ].getMax() , fabs( 2*m_DataList[ m_MeshSelected ].getMin() ) ) );
+                text += value.toStdString();
+                MsgBox.setText( QString::fromStdString( text ) );
                 MsgBox.exec();
                 doubleSpinBoxDelta -> setValue( 1.0 );
             }
@@ -1272,7 +1275,10 @@ void meshMetricGui::ChangeValueDelta()
             else
             {
                 QMessageBox MsgBox;
-                MsgBox.setText( " Delta/2 is a value:\n\tstrictly positive\n\tinferior at Max\nPlease, choose a different value");
+                std::string text( " Delta is a value:\n\tstrictly positive\n\tinferior to " );
+                QString value = QString::number( 2*m_DataList[ m_MeshSelected ].getMax() );
+                text += value.toStdString();
+                MsgBox.setText( QString::fromStdString( text ) );
                 MsgBox.exec();
                 doubleSpinBoxDelta -> setValue( 1.0 );
             }
@@ -1293,7 +1299,10 @@ int meshMetricGui::UpdateColor()
             if( m_Min >= -m_Delta/2.0 )
             {
                 QMessageBox MsgBox;
-                MsgBox.setText( "Min is a value strictly inferior at -Delta/2\nPlease, choose another value");
+                std::string text( " Min is a value strictly inferior to " );
+                QString value = QString::number( -m_Delta/2.0 );
+                text += value.toStdString();
+                MsgBox.setText( QString::fromStdString( text ) );
                 MsgBox.exec();
                 doubleSpinBoxMin -> setValue( m_DataList[ m_MeshSelected ].getMin() );
                 success = -1;
@@ -1301,7 +1310,10 @@ int meshMetricGui::UpdateColor()
             if( m_Max <= m_Delta/2.0 )
             {
                 QMessageBox MsgBox;
-                MsgBox.setText( "Max is a value strictly superior at Delta/2\nPlease, choose another value");
+                std::string text( " Max is a value strictly superior to " );
+                QString value = QString::number( m_Delta/2.0 );
+                text += value.toStdString();
+                MsgBox.setText( QString::fromStdString( text ) );
                 MsgBox.exec();
                 doubleSpinBoxMax -> setValue( m_DataList[ m_MeshSelected ].getMax() );
                 success = -1;
@@ -1334,7 +1346,10 @@ int meshMetricGui::UpdateColor()
             if( m_Max <= m_Delta/2.0 )
             {
                 QMessageBox MsgBox;
-                MsgBox.setText( "Max is a value strictly superior at Delta/2\nPlease, choose another value");
+                std::string text( " Max is a value strictly superior to " );
+                QString value = QString::number( m_Delta/2.0 );
+                text += value.toStdString();
+                MsgBox.setText( QString::fromStdString( text ) );
                 MsgBox.exec();
                 doubleSpinBoxMax -> setValue( m_DataList[ m_MeshSelected ].getMax() );
                 success = -1;

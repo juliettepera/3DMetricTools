@@ -32,6 +32,7 @@
 // Other Libraries
 #include <string>
 #include <iostream>
+#include <math.h>
 
 
 class meshMetricGui : public QMainWindow , public Ui::MainWindow
