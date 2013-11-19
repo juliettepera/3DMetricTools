@@ -17,59 +17,16 @@ colorBar::colorBar( QWidget *Qparent ):QWidget( Qparent )
     m_ItGreen = 0;
 }
 
-void colorBar::paintEvent(QPaintEvent *)
-{
-   QPainter painter(this);
-   painter.eraseRect( m_Rect );
 
-   m_Background = new QPixmap( m_Rect.size() );
-
-   m_Gradient.setStart(m_Rect.topLeft() );
-   m_Gradient.setFinalStop( m_Rect.bottomRight() );
-
-   painter.drawPixmap( m_Rect, *m_Background, m_Rect );
-   painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
-   painter.setRenderHint(QPainter::Antialiasing);
-
-   QBrush brush( m_Gradient );
-
-   painter.fillRect(m_Rect, brush);
-   painter.drawRect(m_Rect);
-
-   painter.end();
-}
-
+//*************************************************************************************************
 void colorBar::setSize( QPoint topLeft , QPoint bottomRight )
 {
     m_Rect = QRect( topLeft , bottomRight );
     m_Background = new QPixmap( m_Rect.size() );
 }
 
-void colorBar::changeCyan( double NewPosition )
-{
-    m_Cyan.first = NewPosition;
-    m_List.replace( m_ItCyan , m_Cyan );
-}
 
-void colorBar::changeYellow( double NewPosition )
-{
-   m_Yellow.first = NewPosition;
-   m_List.replace( m_ItYellow , m_Yellow );
-}
-
-void colorBar::changeGreen()
-{
-    double NewPosition = (m_Yellow.first + m_Cyan.first)/2.0;
-    m_Green.first = NewPosition;
-    m_List.replace( m_ItGreen , m_Green );
-}
-
-void colorBar::updateGradient()
-{
-    m_Gradient.setStops( m_List );
-    update();
-}
-
+//*************************************************************************************************
 void colorBar::initGradientSigned()
 {
     m_List.clear();
@@ -96,4 +53,57 @@ void colorBar::initGradientAbsolute()
     m_Gradient.setStops( m_List );
 
     m_ItYellow = 1;
+}
+
+
+//*************************************************************************************************
+void colorBar::changeCyan( double NewPosition )
+{
+    m_Cyan.first = NewPosition;
+    m_List.replace( m_ItCyan , m_Cyan );
+}
+
+void colorBar::changeYellow( double NewPosition )
+{
+   m_Yellow.first = NewPosition;
+   m_List.replace( m_ItYellow , m_Yellow );
+}
+
+void colorBar::changeGreen()
+{
+    double NewPosition = (m_Yellow.first + m_Cyan.first)/2.0;
+    m_Green.first = NewPosition;
+    m_List.replace( m_ItGreen , m_Green );
+}
+
+
+//*************************************************************************************************
+void colorBar::updateGradient()
+{
+    m_Gradient.setStops( m_List );
+    update();
+}
+
+
+//*************************************************************************************************
+void colorBar::paintEvent(QPaintEvent *)
+{
+   QPainter painter(this);
+   painter.eraseRect( m_Rect );
+
+   m_Background = new QPixmap( m_Rect.size() );
+
+   m_Gradient.setStart(m_Rect.topLeft() );
+   m_Gradient.setFinalStop( m_Rect.bottomRight() );
+
+   painter.drawPixmap( m_Rect, *m_Background, m_Rect );
+   painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+   painter.setRenderHint(QPainter::Antialiasing);
+
+   QBrush brush( m_Gradient );
+
+   painter.fillRect(m_Rect, brush);
+   painter.drawRect(m_Rect);
+
+   painter.end();
 }

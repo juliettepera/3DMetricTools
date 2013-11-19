@@ -21,26 +21,46 @@ class colorBar: public QWidget
 
     public:
         colorBar( QWidget *Qparent = NULL );
-        void paintEvent(QPaintEvent *);
+
+        /* Set the size of the color bar
+         */
         void setSize( QPoint topLeft , QPoint bottomRight );
+
+        /* init the type of the color bar
+         * signed = 5 points and absolute = 3 points
+         */
+        void initGradientSigned();
+        void initGradientAbsolute();
+
+        /* change the position of the color
+         */
         void changeCyan( double NewPosition );
         void changeYellow( double NewPosition );
         void changeGreen();
-        void initGradientSigned();
-        void initGradientAbsolute();
+
+        /* update the color bar
+         */
         void updateGradient();
 
+        /* paint the color bar
+         */
+        void paintEvent(QPaintEvent *);
+
     private:
-        QLinearGradient m_Gradient;
         QRect m_Rect;
+        QLinearGradient m_Gradient;
         QPixmap *m_Background;
+
         QGradientStop m_Cyan;
         QGradientStop m_Yellow;
         QGradientStop m_Green;
-        QGradientStops m_List;
+
         int m_ItCyan;
         int m_ItYellow;
         int m_ItGreen;
+
+        QGradientStops m_List;
+
 };
 
 
