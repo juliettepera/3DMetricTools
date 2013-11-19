@@ -1,5 +1,5 @@
 # name of the project
-PROJECT( 3DErrorMetric )
+PROJECT( errorMetric )
 
 if( Use_VTK_Filter )
   ADD_DEFINITIONS(-DUSE_VTK_FILTER=1)
@@ -12,7 +12,7 @@ find_package(SlicerExecutionModel REQUIRED)
 include( ${SlicerExecutionModel_USE_FILE} )
 
 SEMMacroBuildCLI(
-    NAME 3DErrorMetric
+    NAME errorMetric
     ${STATIC}
     INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${MeshValmetLib_SOURCE_DIRECTORY}
     LINK_DIRECTORIES ${MeshValmetLib_BINARY_DIRECTORY}
