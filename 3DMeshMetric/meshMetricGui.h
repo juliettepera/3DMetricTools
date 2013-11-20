@@ -81,12 +81,12 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
 
             /* Change the position of the camera
              */
-            void buttonFrontClicked();
-            void buttonBackClicked();
+            void buttonAntClicked();
+            void buttonPostClicked();
             void buttonRightClicked();
             void buttonLeftClicked();
-            void buttonUpClicked();
-            void buttonDownClicked();
+            void buttonSupClicked();
+            void buttonInfClicked();
 
             /* Change the parameter for the smoothing
              * Compute the smoothing

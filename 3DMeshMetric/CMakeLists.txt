@@ -12,7 +12,7 @@ include_directories( ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
 ${QT_INCLUDE_DIR} ${MeshValmetLib_SOURCE_DIRECTORY} )
 
 # ?????
-#add_definitions( -DQT_GUI_LIBS -DQT_CORE_LIB -DQT3_SUPPORT )
+add_definitions( -DQT_GUI_LIBS -DQT_CORE_LIB -DQT3_SUPPORT )
 
 # generate moc and ui files
 QT4_WRAP_CPP( QtProject_HEADERS_MOC meshMetricGui.h colorBar.h)

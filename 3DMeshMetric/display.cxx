@@ -6,7 +6,7 @@ display::display()
 
     m_Red = 1.0 ; m_Green = 0.898 ; m_Blue = 0.8;
 
-    m_CameraX = 0 ; m_CameraY = 0 ; m_CameraZ = 0;
+    m_CameraX = 0 ; m_CameraY = 1 ; m_CameraZ = 0;
 
     m_NumberOfMesh = 0;
 
@@ -93,6 +93,7 @@ void display::initWindow()
     m_RenderWindow -> SetSize( m_SizeW , m_SizeH );
 
     m_Renderer -> ResetCamera();
+    updatePositionCamera();
 
     m_Marker -> SetOutlineColor( 0.9300, 0.5700, 0.1300 );
     m_Marker -> SetOrientationMarker( m_Axes );
@@ -174,6 +175,13 @@ void display::updatePositionCamera()
     double distance = m_Camera -> GetDistance();
 
     m_Camera -> SetPosition( focalPoint[0] + m_CameraX*distance , focalPoint[1] + m_CameraY*distance , focalPoint[2] + m_CameraZ*distance );
-    m_Camera -> SetRoll(.001);
 
+    if( m_CameraZ == 0 )
+    {
+        m_Camera -> SetViewUp( 0 , 0 , 1 );
+    }
+    else
+    {
+        m_Camera -> SetViewUp( 0 , -1 , 0 );
+    }
 }

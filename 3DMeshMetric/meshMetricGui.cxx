@@ -7,8 +7,8 @@ meshMetricGui::meshMetricGui( QWidget *parent , Qt::WFlags f , QString path )
     // initialisation of the attributs
     m_NumberOfMesh = 0;
     m_MeshSelected = -1;
-    m_CameraX = 1 ;
-    m_CameraY = 0;
+    m_CameraX = 0 ;
+    m_CameraY = 1;
     m_CameraZ = 0;
     m_NumberOfDisplay = 0;
     m_SelectedItemA = -1;
@@ -59,12 +59,12 @@ meshMetricGui::meshMetricGui( QWidget *parent , Qt::WFlags f , QString path )
 
     QObject::connect( actionBackgroundColor , SIGNAL( triggered() ) , this , SLOT( ChooseColorBackground() ) );
 
-    QObject::connect( pushButtonFront , SIGNAL( clicked() ) , this , SLOT( buttonFrontClicked() ) );
-    QObject::connect( pushButtonBack , SIGNAL( clicked() ) , this , SLOT( buttonBackClicked() ) );
+    QObject::connect( pushButtonFront , SIGNAL( clicked() ) , this , SLOT( buttonAntClicked() ) );
+    QObject::connect( pushButtonBack , SIGNAL( clicked() ) , this , SLOT( buttonPostClicked() ) );
     QObject::connect( pushButtonRight , SIGNAL( clicked() ) , this , SLOT( buttonRightClicked() ) );
     QObject::connect( pushButtonLeft , SIGNAL( clicked() ) , this , SLOT( buttonLeftClicked() ) );
-    QObject::connect( pushButtonUp , SIGNAL( clicked() ) , this , SLOT( buttonUpClicked() ) );
-    QObject::connect( pushButtonDown , SIGNAL( clicked() ) , this , SLOT( buttonDownClicked() ) );
+    QObject::connect( pushButtonUp , SIGNAL( clicked() ) , this , SLOT( buttonSupClicked() ) );
+    QObject::connect( pushButtonDown , SIGNAL( clicked() ) , this , SLOT( buttonInfClicked() ) );
 
     QObject::connect( listWidgetLoadedMesh , SIGNAL( itemClicked( QListWidgetItem* ) ) , this , SLOT( UpdateDisplayedMesh( QListWidgetItem* ) ) );
 
@@ -899,9 +899,9 @@ void meshMetricGui::ChooseColorBackground()
 
 
 //*************************************************************************************************
-void meshMetricGui::buttonUpClicked()
+void meshMetricGui::buttonAntClicked()
 {
-    m_CameraX = 0 ; m_CameraY = 0 ; m_CameraZ = 1;
+    m_CameraX = 0 ; m_CameraY = 1 ; m_CameraZ = 0;
 
     m_MyWindowMesh.setCameraX( m_CameraX );
     m_MyWindowMesh.setCameraY( m_CameraY );
@@ -912,46 +912,7 @@ void meshMetricGui::buttonUpClicked()
 
 
 //*************************************************************************************************
-void meshMetricGui::buttonDownClicked()
-{
-    m_CameraX = 0 ; m_CameraY = 0 ; m_CameraZ = -1;
-
-    m_MyWindowMesh.setCameraX( m_CameraX );
-    m_MyWindowMesh.setCameraY( m_CameraY );
-    m_MyWindowMesh.setCameraZ( m_CameraZ );
-    m_MyWindowMesh.updatePositionCamera();
-    m_MyWindowMesh.updateWindow();
-}
-
-
-//*************************************************************************************************
-void meshMetricGui::buttonRightClicked()
-{
-    m_CameraX = 1 ; m_CameraY = 0 ; m_CameraZ = 0;
-
-    m_MyWindowMesh.setCameraX( m_CameraX );
-    m_MyWindowMesh.setCameraY( m_CameraY );
-    m_MyWindowMesh.setCameraZ( m_CameraZ );
-    m_MyWindowMesh.updatePositionCamera();
-    m_MyWindowMesh.updateWindow();
-}
-
-
-//*************************************************************************************************
-void meshMetricGui::buttonLeftClicked()
-{
-    m_CameraX = -1 ; m_CameraY = 0 ; m_CameraZ = 0;
-
-    m_MyWindowMesh.setCameraX( m_CameraX );
-    m_MyWindowMesh.setCameraY( m_CameraY );
-    m_MyWindowMesh.setCameraZ( m_CameraZ );
-    m_MyWindowMesh.updatePositionCamera();
-    m_MyWindowMesh.updateWindow();
-}
-
-
-//*************************************************************************************************
-void meshMetricGui::buttonBackClicked()
+void meshMetricGui::buttonPostClicked()
 {
     m_CameraX = 0 ; m_CameraY = -1 ; m_CameraZ = 0;
 
@@ -964,9 +925,46 @@ void meshMetricGui::buttonBackClicked()
 
 
 //*************************************************************************************************
-void meshMetricGui::buttonFrontClicked()
+void meshMetricGui::buttonLeftClicked()
 {
-    m_CameraX = 0 ; m_CameraY = 1 ; m_CameraZ = 0;
+    m_CameraX = 1 ; m_CameraY = 0 ; m_CameraZ = 0;
+
+    m_MyWindowMesh.setCameraX( m_CameraX );
+    m_MyWindowMesh.setCameraY( m_CameraY );
+    m_MyWindowMesh.setCameraZ( m_CameraZ );
+    m_MyWindowMesh.updatePositionCamera();
+    m_MyWindowMesh.updateWindow();
+}
+
+
+//*************************************************************************************************
+void meshMetricGui::buttonRightClicked()
+{
+    m_CameraX = -1 ; m_CameraY = 0 ; m_CameraZ = 0;
+
+    m_MyWindowMesh.setCameraX( m_CameraX );
+    m_MyWindowMesh.setCameraY( m_CameraY );
+    m_MyWindowMesh.setCameraZ( m_CameraZ );
+    m_MyWindowMesh.updatePositionCamera();
+    m_MyWindowMesh.updateWindow();
+}
+//*************************************************************************************************
+void meshMetricGui::buttonSupClicked()
+{
+    m_CameraX = 0 ; m_CameraY = 0 ; m_CameraZ = 1;
+
+    m_MyWindowMesh.setCameraX( m_CameraX );
+    m_MyWindowMesh.setCameraY( m_CameraY );
+    m_MyWindowMesh.setCameraZ( m_CameraZ );
+    m_MyWindowMesh.updatePositionCamera();
+    m_MyWindowMesh.updateWindow();
+}
+
+
+//*************************************************************************************************
+void meshMetricGui::buttonInfClicked()
+{
+    m_CameraX = 0 ; m_CameraY = 0 ; m_CameraZ = -1;
 
     m_MyWindowMesh.setCameraX( m_CameraX );
     m_MyWindowMesh.setCameraY( m_CameraY );

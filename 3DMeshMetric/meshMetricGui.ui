@@ -39,7 +39,7 @@
      </rect>
     </property>
     <property name="title">
-     <string>DATAS</string>
+     <string>DATA</string>
     </property>
     <widget class="QLabel" name="labelLoaded">
      <property name="geometry">
