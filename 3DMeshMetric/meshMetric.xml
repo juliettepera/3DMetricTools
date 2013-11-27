@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+  <category>Mesh</category>
+  <title>3DMeshMetric</title>
+  <description>
+   This module computes distance between 2 meshes
+  </description>
+  <version>1.0.1</version>
+  <documentation-url>http://www.nitrc.org/projects/meshmetric3d</documentation-url>
+  <license></license>
+  <contributor>Juliette Pera, Francois Budin, Beatriz Paniagua</contributor>
+<acknowledgements>
+</acknowledgements>
+  <parameters>
+  </parameters>
+</executable>
+
