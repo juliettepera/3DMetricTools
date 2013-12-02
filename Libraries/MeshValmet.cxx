@@ -2,8 +2,8 @@
 
 meshValmet::meshValmet()
 {
-    m_Pargs.sampling_step = 0.5/100;
-    m_Pargs.min_sample_freq = 2.0;
+    m_Pargs.sampling_step = 0.5/100.0;
+    m_Pargs.min_sample_freq = 2;
     m_Pargs.signeddist = false;
 
     m_Pargs.verb_analysis = false; // ???
@@ -19,9 +19,9 @@ meshValmet::meshValmet()
     m_DiceCoefficient[0] = 0.0; // ????
     m_IntUnionRatio[0] = 0.0; // ????
 
-    m_Middle = 0.0; // ????
-
     m_Downsampling = 1; // ????
+    m_Delta = 0.5;
+    m_Center = 0;
 
     for (float i=0;i<256;i++)
     {
@@ -74,14 +74,24 @@ void meshValmet::SetSignedDistance( bool SignedDistance )
     m_Pargs.signeddist = SignedDistance;
 }
 
-void meshValmet::setMin(double Dmin)
+void meshValmet::SetMin( double Min )
 {
-    m_Dmin = Dmin;
+    m_Dmin = Min;
 }
 
-void meshValmet::setMax( double Dmax )
+void meshValmet::SetMax( double Max )
 {
-    m_Dmax = Dmax;
+    m_Dmax = Max;
+}
+
+void meshValmet::SetDelta( double Delta )
+{
+    m_Delta = Delta;
+}
+
+void meshValmet::SetCenter( double Center )
+{
+    m_Center = Center;
 }
 
 //***************************** ACCESSOR TO THE FINAL POLYDATA THAT WE WILL DISPLAY *************************
@@ -100,7 +110,6 @@ vtkSmartPointer <vtkColorTransferFunction> meshValmet::GetLut()
 
 double meshValmet::GetMin()
 {
-    std::cout<< " dmin in testmesh : " << m_Dmin << std::endl;
     return m_Dmin;
 }
 
@@ -109,7 +118,10 @@ double meshValmet::GetMax()
     return m_Dmax;
 }
 
-
+double meshValmet::GetDelta()
+{
+    return m_Delta;
+}
 
 
 //************************************** COMPUTE THE ERROR ***************************************
@@ -123,12 +135,7 @@ void meshValmet::CalculateError()
     m_Out = NULL;
     m_Out = outbuf_new( stdio_puts , stdout );
 
-    printf( "\nmesh_run...");
-    fflush( stdout );
-
     mesh_run( &m_Pargs , &m_ModelError1 , &m_ModelError2 , m_Out , NULL , &m_Stats , &m_StatsRev , &m_AbsSamplingStep , &m_AbsSamplingDens );
-    printf( "...done\n");
-    fflush( stdout );
 
     int num_vert1 = m_ModelError1.mesh->num_vert;
     int num_vert2 = m_ModelError2.mesh->num_vert;
@@ -176,13 +183,7 @@ void meshValmet::CalculateError()
       T2[3*i+2] = face_list[i].f2+1;
     }
 
-    printf( "\nComputeRobustVolumeOverlap...");
-    fflush( stdout );
-
     ComputeRobustVolumeOverlap( L1 , L2 , num_vert1 , num_vert2 , T1 , T2 , num_faces1 , num_faces2 , m_DiceCoefficient , m_IntUnionRatio );
-
-    printf( "\n... ComputeRobustVolumeOverlap done\n");
-    fflush( stdout );
 
     delete [] L1;
     delete [] L2;
@@ -204,18 +205,8 @@ void meshValmet::CalculateError()
         m_Dmin = m_ModelError1.abs_min_error;
       }
 
-    printf( "\ndrawVertexErrorT..." );
-    fflush( stdout );
-
     drawVertexErrorT();
-
-    printf( "...done\n\nCreateLutError...");
-    fflush( stdout );
-
     CreateLutError();
-
-    printf( "...done\n");
-    fflush( stdout );
 }
 
 //********************************* CREATE THE FINAL POLYDATA ***********************************
@@ -526,51 +517,19 @@ void meshValmet::CreateLutError()
 {
     m_Lut = vtkSmartPointer <vtkColorTransferFunction>::New();
 
-    double mmax,mmin;
-    int inter = 5;
+    m_Lut -> SetColorSpaceToRGB();
 
-    mmax = m_Dmax;
-    mmin = m_Dmin;
-
-    std::cout<< " create lut with : " << m_Dmin << " and " << m_Dmax << std::endl;
-
-      //Begin seting up my own lookup table
-      //The Middle point always points to zero distance
-      m_Lut->AddRGBPoint(m_Middle,0,1,0);
-
-      if(mmax-m_Middle>0 && mmin-m_Middle>=0)
-      {
-        int i;
-        for(i = 1; i <=inter; i++)
+    if( m_Dmin < - m_Delta && -m_Delta < 0 && 0 < m_Delta && m_Delta < m_Dmax )
+    {
+        if( m_Pargs.signeddist == true )
         {
-         m_Lut->AddRGBPoint((float)(m_Middle+(mmax-m_Middle)*i/(double)inter),m_Lookuptable[128-i*22].R/(float)255,m_Lookuptable[128-i*22].G/(float)255,m_Lookuptable[128-i*22].B/(float)255);
+            m_Lut -> AddRGBSegment( m_Dmin , 0 , 0 , 1 , m_Center-m_Delta , 0 , 1 , 1 );
+            m_Lut -> AddRGBSegment( m_Center-m_Delta , 0 , 1 , 1 , 0 , 0 , 1 , m_Center );
         }
-
-      }
-      else if(mmax-m_Middle<=0 && mmin-m_Middle<0)
-      {
-        int i;
-        for(i = 1; i <=inter; i++)
-        {
-          m_Lut->AddRGBPoint((float)(m_Middle+(mmin-m_Middle)*i/(double)inter),m_Lookuptable[128+i*22].R/(float)255,m_Lookuptable[128+i*22].G/(float)255,m_Lookuptable[128+i*22].B/(float)255);
-        }
-      }
-      else if(mmax-m_Middle>0 && mmin-m_Middle<0)
-      {
-        //The Positive outside distance
-        int i;
-        for(i = 1; i <=inter; i++)
-        {
-          m_Lut->AddRGBPoint((float)(m_Middle+(mmax-m_Middle)*i/(double)inter),m_Lookuptable[128-i*22].R/(float)255,m_Lookuptable[128-i*22].G/(float)255,m_Lookuptable[128-i*22].B/(float)255);
-        }
-
-        //The Negative inside distance
-        for(i = 1; i <=inter; i++)
-          m_Lut->AddRGBPoint((float)(m_Middle+(mmin-m_Middle)*i/(double)inter),m_Lookuptable[128+i*22].R/(float)255,m_Lookuptable[128+i*22].G/(float)255,m_Lookuptable[128+i*22].B/(float)255);
-
-      }
+        m_Lut -> AddRGBSegment( m_Center , 0 , 1 , 0 , m_Center+m_Delta , 1 , 1 , 0 );
+        m_Lut -> AddRGBSegment( m_Center+m_Delta , 1 , 1 , 0 , m_Dmax , 1 , 0 , 0 );
+    }
 }
-
 
 int meshValmet::testPolyData( vtkSmartPointer <vtkPolyData> inData , vtkSmartPointer <vtkPolyData> outData )
 {

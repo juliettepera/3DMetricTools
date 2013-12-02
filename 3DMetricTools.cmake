@@ -41,6 +41,9 @@ SETIFEMPTY( INSTALL_ARCHIVE_DESTINATION lib )
 find_package( VTK 6 REQUIRED )
 include( ${VTK_USE_FILE} )
 
+find_package(SlicerExecutionModel REQUIRED)
+include( ${SlicerExecutionModel_USE_FILE} )
+
 option( Build_Static "Static libraries and executables only" ON )
 if( Build_Static )
   set( STATIC "EXECUTABLE_ONLY" )

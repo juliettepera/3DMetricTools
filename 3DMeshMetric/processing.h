@@ -10,10 +10,11 @@
 #include <vtkColorTransferFunction.h>
 #include <vtkPolyDataWriter.h>
 #include <vtkDataArray.h>
+#include <vtkContourFilter.h>
 
 // My libraries
 #include "dataM.h"
-#include "meshValmet.h"
+#include "MeshValmet.h"
 
 // OTHER libraries
 #include <string>
@@ -47,7 +48,12 @@ class processing
 
         /* update the color map
          */
-        void updateColor(double Min , double Max, double Delta , dataM &Data1);
+        void updateColor(double Min , double Max, double Center, double Delta , dataM &Data1);
+
+        /* compute the isoline
+         */
+        //void processIsoline( double Isoline , dataM &Data1 );
+
 
         /* function for testing equality between two datas
          */

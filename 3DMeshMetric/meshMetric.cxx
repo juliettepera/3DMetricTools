@@ -1,9 +1,10 @@
 // My library
+#include "meshMetricCLP.h"
 #include "meshMetricGui.h"
 
 int main( int argc , char* argv[] )
 {
-
+      PARSE_ARGS ;
       QApplication app( argc , argv );
 
       QWidget * parent = 0;
@@ -13,7 +14,13 @@ int main( int argc , char* argv[] )
       meshMetricGui myMainWindow( parent , f , path );
 
       myMainWindow.show();
-
-      return app.exec();
-
+      int ret = app.exec() ;
+      if( ret )
+      {
+          return EXIT_FAILURE ;
+      }
+      else
+      {
+          return EXIT_SUCCESS ;
+      }
 }

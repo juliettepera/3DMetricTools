@@ -46,7 +46,6 @@
 
 // MeshValmet Libraries
 #include <MeshValmet/compute_error.h>
-#include <MeshValmet/read_model.h>
 #include <MeshValmet/geomutils.h>
 #include <MeshValmet/compute_volume_overlap.h>
 

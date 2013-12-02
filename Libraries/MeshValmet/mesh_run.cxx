@@ -236,6 +236,11 @@ model* ConvertDataToModel(vtkSmartPointer <vtkPolyData> data )
     vertex_t Bmin;
     vertex_t Bmax;
 
+    Bmin.x = 0;
+    Bmin.y = 0;
+    Bmin.z = 0;
+    Bmax = Bmin;
+
     vtkIdType Id = 0;
     vtkIdType Row = 0;
     vtkIdType *f;
@@ -304,12 +309,6 @@ model* ConvertDataToModel(vtkSmartPointer <vtkPolyData> data )
     Model->normals = NULL;
     Model->face_normals = NULL;
     Model->builtin_normals = 1;
-
-    for( int i = 0 ; i < Model->num_faces ; i++ )
-    {
-        int a = Model->faces[i].f0;
-        a;
-    }
 
     return Model;
 }

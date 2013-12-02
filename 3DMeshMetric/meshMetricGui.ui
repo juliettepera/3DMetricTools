@@ -67,7 +67,7 @@
       </rect>
      </property>
      <property name="toolTip">
-      <string>delete all files</string>
+      <string>close all files</string>
      </property>
      <property name="text">
       <string/>
@@ -170,7 +170,7 @@
       </rect>
      </property>
      <property name="toolTip">
-      <string>add file(s)</string>
+      <string>add files</string>
      </property>
      <property name="text">
       <string/>
@@ -189,7 +189,7 @@
       </rect>
      </property>
      <property name="toolTip">
-      <string>delete selected file</string>
+      <string>close selected file</string>
      </property>
      <property name="text">
       <string/>
@@ -1110,7 +1110,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tabDistance">
      <attribute name="title">
@@ -1337,8 +1337,8 @@
      <widget class="QDoubleSpinBox" name="doubleSpinBoxMin">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>140</y>
+        <x>30</x>
+        <y>130</y>
         <width>61</width>
         <height>27</height>
        </rect>
@@ -1796,8 +1796,8 @@
      <widget class="QLabel" name="label_2">
       <property name="geometry">
        <rect>
-        <x>230</x>
-        <y>120</y>
+        <x>100</x>
+        <y>140</y>
         <width>31</width>
         <height>17</height>
        </rect>
@@ -2754,8 +2754,8 @@
      <widget class="QLabel" name="label">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>120</y>
+        <x>0</x>
+        <y>140</y>
         <width>31</width>
         <height>17</height>
        </rect>
@@ -2767,8 +2767,8 @@
      <widget class="QPushButton" name="pushButtonUpdateColor">
       <property name="geometry">
        <rect>
-        <x>320</x>
-        <y>140</y>
+        <x>330</x>
+        <y>170</y>
         <width>111</width>
         <height>27</height>
        </rect>
@@ -3220,8 +3220,8 @@
      <widget class="QDoubleSpinBox" name="doubleSpinBoxMax">
       <property name="geometry">
        <rect>
-        <x>230</x>
-        <y>140</y>
+        <x>130</x>
+        <y>130</y>
         <width>61</width>
         <height>27</height>
        </rect>
@@ -3242,7 +3242,7 @@
      <widget class="QCheckBox" name="checkBoxColorBar">
       <property name="geometry">
        <rect>
-        <x>320</x>
+        <x>310</x>
         <y>90</y>
         <width>131</width>
         <height>22</height>
@@ -3258,8 +3258,8 @@
      <widget class="QDoubleSpinBox" name="doubleSpinBoxDelta">
       <property name="geometry">
        <rect>
-        <x>120</x>
-        <y>140</y>
+        <x>350</x>
+        <y>130</y>
         <width>61</width>
         <height>27</height>
        </rect>
@@ -3283,23 +3283,23 @@
      <widget class="QLabel" name="label_5">
       <property name="geometry">
        <rect>
-        <x>120</x>
-        <y>120</y>
+        <x>200</x>
+        <y>140</y>
         <width>51</width>
         <height>17</height>
        </rect>
       </property>
       <property name="text">
-       <string>Delta</string>
+       <string>Center</string>
       </property>
      </widget>
      <widget class="colorBar" name="widgetColor" native="true">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>0</x>
         <y>90</y>
-        <width>281</width>
-        <height>21</height>
+        <width>301</width>
+        <height>31</height>
        </rect>
       </property>
      </widget>
@@ -3740,6 +3740,41 @@
        <bool>true</bool>
       </property>
      </widget>
+     <widget class="QDoubleSpinBox" name="doubleSpinBoxCenter">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>130</y>
+        <width>61</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>set the value of red</string>
+      </property>
+      <property name="decimals">
+       <number>3</number>
+      </property>
+      <property name="minimum">
+       <double>-99.989999999999995</double>
+      </property>
+      <property name="singleStep">
+       <double>0.010000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_6">
+      <property name="geometry">
+       <rect>
+        <x>320</x>
+        <y>140</y>
+        <width>31</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>+/-</string>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>
@@ -3767,6 +3802,7 @@
      <string>Option</string>
     </property>
     <addaction name="actionBackgroundColor"/>
+    <addaction name="action3DMeshMetric"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuOption"/>
@@ -3809,6 +3845,11 @@
    </property>
    <property name="text">
     <string>Background Color</string>
+   </property>
+  </action>
+  <action name="action3DMeshMetric">
+   <property name="text">
+    <string>3DMeshMetric</string>
    </property>
   </action>
  </widget>

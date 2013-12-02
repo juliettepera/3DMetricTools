@@ -167,13 +167,14 @@ void processing::SaveFile(std::string Name, dataM &Data1)
 
 
 //*************************************************************************************************
-void processing::updateColor( double Min , double Max , double Delta ,  dataM &Data1 )
+void processing::updateColor( double Min , double Max , double Center , double Delta ,  dataM &Data1 )
 {
     vtkSmartPointer <vtkColorTransferFunction> ErrorLut = vtkSmartPointer <vtkColorTransferFunction>::New();
 
     m_MyMeshValmet.SetMin( Min );
     m_MyMeshValmet.SetMax( Max );
     m_MyMeshValmet.SetDelta( Delta );
+    m_MyMeshValmet.SetCenter( Center );
     m_MyMeshValmet.SetSignedDistance( Data1.getSignedDistance() );
 
     m_MyMeshValmet.CreateLutError();
@@ -184,6 +185,18 @@ void processing::updateColor( double Min , double Max , double Delta ,  dataM &D
     Data1.changeActivScalar();
 
 }
+
+
+/*void processing::processIsoline( double Isoline , dataM &Data1 )
+{
+    vtkSmartPointer <vtkContourFilter> Isoliner = vtkSmartPointer <vtkContourFilter>::New();
+    Isoliner -> SetInputData( Data1.getPolyData() );
+    Isoliner -> SetValue( 0 , Isoline );
+    Isoliner -> Update();
+
+    Data1.setPolyData( Isoliner->GetOutput() );
+
+}*/
 
 
 //*************************************************************************************************

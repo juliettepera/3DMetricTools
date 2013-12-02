@@ -34,21 +34,35 @@
 #include <iostream>
 #include <math.h>
 
+#ifndef MESHMETRIC3D_VERSION
+#define MESHMETRIC3D_VERSION "unknown"
+#endif
 
+#ifndef MESHMETRIC3D_CONTRIBUTOR
+#define MESHMETRIC3D_CONTRIBUTOR "unknown"
+#endif
+
+#ifndef MESHMETRIC3D_DOCUMENTATION
+#define MESHMETRIC3D_DOCUMENTATION "unknown"
+#endif
 class meshMetricGui : public QMainWindow , public Ui::MainWindow
 {
     Q_OBJECT
 
     public:
-            meshMetricGui(QWidget * parent = 0 , Qt::WFlags f = 0 , QString path = "" );
+            meshMetricGui(QWidget * Parent = 0 , Qt::WFlags f = 0 , QString path = "" );
 
             void InitIcon(); // init all the icons
             void DisplayInit(); // display the files when they are loaded
+            void DeleteOneFile();
+            void DeleteAllFiles();
             void resizeEvent( QResizeEvent *Qevent ); // resize the window
             void PreviousError(); // check if there is a previous error loaded
-            double calculNewY( double x , double Min , double Max ); // calcul the new position when delta change
+            double calculNewY( double X , double Min , double Max ); // calcul the new position when delta change
 
     public slots:
+
+            void MeshMetric();
 
             /* Load a file or repository
              * Save a file
@@ -56,9 +70,9 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
              */
             void OpenBrowseWindowFile();
             void OpenBrowseWindowRepository();
-            void SaveFile();
-            void DeleteOneFile();
-            void DeleteAllFiles();
+            QString SaveFile();
+            void DeleteBoxOne();
+            void DeleteBoxAll();
 
             /* display or not the file links to the check box eye
              * change the selected mesh
@@ -121,6 +135,7 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             void ChangeValueMin();
             void ChangeValueMax();
             void ChangeValueDelta();
+            void ChangeValueCenter();
             int UpdateColor();
             void ChangeDisplayColorBar();
 
@@ -178,6 +193,7 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             double m_Min;
             double m_Max;
             double m_Delta;
+            double m_Center;
 
 };
 

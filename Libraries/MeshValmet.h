@@ -2,6 +2,7 @@
 #define meshValmet_H
 
 // Vtk Libraries
+#include <QVTKWidget.h>
 #include <vtkSmartPointer.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataReader.h>
@@ -28,25 +29,27 @@
 // MeshValmet Libraries
 #include "MeshValmet/mesh_run.h"
 
-
 class meshValmet
 {
 
     public:
         meshValmet();
 
-        void SetData1(vtkSmartPointer<vtkPolyData> Data1 );
-        void SetData2( vtkSmartPointer<vtkPolyData> Data2 );
+        void SetData1( vtkSmartPointer <vtkPolyData> Data1 );
+        void SetData2( vtkSmartPointer <vtkPolyData> Data2 );
         void SetSamplingStep( double SamplingStep );
         void SetMinSampleFrequency( int MinSampleFrequency );
         void SetSignedDistance( bool SignedDistance );
-        void setMin( double Dmin );
-        void setMax( double Dmax );
+        void SetMin( double Min );
+        void SetMax( double Max );
+        void SetDelta( double Delta );
+        void SetCenter( double Center );
 
         vtkSmartPointer <vtkPolyData> GetFinalData();
         vtkSmartPointer <vtkColorTransferFunction> GetLut();
         double GetMin();
         double GetMax();
+        double GetDelta();
 
         void CalculateError();
         friend void mesh_run(const args *args,
@@ -59,7 +62,6 @@ class meshValmet
         int testPolyData( vtkSmartPointer <vtkPolyData> inData , vtkSmartPointer <vtkPolyData> outData );
 
     private:
-
         vtkSmartPointer <vtkPolyData> m_FinalData;
         vtkSmartPointer <vtkColorTransferFunction> m_Lut;
 
@@ -81,9 +83,11 @@ class meshValmet
 
         double m_Dmax;
         double m_Dmin;
+        double m_Center;
+        double m_Delta;
 
         double m_Downsampling;
-        double m_Middle;
+
 
         struct look
         {
@@ -97,3 +101,4 @@ class meshValmet
 };
 
 #endif
+

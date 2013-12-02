@@ -282,7 +282,7 @@ void GetVolumeOverlap(double vols[],double * L1, double * L2, int numVertices1, 
 	double sumx = 0, sumy = 0;
 	double A_vol = 0, B_vol = 0.0, intersection_vol = 0.0, union_vol = 0;
 
-	double e[3], n[3], ret = 0.0;  //Point and normal of the plane.
+    double e[3], n[3];  //Point and normal of the plane.
 
 	//printf("Computing Volume Overlap Approximation.\n");
 

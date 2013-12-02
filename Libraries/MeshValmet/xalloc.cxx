@@ -53,7 +53,7 @@
 
 static void _xa_outofmem(size_t size)//size_t == unsigned int
 {
-  fprintf(stderr,"Out of memory (requested %u bytes). Exit\n",size);
+  fprintf(stderr,"Out of memory (requested %lu bytes). Exit\n",(unsigned long)size);
   fprintf(stderr,
           "To locate the offending function call, put a breakpoint\n"
           "with a debugger in the _xa_outofmem function.\n");

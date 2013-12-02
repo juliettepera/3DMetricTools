@@ -73,8 +73,6 @@ class display
          */
         void updateLut( int Visibility );
 
-
-
     private:
         int m_SizeH;
         int m_SizeW;
@@ -99,6 +97,7 @@ class display
         vtkSmartPointer <vtkOrientationMarkerWidget> m_Marker;
         vtkSmartPointer <vtkScalarBarActor> m_ScalarBar;
         vtkSmartPointer <vtkScalarsToColors> m_Lut;
+        //vtkSmartPointer <vtkContourFilter> m_Isoline;
 };
 
 #endif

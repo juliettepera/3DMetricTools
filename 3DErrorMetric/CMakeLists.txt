@@ -8,8 +8,7 @@ else()
   set( MeshValmetLib MeshValmetLib )
 endif()
 
-find_package(SlicerExecutionModel REQUIRED)
-include( ${SlicerExecutionModel_USE_FILE} )
+
 
 SEMMacroBuildCLI(
     NAME errorMetric

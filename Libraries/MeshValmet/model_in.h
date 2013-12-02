@@ -293,8 +293,8 @@ int read_byu_tmesh2(struct model**, struct file_data*, const char* fname);
  * 'fformat' is MESH_FF_AUTO the file format is autodetected. If 'concat' is
  * non-zero only one mesh is returned, which is the concatenation of the the
  * ones read. */
-int read_model(struct model **models_ref, struct file_data *data, 
-               int fformat, int concat, const char* fname);
+int read_model(struct model **models_ref, struct file_data *data,
+               int fformat);
 
 /* Reads the 3D triangular mesh models from the input file '*fname' file, in
  * the file format specified by 'fformat'. The model meshes are returned in

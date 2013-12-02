@@ -127,7 +127,6 @@ class dataM
         double m_Dmin;
         double m_Dmax;
         bool m_ColorBar;
-
 };
 
 #endif

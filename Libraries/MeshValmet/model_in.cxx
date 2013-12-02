@@ -692,7 +692,7 @@ static int detect_file_format(struct file_data *data)
 
 /* see model_in.h */
 int read_model(struct model **models_ref, struct file_data *data, 
-               int fformat, int concat, const char* fname)
+               int fformat )
 {
   int rcode;
   struct model *models;
@@ -769,7 +769,7 @@ int read_fmodel(struct model **models_ref, const char *fname,
   stime = clock();
 #endif
 
-  rcode = read_model(models_ref, data, fformat, concat, fname);
+  rcode = read_model(models_ref, data, fformat );
 
 #ifdef READ_TIME
   printf("Model read in %f sec.\n", (double)(clock()-stime)/CLOCKS_PER_SEC);

@@ -894,9 +894,9 @@ static struct triangle_list* model_to_triangle_list(const struct model *m)
  * triangle shape. The overall statistics in dss_stats and m_stats are updated
  * (dss_stats->mean_dist is cumulated with the total error and
  * dss_stats->rms_dist is cumulated with the total squared error, instead of
- * being really updated). 
+ * being really updated). */
  
-/* Christine: IMPORTANT FUNCTION!! Calculate the statistics. */
+// Christine: IMPORTANT FUNCTION!! Calculate the statistics.
 
 static void error_stat_triag(const struct triag_sample_error *tse,
                              struct face_error *fe,
