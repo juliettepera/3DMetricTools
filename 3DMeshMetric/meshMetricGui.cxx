@@ -1362,7 +1362,17 @@ void meshMetricGui::ChangeValueCenter()
 {
     if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
     {
-        m_Center = doubleSpinBoxCenter -> value();
+        double Center = doubleSpinBoxCenter -> value();
+
+        if( Center < ( m_Max - m_Delta ) && Center > ( m_Min + m_Delta ) )
+        {
+            m_Center = Center;
+            UpdateColor();
+        }
+        else
+        {
+            doubleSpinBoxCenter -> setValue( m_Center );
+        }
     }
 }
 

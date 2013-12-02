@@ -524,7 +524,7 @@ void meshValmet::CreateLutError()
         if( m_Pargs.signeddist == true )
         {
             m_Lut -> AddRGBSegment( m_Dmin , 0 , 0 , 1 , m_Center-m_Delta , 0 , 1 , 1 );
-            m_Lut -> AddRGBSegment( m_Center-m_Delta , 0 , 1 , 1 , 0 , 0 , 1 , m_Center );
+            m_Lut -> AddRGBSegment( m_Center-m_Delta , 0 , 1 , 1 , m_Center  , 0 , 1 , 0 );
         }
         m_Lut -> AddRGBSegment( m_Center , 0 , 1 , 0 , m_Center+m_Delta , 1 , 1 , 0 );
         m_Lut -> AddRGBSegment( m_Center+m_Delta , 1 , 1 , 0 , m_Dmax , 1 , 0 , 0 );
