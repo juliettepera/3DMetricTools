@@ -74,11 +74,15 @@ class dataM
         void setLut( vtkSmartPointer <vtkColorTransferFunction> Lut );
         void setMin( double Dmin );
         void setMax( double Dmax );
+        void setCenter( double Center );
+        void setDelta( double Delta );
         void setColorBar( bool ColorBar );
 
         vtkSmartPointer <vtkColorTransferFunction> getLut();
         double getMin();
         double getMax();
+        double getCenter();
+        double getDelta();
         bool getColorBar();
 
         /* Read the file
@@ -126,6 +130,8 @@ class dataM
         vtkSmartPointer <vtkColorTransferFunction> m_Lut;
         double m_Dmin;
         double m_Dmax;
+        double m_Center;
+        double m_Delta;
         bool m_ColorBar;
 };
 

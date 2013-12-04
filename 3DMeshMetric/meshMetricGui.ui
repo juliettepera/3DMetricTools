@@ -1110,7 +1110,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tabDistance">
      <attribute name="title">
@@ -1334,28 +1334,6 @@
      <attribute name="title">
       <string>Results</string>
      </attribute>
-     <widget class="QDoubleSpinBox" name="doubleSpinBoxMin">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>130</y>
-        <width>61</width>
-        <height>27</height>
-       </rect>
-      </property>
-      <property name="toolTip">
-       <string>set the value of blue</string>
-      </property>
-      <property name="decimals">
-       <number>3</number>
-      </property>
-      <property name="minimum">
-       <double>-99.989999999999995</double>
-      </property>
-      <property name="singleStep">
-       <double>0.010000000000000</double>
-      </property>
-     </widget>
      <widget class="QLineEdit" name="lineEditB">
       <property name="geometry">
        <rect>
@@ -1791,19 +1769,6 @@
       </property>
       <property name="readOnly">
        <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_2">
-      <property name="geometry">
-       <rect>
-        <x>100</x>
-        <y>140</y>
-        <width>31</width>
-        <height>17</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Max</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_4">
@@ -2265,7 +2230,7 @@
      <widget class="QLabel" name="label_3">
       <property name="geometry">
        <rect>
-        <x>8</x>
+        <x>10</x>
         <y>4</y>
         <width>46</width>
         <height>39</height>
@@ -2301,7 +2266,7 @@
        <string>  ,</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="lineEditMin">
+     <widget class="QLineEdit" name="lineEditMinR">
       <property name="geometry">
        <rect>
         <x>119</x>
@@ -2751,36 +2716,7 @@
        <string>  ]</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>140</y>
-        <width>31</width>
-        <height>17</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Min</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButtonUpdateColor">
-      <property name="geometry">
-       <rect>
-        <x>330</x>
-        <y>170</y>
-        <width>111</width>
-        <height>27</height>
-       </rect>
-      </property>
-      <property name="toolTip">
-       <string>update the colorbar</string>
-      </property>
-      <property name="text">
-       <string>Update color</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="lineEditMax">
+     <widget class="QLineEdit" name="lineEditMaxR">
       <property name="geometry">
        <rect>
         <x>200</x>
@@ -3217,28 +3153,6 @@
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="doubleSpinBoxMax">
-      <property name="geometry">
-       <rect>
-        <x>130</x>
-        <y>130</y>
-        <width>61</width>
-        <height>27</height>
-       </rect>
-      </property>
-      <property name="toolTip">
-       <string>set the value of red</string>
-      </property>
-      <property name="decimals">
-       <number>3</number>
-      </property>
-      <property name="minimum">
-       <double>-99.989999999999995</double>
-      </property>
-      <property name="singleStep">
-       <double>0.010000000000000</double>
-      </property>
-     </widget>
      <widget class="QCheckBox" name="checkBoxColorBar">
       <property name="geometry">
        <rect>
@@ -3253,44 +3167,6 @@
       </property>
       <property name="text">
        <string>DisplayColorBar</string>
-      </property>
-     </widget>
-     <widget class="QDoubleSpinBox" name="doubleSpinBoxDelta">
-      <property name="geometry">
-       <rect>
-        <x>350</x>
-        <y>130</y>
-        <width>61</width>
-        <height>27</height>
-       </rect>
-      </property>
-      <property name="toolTip">
-       <string>set the range of green color ( center in 0 )</string>
-      </property>
-      <property name="decimals">
-       <number>2</number>
-      </property>
-      <property name="minimum">
-       <double>0.020000000000000</double>
-      </property>
-      <property name="singleStep">
-       <double>0.100000000000000</double>
-      </property>
-      <property name="value">
-       <double>1.000000000000000</double>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_5">
-      <property name="geometry">
-       <rect>
-        <x>200</x>
-        <y>140</y>
-        <width>51</width>
-        <height>17</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Center</string>
       </property>
      </widget>
      <widget class="colorBar" name="widgetColor" native="true">
@@ -3740,39 +3616,136 @@
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="doubleSpinBoxCenter">
+     <widget class="QPushButton" name="pushButtonUpdateColor">
       <property name="geometry">
        <rect>
-        <x>250</x>
-        <y>130</y>
-        <width>61</width>
+        <x>320</x>
+        <y>150</y>
+        <width>121</width>
         <height>27</height>
        </rect>
       </property>
       <property name="toolTip">
-       <string>set the value of red</string>
+       <string>update the colorbar</string>
       </property>
-      <property name="decimals">
-       <number>3</number>
+      <property name="text">
+       <string>Update ColorBar</string>
       </property>
-      <property name="minimum">
-       <double>-99.989999999999995</double>
+     </widget>
+     <widget class="QLabel" name="label_2">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>130</y>
+        <width>31</width>
+        <height>21</height>
+       </rect>
       </property>
-      <property name="singleStep">
-       <double>0.010000000000000</double>
+      <property name="text">
+       <string>Max</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>130</y>
+        <width>24</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Min</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_5">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>130</y>
+        <width>45</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Center</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_6">
       <property name="geometry">
        <rect>
-        <x>320</x>
-        <y>140</y>
-        <width>31</width>
-        <height>17</height>
+        <x>140</x>
+        <y>150</y>
+        <width>21</width>
+        <height>21</height>
        </rect>
       </property>
       <property name="text">
        <string>+/-</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEditCenter">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>150</y>
+        <width>51</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>0.0</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEditDelta">
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>150</y>
+        <width>51</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>0.5</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEditMin">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>150</y>
+        <width>61</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>-1.0</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEditMax">
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>150</y>
+        <width>61</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>1.0</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
       </property>
      </widget>
     </widget>
@@ -3820,7 +3793,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Add new repository</string>
+    <string>Add new folder</string>
    </property>
   </action>
   <action name="actionSaveFile">

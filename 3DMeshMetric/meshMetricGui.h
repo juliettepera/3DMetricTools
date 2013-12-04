@@ -136,7 +136,7 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             void ChangeValueMax();
             void ChangeValueDelta();
             void ChangeValueCenter();
-            int UpdateColor();
+            void UpdateColor();
             void ChangeDisplayColorBar();
 
     private:
@@ -188,13 +188,6 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             int m_SelectedItemB;
             std::vector <bool> m_ErrorComputed;
             std::vector <bool> m_Visibility;
-
-            // attributs for the color bar computation
-            double m_Min;
-            double m_Max;
-            double m_Delta;
-            double m_Center;
-
 };
 
 #endif

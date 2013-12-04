@@ -170,6 +170,16 @@ void dataM::setMax( double Dmax )
     m_Dmax = Dmax;
 }
 
+void dataM::setCenter( double Center )
+{
+    m_Center = Center;
+}
+
+void dataM::setDelta( double Delta )
+{
+    m_Delta = Delta;
+}
+
 void dataM::setColorBar( bool ColorBar )
 {
     m_ColorBar = ColorBar;
@@ -188,6 +198,16 @@ double dataM::getMin()
 double dataM::getMax()
 {
     return m_Dmax;
+}
+
+double dataM::getCenter()
+{
+    return m_Center;
+}
+
+double dataM::getDelta()
+{
+    return m_Delta;
 }
 
 bool dataM::getColorBar()

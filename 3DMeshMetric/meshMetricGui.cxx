@@ -15,16 +15,17 @@ meshMetricGui::meshMetricGui( QWidget *Parent , Qt::WFlags f , QString path )
     m_SelectedItemB = -1;
     m_nbDecimate = 10;
     m_nbIteration = 200;
-    m_Min = -1.0;
-    m_Max = 1.0;
-    m_Delta = 0.5;
-    m_Center = 0.0;
 
     m_WidgetMesh = new QVTKWidget( this -> scrollAreaMesh );
     widgetColor->setSize( widgetColor->rect().topLeft() , widgetColor->rect().bottomRight() );
 
     m_MyWindowMesh.setSizeH( scrollAreaMesh -> height() );
     m_MyWindowMesh.setSizeW( scrollAreaMesh -> width() );
+
+    lineEditCenter -> setValidator( new QDoubleValidator( this ) );
+    lineEditDelta -> setValidator( new QDoubleValidator( this ) );
+    lineEditMin -> setValidator( new QDoubleValidator( this ) );
+    lineEditMax -> setValidator( new QDoubleValidator( this ) );
 
     m_Path = path.toStdString();
     std::cout<< "Path: " <<m_Path << std::endl;
@@ -88,10 +89,10 @@ meshMetricGui::meshMetricGui( QWidget *Parent , Qt::WFlags f , QString path )
     QObject::connect( pushButtonApply , SIGNAL( clicked() ) , this , SLOT( ApplyDistance() ) );
     QObject::connect( checkBoxError , SIGNAL( toggled( bool ) ) , this , SLOT( ChangeDisplayError() ) );
 
-    QObject::connect( doubleSpinBoxMin , SIGNAL( valueChanged( double ) ) , this , SLOT( ChangeValueMin() ) );
-    QObject::connect( doubleSpinBoxMax , SIGNAL( valueChanged( double ) ) , this , SLOT( ChangeValueMax() ) );
-    QObject::connect( doubleSpinBoxDelta , SIGNAL( valueChanged( double ) ) , this , SLOT( ChangeValueDelta() ) );
-    QObject::connect( doubleSpinBoxCenter , SIGNAL( valueChanged( double ) ) , this , SLOT( ChangeValueCenter() ) );
+    QObject::connect( lineEditMin , SIGNAL( editingFinished() ) , this , SLOT( ChangeValueMin() ) );
+    QObject::connect( lineEditMax , SIGNAL( editingFinished() ) , this , SLOT( ChangeValueMax() ) );
+    QObject::connect( lineEditDelta , SIGNAL( editingFinished() ) , this , SLOT( ChangeValueDelta() ) );
+    QObject::connect( lineEditCenter , SIGNAL( editingFinished() ) , this , SLOT( ChangeValueCenter() ) );
 
     QObject::connect( pushButtonUpdateColor , SIGNAL( clicked() ) , this , SLOT( UpdateColor() ) );
     QObject::connect( checkBoxColorBar , SIGNAL( toggled( bool ) ) , this , SLOT( ChangeDisplayColorBar() ) );
@@ -372,54 +373,55 @@ void meshMetricGui::PreviousError()
                     m_DataList[ m_MeshSelected ].setSignedDistance( true );
                 }
 
-                m_MyProcess.updateColor( m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() , m_Center , m_Delta , m_DataList[ m_MeshSelected ] );
+                m_MyProcess.updateColor( m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() , m_DataList[ m_MeshSelected ].getCenter() , m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ] );
 
                 File = QString::fromStdString( m_DataList[ m_MeshSelected ].getName() );
                 lineEditA -> setText( File.fileName() );
                 lineEditB -> setText( QString::fromStdString( " Unknown " ) );
                 m_DataList[ m_MeshSelected ].setNameB( "Unknown" );
 
+                lineEditMinR -> setText( QString::number( m_DataList[ m_MeshSelected ].getMin() ) );
+                lineEditMaxR -> setText( QString::number( m_DataList[ m_MeshSelected ].getMax() ) );
+
                 lineEditMin -> setText( QString::number( m_DataList[ m_MeshSelected ].getMin() ) );
                 lineEditMax -> setText( QString::number( m_DataList[ m_MeshSelected ].getMax() ) );
+                lineEditCenter -> setText( "0.0" );
+                m_DataList[ m_MeshSelected ].setCenter( 0.0 );
 
-                doubleSpinBoxMin -> setValue( m_DataList[ m_MeshSelected ].getMin() );
-                doubleSpinBoxMax -> setValue( m_DataList[ m_MeshSelected ].getMax() );
-
-                m_Min = m_DataList[ m_MeshSelected ].getMin();
-                m_Max = m_DataList[ m_MeshSelected ].getMax();
-
-                if( rint( ( m_Max - m_Min )/2.0 ) >= 1 )
+                if( rint( ( m_DataList[ m_MeshSelected ].getMax() - m_DataList[ m_MeshSelected ].getMin() )/2.0 ) >= 1 )
                 {
-                    m_Delta = 0.5;
+                    m_DataList[ m_MeshSelected ].setDelta( 0.5 );
                 }
                 else
                 {
-                    m_Delta = 0.02;
+                    m_DataList[ m_MeshSelected ].setDelta( 0.02 );
                 }
 
-                doubleSpinBoxDelta -> setValue( m_Delta );
+                lineEditDelta -> setText( QString::number( m_DataList[ m_MeshSelected ].getDelta() ) );
 
                 m_MyWindowMesh.setLut( m_DataList[ m_MeshSelected ].getMapper()->GetLookupTable() );
                 m_MyWindowMesh.updateLut( 1 );
 
                 if( m_DataList[ m_MeshSelected ].getSignedDistance() == true )
                 {
-                    double DeltaY = calculNewY( m_Delta , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
-                    double DeltaC = calculNewY( -m_Delta , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
-                    double Center = calculNewY( m_Center , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+                    double DeltaY = calculNewY( m_DataList[ m_MeshSelected ].getCenter() + m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+                    double DeltaC = calculNewY( m_DataList[ m_MeshSelected ].getCenter() - m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+                    double Center = calculNewY( m_DataList[ m_MeshSelected ].getCenter() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+
                     widgetColor->changeDelta( DeltaY , DeltaC );
                     widgetColor->changeCenter( Center );
+
                     widgetColor->updateGradientSigned( true );
                     lineEditType -> setText( QString( "Signed distance" ) );
                 }
                 else
                 {
-                    double DeltaY = calculNewY( m_Center + m_Delta , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
-                    double DeltaC = calculNewY( m_Center - m_Delta , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
-                    double Center = calculNewY( m_Center , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+                    double DeltaY = calculNewY( m_DataList[ m_MeshSelected ].getCenter() + m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+                    double DeltaC = calculNewY( m_DataList[ m_MeshSelected ].getCenter() - m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+                    //double Center = calculNewY( m_DataList[ m_MeshSelected ].getCenter() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
 
                     widgetColor->changeDelta( DeltaY , DeltaC );
-                    widgetColor->changeCenter( Center );
+                    //widgetColor->changeCenter( Center );
 
                     widgetColor->updateGradientSigned( false );
                     lineEditType -> setText( QString( "Absolute distance" ) );
@@ -753,41 +755,48 @@ void meshMetricGui::ChangeMeshSelected()
        lineEditA -> setText( File.fileName() );
        lineEditB -> setText( QString::fromStdString( m_DataList[ m_MeshSelected ].getNameB() ) );
 
+       lineEditMinR -> setText( QString::number( m_DataList[ m_MeshSelected ].getMin() ) );
+       lineEditMaxR -> setText( QString::number( m_DataList[ m_MeshSelected ].getMax() ) );
+
        lineEditMin -> setText( QString::number( m_DataList[ m_MeshSelected ].getMin() ) );
        lineEditMax -> setText( QString::number( m_DataList[ m_MeshSelected ].getMax() ) );
+       lineEditCenter -> setText( QString::number( m_DataList[ m_MeshSelected ].getCenter() ) );
+       lineEditDelta -> setText( QString::number( m_DataList[ m_MeshSelected ].getDelta() ) );
 
-       doubleSpinBoxMin -> setValue( m_DataList[ m_MeshSelected ].getMin() );
-       doubleSpinBoxMax -> setValue( m_DataList[ m_MeshSelected ].getMax() );
 
-       double Delta = rint( ( m_DataList[ m_SelectedItemA ].getMax() - m_DataList[ m_SelectedItemA ].getMin() )/2.0 );
+       /*double Delta = rint( ( m_DataList[ m_SelectedItemA ].getMax() - m_DataList[ m_SelectedItemA ].getMin() )/2.0 );
        if( Delta >= 1 )
        {
-           m_Delta = 0.5;
+           m_DataList[ m_MeshSelected ].setDelta( 0.5 );
        }
        else
        {
-           m_Delta = 0.02;
+           m_DataList[ m_MeshSelected ].setDelta( 0.02 );
        }
 
-       doubleSpinBoxDelta -> setValue( m_Delta );
+       lineEditDelta -> setText( QString::number( m_DataList[ m_MeshSelected ].getDelta() ) );*/
 
        if( m_DataList[ m_MeshSelected ].getSignedDistance() == true )
        {
-           double DeltaY = calculNewY( m_Center + m_Delta , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
-           double DeltaC = calculNewY( m_Center - m_Delta , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
-           double Center = calculNewY( m_Center , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+           double DeltaY = calculNewY( m_DataList[ m_MeshSelected ].getCenter() + m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+           double DeltaC = calculNewY( m_DataList[ m_MeshSelected ].getCenter() - m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+           double Center = calculNewY( m_DataList[ m_MeshSelected ].getCenter() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+
            widgetColor->changeDelta( DeltaY , DeltaC );
            widgetColor->changeCenter( Center );
+
            widgetColor->updateGradientSigned( true );
            lineEditType -> setText( QString( "Signed distance" ) );
        }
        else
        {
-           double DeltaY = calculNewY( m_Center + m_Delta , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
-           double DeltaC = calculNewY( m_Center - m_Delta , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
-           double Center = calculNewY( m_Center , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+           double DeltaY = calculNewY( m_DataList[ m_MeshSelected ].getCenter() + m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+           double DeltaC = calculNewY( m_DataList[ m_MeshSelected ].getCenter() - m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+           //double Center = calculNewY( m_DataList[ m_MeshSelected ].getCenter() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+
            widgetColor->changeDelta( DeltaY , DeltaC );
-           widgetColor->changeCenter( Center );
+           //widgetColor->changeCenter( Center );
+
            widgetColor->updateGradientSigned( false );
            lineEditType -> setText( QString( "Absolute distance" ) );
        }
@@ -799,14 +808,16 @@ void meshMetricGui::ChangeMeshSelected()
        checkBoxError -> setChecked( false );
        tabWidgetError -> setCurrentWidget( tabDistance );
        tabResults -> setEnabled( false );
-       lineEditMax -> clear();
-       lineEditMin -> clear();
+       lineEditMaxR -> clear();
+       lineEditMinR -> clear();
        lineEditA -> clear();
        lineEditB -> clear();
        lineEditType -> clear();
-       doubleSpinBoxMax -> setValue( 0.0 );
-       doubleSpinBoxMin -> setValue( 0.0 );
-       doubleSpinBoxDelta -> setValue( 1.0 );
+       lineEditMin -> setText( "-1.0" );
+       lineEditMax -> setText( "1.0" );
+       lineEditDelta -> setText( "0.5" );
+       lineEditCenter -> setText( "0.0" );
+
     }
 
    m_MyWindowMesh.updateWindow();
@@ -1215,23 +1226,24 @@ void meshMetricGui::ApplyDistance()
         File = QString::fromStdString( m_DataList[ m_SelectedItemA ].getName() );
         lineEditA -> setText( File.fileName() );
 
-        lineEditMin -> setText( QString::number( m_DataList[ m_SelectedItemA ].getMin() ) );
-        lineEditMax -> setText( QString::number( m_DataList[ m_SelectedItemA ].getMax()) );
+        lineEditMinR -> setText( QString::number( m_DataList[ m_SelectedItemA ].getMin() ) );
+        lineEditMaxR -> setText( QString::number( m_DataList[ m_SelectedItemA ].getMax()) );
 
-        doubleSpinBoxMin -> setValue( m_DataList[ m_SelectedItemA ].getMin() );
-        doubleSpinBoxMax -> setValue( m_DataList[ m_SelectedItemA ].getMax() );
+        lineEditMin -> setText( QString::number( m_DataList[ m_SelectedItemA ].getMin() ) );
+        lineEditMax -> setText( QString::number( m_DataList[ m_SelectedItemA ].getMax() ) );
+        m_DataList[ m_SelectedItemA ].setCenter( 0.0 );
+        lineEditCenter -> setText( QString::number( m_DataList[ m_SelectedItemA ].getCenter() ) );
 
         double Delta = rint( (m_DataList[ m_SelectedItemA ].getMax() - m_DataList[ m_SelectedItemA ].getMin())/2.0 );
         if( Delta >= 1 )
         {
-            m_Delta = 0.5;
+            m_DataList[ m_MeshSelected ].setDelta( 0.5 );
         }
         else
         {
-            m_Delta = 0.02;
+            m_DataList[ m_MeshSelected ].setDelta( 0.02 );
         }
-
-        doubleSpinBoxDelta -> setValue( m_Delta );
+        lineEditDelta -> setText( QString::number( m_DataList[ m_MeshSelected ].getDelta() ) );
 
         m_MyWindowMesh.setLut( m_DataList[ m_SelectedItemA ].getMapper()->GetLookupTable() );
         m_MyWindowMesh.updateLut( 1 );
@@ -1239,21 +1251,25 @@ void meshMetricGui::ApplyDistance()
 
         if( m_DataList[ m_MeshSelected ].getSignedDistance() == true )
         {
-            double DeltaY = calculNewY( m_Center + m_Delta , m_DataList[ m_SelectedItemA ].getMin() , m_DataList[ m_SelectedItemA ].getMax() );
-            double DeltaC = calculNewY( m_Center - m_Delta , m_DataList[ m_SelectedItemA ].getMin() , m_DataList[ m_SelectedItemA ].getMax() );
-            double Center = calculNewY( m_Center , m_DataList[ m_SelectedItemA ].getMin() , m_DataList[ m_SelectedItemA ].getMax() );
+            double DeltaY = calculNewY( m_DataList[ m_SelectedItemA ].getCenter() + m_DataList[ m_SelectedItemA ].getDelta() , m_DataList[ m_SelectedItemA ].getMin() , m_DataList[ m_SelectedItemA ].getMax() );
+            double DeltaC = calculNewY( m_DataList[ m_SelectedItemA ].getCenter() - m_DataList[ m_SelectedItemA ].getDelta() , m_DataList[ m_SelectedItemA ].getMin() , m_DataList[ m_SelectedItemA ].getMax() );
+            double Center = calculNewY( m_DataList[ m_SelectedItemA ].getCenter() , m_DataList[ m_SelectedItemA ].getMin() , m_DataList[ m_SelectedItemA ].getMax() );
+
             widgetColor->changeDelta( DeltaY , DeltaC );
             widgetColor->changeCenter( Center );
+
             widgetColor->updateGradientSigned( true );
             lineEditType -> setText( QString( "Signed distance" ) );
         }
         else
         {
-            double DeltaY = calculNewY( m_Center + m_Delta , m_DataList[ m_SelectedItemA ].getMin() , m_DataList[ m_SelectedItemA ].getMax() );
-            double DeltaC = calculNewY( m_Center - m_Delta , m_DataList[ m_SelectedItemA ].getMin() , m_DataList[ m_SelectedItemA ].getMax() );
-            double Center = calculNewY( m_Center , m_DataList[ m_SelectedItemA ].getMin() , m_DataList[ m_SelectedItemA ].getMax() );
+            double DeltaY = calculNewY( m_DataList[ m_SelectedItemA ].getCenter() + m_DataList[ m_SelectedItemA ].getDelta() , m_DataList[ m_SelectedItemA ].getMin() , m_DataList[ m_SelectedItemA ].getMax() );
+            double DeltaC = calculNewY( m_DataList[ m_SelectedItemA ].getCenter() - m_DataList[ m_SelectedItemA ].getDelta() , m_DataList[ m_SelectedItemA ].getMin() , m_DataList[ m_SelectedItemA ].getMax() );
+            //double Center = calculNewY( m_DataList[ m_SelectedItemA ].getCenter() , m_DataList[ m_SelectedItemA ].getMin() , m_DataList[ m_SelectedItemA ].getMax() );
+
             widgetColor->changeDelta( DeltaY , DeltaC );
-            widgetColor->changeCenter( Center );
+            //widgetColor->changeCenter( Center );
+
             widgetColor->updateGradientSigned( false );
             lineEditType -> setText( QString( "Absolute distance" ) );
         }
@@ -1290,14 +1306,43 @@ void meshMetricGui::ChangeValueMin()
 {
     if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
     {
+        double Min = lineEditMin->text().toDouble();
+
         if( m_DataList[ m_MeshSelected ].getSignedDistance() == true )
         {
-            m_Min = doubleSpinBoxMin -> value();
+            if( Min < ( m_DataList[ m_MeshSelected ].getCenter() - m_DataList[ m_MeshSelected ].getDelta() ) )
+            {
+                m_DataList[ m_MeshSelected ].setMin( Min );
+            }
+            else
+            {
+                QMessageBox MsgBox;
+                QString text( " Change Min value such as : Min < " );
+                text += QString::number( m_DataList[ m_MeshSelected ].getCenter() - m_DataList[ m_MeshSelected ].getDelta() );
+                MsgBox.setText( text );
+                MsgBox.exec();
+
+                lineEditMin-> setText( QString::number( m_DataList[ m_MeshSelected ].getMin() ) );
+            }
         }
         else
         {
-            doubleSpinBoxMin -> setValue( m_DataList[ m_MeshSelected ].getMin() );
+            if( Min < ( m_DataList[ m_MeshSelected ].getMax() - m_DataList[ m_MeshSelected ].getDelta() ) )
+            {
+                m_DataList[ m_MeshSelected ].setMin( Min );
+            }
+            else
+            {
+                QMessageBox MsgBox;
+                QString text( " Change Min value such as : Min < " );
+                text += QString::number( m_DataList[ m_MeshSelected ].getMax() - m_DataList[ m_MeshSelected ].getDelta() );
+                MsgBox.setText( text );
+                MsgBox.exec();
+
+                lineEditMin-> setText( QString::number( m_DataList[ m_MeshSelected ].getMin() ) );
+            }
         }
+        pushButtonUpdateColor -> setEnabled( true );
     }
 }
 
@@ -1307,7 +1352,24 @@ void meshMetricGui::ChangeValueMax()
 {
     if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
     {
-        m_Max = doubleSpinBoxMax -> value();
+        double Max = lineEditMax->text().toDouble();
+
+        if( Max > ( m_DataList[ m_MeshSelected ].getCenter() + m_DataList[ m_MeshSelected ].getDelta() ) )
+        {
+            m_DataList[ m_MeshSelected ].setMax( Max );
+        }
+        else
+        {
+            QMessageBox MsgBox;
+            QString text( " Change Max value such as : Max > " );
+            text += QString::number( m_DataList[ m_MeshSelected ].getCenter() + m_DataList[ m_MeshSelected ].getDelta() );
+            MsgBox.setText( text );
+            MsgBox.exec();
+
+            lineEditMax-> setText( QString::number( m_DataList[ m_MeshSelected ].getMax() ) );
+        }
+
+        pushButtonUpdateColor -> setEnabled( true );
     }
 }
 
@@ -1319,41 +1381,46 @@ void meshMetricGui::ChangeValueDelta()
     {
         if( m_DataList[ m_MeshSelected ].getSignedDistance() == true )
         {
-            if( doubleSpinBoxDelta -> value() < fabs( m_DataList[ m_MeshSelected ].getMin()) &&
-                    doubleSpinBoxDelta -> value() < m_DataList[ m_MeshSelected ].getMax()  &&
-                        doubleSpinBoxDelta -> value() > 0 )
+            double Delta = lineEditDelta->text().toDouble();
+
+            if( Delta < ( m_DataList[ m_MeshSelected ].getCenter() - m_DataList[ m_MeshSelected ].getMin() ) &&
+                    Delta <  ( m_DataList[ m_MeshSelected ].getMax() - m_DataList[ m_MeshSelected ].getCenter() )  &&
+                Delta > 0.02 )
             {
-                m_Delta = doubleSpinBoxDelta -> value();
+                m_DataList[ m_MeshSelected ].setDelta( Delta );
             }
             else
             {
                 QMessageBox MsgBox;
-                std::string text( " Delta is a value:\n\tstrictly positive\n\tinferior to " );
-                QString value = QString::number( min( m_DataList[ m_MeshSelected ].getMax() , fabs( m_DataList[ m_MeshSelected ].getMin() ) ) );
-                text += value.toStdString();
-                MsgBox.setText( QString::fromStdString( text ) );
+                QString text( " Change Delta value such as : Delta < " );
+                text += QString::number( min( ( m_DataList[ m_MeshSelected ].getMax() - m_DataList[ m_MeshSelected ].getCenter() ) , ( m_DataList[ m_MeshSelected ].getCenter() - m_DataList[ m_MeshSelected ].getMin() ) ) );
+                MsgBox.setText( text );
                 MsgBox.exec();
-                doubleSpinBoxDelta -> setValue( 1.0 );
+                lineEditDelta->setText( QString::number( m_DataList[ m_MeshSelected ].getDelta() ) );
             }
         }
         else
         {
-            if( doubleSpinBoxDelta -> value() < m_DataList[ m_MeshSelected ].getMax()  &&
-                    doubleSpinBoxDelta -> value() > 0 )
+            double Delta = lineEditDelta->text().toDouble();
+
+            if( Delta < m_DataList[ m_MeshSelected ].getMax()  &&
+                Delta > m_DataList[ m_MeshSelected ].getMin() )
             {
-                m_Delta = doubleSpinBoxDelta -> value();
+                m_DataList[ m_MeshSelected ].setDelta( Delta );
             }
             else
             {
                 QMessageBox MsgBox;
-                std::string text( " Delta is a value:\n\tstrictly positive\n\tinferior to " );
-                QString value = QString::number( m_DataList[ m_MeshSelected ].getMax() );
-                text += value.toStdString();
-                MsgBox.setText( QString::fromStdString( text ) );
+                QString text( " Change Delta value such as : " );
+                text += QString::number( m_DataList[ m_MeshSelected ].getMin() );
+                text += " < Delta < ";
+                text += QString::number( m_DataList[ m_MeshSelected ].getMax() );
+                MsgBox.setText( text );
                 MsgBox.exec();
-                doubleSpinBoxDelta -> setValue( 1.0 );
+                lineEditA->setText( QString::number( m_DataList[ m_MeshSelected ].getDelta() ) );
             }
         }
+        pushButtonUpdateColor -> setEnabled( true );
     }
 }
 
@@ -1362,110 +1429,74 @@ void meshMetricGui::ChangeValueCenter()
 {
     if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
     {
-        double Center = doubleSpinBoxCenter -> value();
-
-        if( Center < ( m_Max - m_Delta ) && Center > ( m_Min + m_Delta ) )
+        if( m_DataList[ m_MeshSelected ].getSignedDistance() == true )
         {
-            m_Center = Center;
-            UpdateColor();
+            double Center = lineEditCenter->text().toDouble();
+
+            if( Center < ( m_DataList[ m_MeshSelected ].getMax() - m_DataList[ m_MeshSelected ].getDelta() ) &&
+                Center > ( m_DataList[ m_MeshSelected ].getMin() + m_DataList[ m_MeshSelected ].getDelta() ) )
+            {
+                m_DataList[ m_MeshSelected ].setCenter( Center );
+            }
+            else
+            {
+                QMessageBox MsgBox;
+                QString text( " Change Center value such as : " );
+                text += QString::number( m_DataList[ m_MeshSelected ].getMin() + m_DataList[ m_MeshSelected ].getDelta() );
+                text += " < Center < ";
+                text += QString::number( m_DataList[ m_MeshSelected ].getMax() - m_DataList[ m_MeshSelected ].getDelta() );
+                MsgBox.setText( text );
+                MsgBox.exec();
+                lineEditCenter -> setText( QString::number( m_DataList[ m_MeshSelected ].getCenter() ) );
+            }
         }
         else
         {
-            doubleSpinBoxCenter -> setValue( m_Center );
+            m_DataList[ m_MeshSelected ].setCenter( 0.0 );
+            lineEditCenter -> setText( QString::number( m_DataList[ m_MeshSelected ].getCenter() ) );
         }
+        pushButtonUpdateColor -> setEnabled( true );
     }
 }
 
 
 //*************************************************************************************************
-int meshMetricGui::UpdateColor()
+void meshMetricGui::UpdateColor()
 {
     if( ! m_DataList.empty() && m_MeshSelected != -1  && m_MeshSelected != -1 && m_ErrorComputed[ m_MeshSelected ] == true )
     {
         if( m_DataList[ m_MeshSelected ].getSignedDistance() == true )
         {
-            int success = 0;
+           m_MyProcess.updateColor( m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() , m_DataList[ m_MeshSelected ].getCenter() , m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ] );
+           m_MyWindowMesh.setLut( m_DataList[ m_MeshSelected ].getMapper()->GetLookupTable() );
+           m_MyWindowMesh.updateWindow();
 
-            if( m_Min >= -m_Delta )
-            {
-                QMessageBox MsgBox;
-                std::string text( " Min is a value strictly inferior to " );
-                QString value = QString::number( -m_Delta );
-                text += value.toStdString();
-                MsgBox.setText( QString::fromStdString( text ) );
-                MsgBox.exec();
-                doubleSpinBoxMin -> setValue( m_DataList[ m_MeshSelected ].getMin() );
-                success = -1;
-            }
-            if( m_Max <= m_Delta/2.0 )
-            {
-                QMessageBox MsgBox;
-                std::string text( " Max is a value strictly superior to " );
-                QString value = QString::number( m_Delta );
-                text += value.toStdString();
-                MsgBox.setText( QString::fromStdString( text ) );
-                MsgBox.exec();
-                doubleSpinBoxMax -> setValue( m_DataList[ m_MeshSelected ].getMax() );
-                success = -1;
-            }
-            if( success == -1 )
-            {
-               return success;
-            }
-            else
-            {
-               m_DataList[ m_MeshSelected ].setMin( m_Min );
-               m_DataList[ m_MeshSelected ].setMax( m_Max );
-               m_MyProcess.updateColor( m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() , m_Center , m_Delta , m_DataList[ m_MeshSelected ] );
-               m_MyWindowMesh.setLut( m_DataList[ m_MeshSelected ].getMapper()->GetLookupTable() );
-               m_MyWindowMesh.updateWindow();
+           double DeltaY = calculNewY( m_DataList[ m_MeshSelected ].getCenter() + m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+           double DeltaC = calculNewY( m_DataList[ m_MeshSelected ].getCenter() - m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+           double Center = calculNewY( m_DataList[ m_MeshSelected ].getCenter() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
 
-               double DeltaY = calculNewY( m_Center + m_Delta , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
-               double DeltaC = calculNewY( m_Center - m_Delta , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
-               double Center = calculNewY( m_Center , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
-               widgetColor->changeDelta( DeltaY , DeltaC );
-               widgetColor->changeCenter( Center );
-               widgetColor->updateGradientSigned( true );
-               return 0;
-             }
+           widgetColor->changeDelta( DeltaY , DeltaC );
+           widgetColor->changeCenter( Center );
+
+           widgetColor->updateGradientSigned( true );
+
         }
         else
         {
-            int success = 0;
-
-            if( m_Max <= m_Delta )
-            {
-                QMessageBox MsgBox;
-                std::string text( " Max is a value strictly superior to " );
-                QString value = QString::number( m_Delta );
-                text += value.toStdString();
-                MsgBox.setText( QString::fromStdString( text ) );
-                MsgBox.exec();
-                doubleSpinBoxMax -> setValue( m_DataList[ m_MeshSelected ].getMax() );
-                success = -1;
-            }
-            if( success == -1 )
-            {
-               return success;
-            }
-            else
-            {
-               m_DataList[ m_MeshSelected ].setMax( m_Max );
-               m_MyProcess.updateColor( m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() , m_Center , m_Delta , m_DataList[ m_MeshSelected ] );
+               m_MyProcess.updateColor( m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() , m_DataList[ m_MeshSelected ].getCenter() , m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ] );
                m_MyWindowMesh.setLut( m_DataList[ m_MeshSelected ].getMapper()->GetLookupTable() );
                m_MyWindowMesh.updateWindow();
 
-               double DeltaY = calculNewY( m_Delta , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
-               double DeltaC = calculNewY( -m_Delta , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+               double DeltaY = calculNewY( m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+               double DeltaC = calculNewY( -m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+
                widgetColor->changeDelta( DeltaY , DeltaC );
+
                widgetColor->updateGradientSigned( false );
-
-               return 0;
-             }
-
         }
+
+        pushButtonUpdateColor -> setEnabled( false );
     }
-    return 0;
 }
 
 
