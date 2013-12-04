@@ -22,16 +22,19 @@ colorBar::colorBar( QWidget *Qparent ):QWidget( Qparent )
     m_Green.first = m_GreenPos;
     m_Green.second = Qt::green;
 
-    m_ItCyan = 1; m_ItGreen = 2 ; m_ItYellow = 3;
+    // init gradient signed
+    m_ListSigned.push_back( QGradientStop( 0 , Qt::blue ) );
+    m_ListSigned.push_back( m_Cyan );
+    m_ListSigned.push_back( m_Green );
+    m_ListSigned.push_back( m_Yellow );
+    m_ListSigned.push_back( QGradientStop( 1 , Qt::red ) );
 
-    // init gradient
-    m_List.push_back( QGradientStop( 0 , Qt::blue ) );
-    m_List.push_back( m_Cyan );
-    m_List.push_back( m_Green );
-    m_List.push_back( m_Yellow );
-    m_List.push_back( QGradientStop( 1 , Qt::red ) );
+    // init gradient absolute
+    m_ListAbsolute.push_back( QGradientStop( 0 , Qt::green ) );
+    m_ListAbsolute.push_back( m_Yellow );
+    m_ListAbsolute.push_back( QGradientStop( 1 , Qt::red ) );
 
-    m_Gradient.setStops( m_List );
+    m_Gradient.setStops( m_ListSigned );
 
 
 }
@@ -83,62 +86,60 @@ int colorBar::convertPosition( double PosInColorBar )
 
 
 //*************************************************************************************************
-void colorBar::updateGradientSigned( bool Signed )
+void colorBar::updateGradientSigned(double DeltaC , double DeltaY , double Center )
 {
-    m_List.clear();
+    //m_ItCyan = 1; m_ItGreen = 2 ; m_ItYellow = 3;
 
-    if( Signed == true )
-    {
-        m_ItCyan = 1; m_ItGreen = 2 ; m_ItYellow = 3;
-
-        m_List.push_back( QGradientStop( 0 , Qt::blue ) );
-        m_List.push_back( m_Cyan );
-        m_List.push_back( m_Green );
-    }
-    else
-    {
-        m_ItYellow = 1;
-
-        m_List.push_back( QGradientStop( 0 , Qt::green ) );
-    }
-
-    m_List.push_back( m_Yellow );
-    m_List.push_back( QGradientStop( 1 , Qt::red ) );
-
-    m_Gradient.setStops( m_List );
-
-    update();
-}
-
-
-//*************************************************************************************************
-void colorBar::changeDelta( double DeltaY , double DeltaC )
-{
-    m_Cyan.first = DeltaC;
-    m_List.replace( m_ItCyan , m_Cyan );
-
-    int offsetC = convertPosition( DeltaC ) - convertPosition( m_CyanPos );
-    m_ArrowCyan.translate( offsetC , 0 );
-    m_CyanPos = DeltaC;
-
-    m_Yellow.first = DeltaY;
-    m_List.replace( m_ItYellow , m_Yellow );
-
-    int offsetY = convertPosition( DeltaY ) - convertPosition( m_YellowPos );
-    m_ArrowYellow.translate( offsetY , 0 );
-    m_YellowPos = DeltaY;
-
-    update();
-}
-
-void colorBar::changeCenter( double NewPosition )
-{
-    int offset = convertPosition( NewPosition ) - convertPosition( m_GreenPos );
+    // moove center arrow
+    int offset = convertPosition( Center ) - convertPosition( m_GreenPos );
     m_ArrowCenter.translate( offset , 0 );
 
-    m_Green.first = NewPosition;
-    m_List.replace( m_ItGreen , m_Green );
-    m_GreenPos = NewPosition;
+    // replace green position
+    m_Green.first = Center;
+    m_ListSigned.replace( 2 , m_Green );
+    m_GreenPos = Center;
+
+    // moove cyan arrow
+    int offsetC = convertPosition( DeltaC ) - convertPosition( m_CyanPos );
+    m_ArrowCyan.translate( offsetC , 0 );
+
+    // replace cyan position
+    m_Cyan.first = DeltaC;
+    m_ListSigned.replace( 1 , m_Cyan );
+    m_CyanPos = DeltaC;
+
+    // moove yellow arrow
+    int offsetY = convertPosition( DeltaY ) - convertPosition( m_YellowPos );
+    m_ArrowYellow.translate( offsetY , 0 );
+
+    // replace arrow position
+    m_Yellow.first = DeltaY;
+    m_ListSigned.replace( 3 , m_Yellow );
+    m_YellowPos = DeltaY;
+
+    // set the new list
+    m_Gradient.setStops( m_ListSigned );
+
+    update();
+}
+
+
+void colorBar::updateGradientAbsolute( double DeltaY )
+{
+    //m_ItYellow = 1;
+    m_ArrowCyan.translate( QPoint( m_XLeftLimit , m_YLimit ) );
+    m_ArrowCenter.translate( QPoint( m_XLeftLimit , m_YLimit ) );
+    // moove yellow arrow
+    int offsetY = convertPosition( DeltaY ) - convertPosition( m_YellowPos );
+    m_ArrowYellow.translate( offsetY , 0 );
+
+    // replace arrow position
+    m_Yellow.first = DeltaY;
+    m_ListAbsolute.replace( 1 , m_Yellow );
+    m_YellowPos = DeltaY;
+
+    // set the new list
+    m_Gradient.setStops( m_ListAbsolute );
 
     update();
 }
@@ -168,19 +169,18 @@ void colorBar::paintEvent(QPaintEvent *)
    pen.setColor( Qt::black );
    painter.setPen( pen );
 
-   brush.setColor( Qt::green );
    brush.setStyle( Qt::SolidPattern );
-
-   QPainterPath pathg;
-   pathg.addPolygon( m_ArrowCenter );
-   painter.drawPolygon( m_ArrowCenter );
-   painter.fillPath( pathg , brush );
-
    brush.setColor( Qt::cyan );
    QPainterPath pathc;
    pathc.addPolygon( m_ArrowCyan );
    painter.drawPolygon( m_ArrowCyan );
    painter.fillPath( pathc , brush );
+
+   brush.setColor( Qt::green );
+   QPainterPath pathg;
+   pathg.addPolygon( m_ArrowCenter );
+   painter.drawPolygon( m_ArrowCenter );
+   painter.fillPath( pathg , brush );
 
    brush.setColor( Qt::yellow );
    QPainterPath pathy;

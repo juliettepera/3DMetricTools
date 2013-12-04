@@ -34,20 +34,8 @@ class colorBar: public QWidget
         /* init the type of the color bar
          * signed = 5 points and absolute = 3 points
          */
-        void updateGradientSigned(bool Signed);
-
-        /* change the position of the color
-         */
-        void changeDelta( double DeltaY , double DeltaC );
-        void changeCenter( double NewPosition );
-
-        /* set the arrow position
-         */
-        //void setArrowPositionCenter( double position );
-
-        /* get the arrow position
-         */
-        //double getArrowPosition();
+        void updateGradientSigned( double DeltaC, double DeltaY , double Center );
+        void updateGradientAbsolute( double DeltaY );
 
         /* paint the color bar and arrow
          */
@@ -62,15 +50,12 @@ class colorBar: public QWidget
         QGradientStop m_Yellow;
         QGradientStop m_Green;
 
-        int m_ItCyan;
-        int m_ItYellow;
-        int m_ItGreen;
-
         double m_GreenPos;
         double m_CyanPos;
         double m_YellowPos;
 
-        QGradientStops m_List;
+        QGradientStops m_ListSigned;
+        QGradientStops m_ListAbsolute;
 
         QPolygon m_ArrowCenter;
         QPolygon m_ArrowCyan;

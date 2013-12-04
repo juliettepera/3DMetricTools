@@ -50,11 +50,6 @@ class processing
          */
         void updateColor(double Min , double Max, double Center, double Delta , dataM &Data1);
 
-        /* compute the isoline
-         */
-        //void processIsoline( double Isoline , dataM &Data1 );
-
-
         /* function for testing equality between two datas
          */
         int testPolyData( vtkSmartPointer <vtkPolyData> inData , vtkSmartPointer <vtkPolyData> outData );

@@ -187,18 +187,6 @@ void processing::updateColor( double Min , double Max , double Center , double D
 }
 
 
-/*void processing::processIsoline( double Isoline , dataM &Data1 )
-{
-    vtkSmartPointer <vtkContourFilter> Isoliner = vtkSmartPointer <vtkContourFilter>::New();
-    Isoliner -> SetInputData( Data1.getPolyData() );
-    Isoliner -> SetValue( 0 , Isoline );
-    Isoliner -> Update();
-
-    Data1.setPolyData( Isoliner->GetOutput() );
-
-}*/
-
-
 //*************************************************************************************************
 int processing::testPolyData( vtkSmartPointer <vtkPolyData> inData , vtkSmartPointer <vtkPolyData> outData )
 {

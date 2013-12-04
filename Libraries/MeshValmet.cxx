@@ -519,15 +519,23 @@ void meshValmet::CreateLutError()
 
     m_Lut -> SetColorSpaceToRGB();
 
-    if( m_Dmin < - m_Delta && -m_Delta < 0 && 0 < m_Delta && m_Delta < m_Dmax )
+    if( m_Pargs.signeddist == true )
     {
-        if( m_Pargs.signeddist == true )
+        if( m_Dmin < - m_Delta && -m_Delta < 0 && 0 < m_Delta && m_Delta < m_Dmax )
         {
-            m_Lut -> AddRGBSegment( m_Dmin , 0 , 0 , 1 , m_Center-m_Delta , 0 , 1 , 1 );
-            m_Lut -> AddRGBSegment( m_Center-m_Delta , 0 , 1 , 1 , m_Center  , 0 , 1 , 0 );
+           m_Lut -> AddRGBSegment( m_Dmin , 0 , 0 , 1 , m_Center-m_Delta , 0 , 1 , 1 );
+           m_Lut -> AddRGBSegment( m_Center-m_Delta , 0 , 1 , 1 , m_Center  , 0 , 1 , 0 );
+           m_Lut -> AddRGBSegment( m_Center , 0 , 1 , 0 , m_Center+m_Delta , 1 , 1 , 0 );
+           m_Lut -> AddRGBSegment( m_Center+m_Delta , 1 , 1 , 0 , m_Dmax , 1 , 0 , 0 );
         }
-        m_Lut -> AddRGBSegment( m_Center , 0 , 1 , 0 , m_Center+m_Delta , 1 , 1 , 0 );
-        m_Lut -> AddRGBSegment( m_Center+m_Delta , 1 , 1 , 0 , m_Dmax , 1 , 0 , 0 );
+    }
+    else
+    {
+        if( m_Dmin < m_Delta && m_Delta < m_Dmax )
+        {
+           m_Lut -> AddRGBSegment( m_Dmin , 0 , 1 , 0 , m_Dmin+m_Delta , 1 , 1 , 0 );
+           m_Lut -> AddRGBSegment( m_Dmin+m_Delta , 1 , 1 , 0 , m_Dmax , 1 , 0 , 0 );
+        }
     }
 }
 
