@@ -372,6 +372,18 @@ void meshMetricGui::PreviousError()
                     m_DataList[ m_MeshSelected ].setSignedDistance( true );
                 }
 
+                m_DataList[ m_MeshSelected ].setCenter( 0.0 );
+
+                if( rint( ( m_DataList[ m_MeshSelected ].getMax() - m_DataList[ m_MeshSelected ].getMin() )/2.0 ) >= 1 )
+                {
+                    m_DataList[ m_MeshSelected ].setDelta( 0.5 );
+                }
+                else
+                {
+                    m_DataList[ m_MeshSelected ].setDelta( 0.02 );
+                }
+
+
                 m_MyProcess.updateColor( m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() , m_DataList[ m_MeshSelected ].getCenter() , m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ] );
 
                 File = QString::fromStdString( m_DataList[ m_MeshSelected ].getName() );
@@ -384,18 +396,7 @@ void meshMetricGui::PreviousError()
 
                 lineEditMin -> setText( QString::number( m_DataList[ m_MeshSelected ].getMin() ) );
                 lineEditMax -> setText( QString::number( m_DataList[ m_MeshSelected ].getMax() ) );
-                lineEditCenter -> setText( "0.0" );
-                m_DataList[ m_MeshSelected ].setCenter( 0.0 );
-
-                if( rint( ( m_DataList[ m_MeshSelected ].getMax() - m_DataList[ m_MeshSelected ].getMin() )/2.0 ) >= 1 )
-                {
-                    m_DataList[ m_MeshSelected ].setDelta( 0.5 );
-                }
-                else
-                {
-                    m_DataList[ m_MeshSelected ].setDelta( 0.02 );
-                }
-
+                lineEditCenter -> setText( QString::number( m_DataList[ m_MeshSelected ].getCenter() ) );
                 lineEditDelta -> setText( QString::number( m_DataList[ m_MeshSelected ].getDelta() ) );
 
                 m_MyWindowMesh.setLut( m_DataList[ m_MeshSelected ].getMapper()->GetLookupTable() );
@@ -751,19 +752,6 @@ void meshMetricGui::ChangeMeshSelected()
        lineEditMax -> setText( QString::number( m_DataList[ m_MeshSelected ].getMax() ) );
        lineEditCenter -> setText( QString::number( m_DataList[ m_MeshSelected ].getCenter() ) );
        lineEditDelta -> setText( QString::number( m_DataList[ m_MeshSelected ].getDelta() ) );
-
-
-       /*double Delta = rint( ( m_DataList[ m_SelectedItemA ].getMax() - m_DataList[ m_SelectedItemA ].getMin() )/2.0 );
-       if( Delta >= 1 )
-       {
-           m_DataList[ m_MeshSelected ].setDelta( 0.5 );
-       }
-       else
-       {
-           m_DataList[ m_MeshSelected ].setDelta( 0.02 );
-       }
-
-       lineEditDelta -> setText( QString::number( m_DataList[ m_MeshSelected ].getDelta() ) );*/
 
        if( m_DataList[ m_MeshSelected ].getSignedDistance() == true )
        {

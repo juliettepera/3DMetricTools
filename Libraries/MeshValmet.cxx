@@ -519,6 +519,8 @@ void meshValmet::CreateLutError()
 
     m_Lut -> SetColorSpaceToRGB();
 
+    std::cout << " min: " << m_Dmin << " center: " << m_Center << " Delta: " << m_Delta << " max: " << m_Dmax << std::endl;
+
     if( m_Pargs.signeddist == true )
     {
         if( m_Dmin < - m_Delta && -m_Delta < 0 && 0 < m_Delta && m_Delta < m_Dmax )

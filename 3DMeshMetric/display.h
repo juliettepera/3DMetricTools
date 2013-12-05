@@ -14,9 +14,10 @@
 #include <vtkLookupTable.h>
 #include <vtkTextProperty.h>
 #include <vtkTextActor.h>
+#include <vtkPointPicker.h>
+#include <vtkInteractorStyleTrackballCamera.h>
 
-
-class display
+class display /*: public vtkInteractorStyleTrackballCamera*/
 {
     public:
         display();
@@ -72,6 +73,32 @@ class display
         /* Change the LUT
          */
         void updateLut( int Visibility );
+
+        /*virtual void OnLeftButtonDown()
+        {
+            std::cout << "Pressed left mouse button." << std::endl;
+
+            vtkSmartPointer <vtkPicker> picker = vtkSmartPointer <vtkPicker>::New();
+
+            int pickPosition[2];
+            m_RenderWindow->GetInteractor()->GetEventPosition( pickPosition );
+
+            int xP = pickPosition[0];
+            int yP = pickPosition[1];
+            std::cout << "x : " << xP << " , y : " << yP << std::endl;
+
+            picker->Pick( xP , yP , 0 , m_Renderer );
+
+            double* worldPosition;
+            worldPosition = picker->GetPickPosition();
+
+            double xW = worldPosition[0];
+            double yW = worldPosition[1];
+            double zW = worldPosition[2];
+            std::cout << "x : " << xW << " , y : " << yW << " , z : " << zW << std::endl;
+
+            vtkInteractorStyleTrackballCamera::OnLeftButtonDown();
+        }*/
 
     private:
         int m_SizeH;

@@ -184,4 +184,15 @@ void display::updatePositionCamera()
     {
         m_Camera -> SetViewUp( 0 , -1 , 0 );
     }
+
 }
+
+
+
+
+
+
+
+
+
+
