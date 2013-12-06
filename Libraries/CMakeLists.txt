@@ -10,12 +10,13 @@ MeshValmet/reporting.cxx
 MeshValmet/xalloc.cxx
 )
 
+
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 
 add_library(MeshValmetLib ${STATIC_LIB} ${MeshValmetLib_SRC} )
 
 target_link_libraries(MeshValmetLib ${VTK_LIBRARIES} )
-
+#message( ${vtkGUISupportQt_LIBRARIES} )
 
 set_target_properties(MeshValmetLib  PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}"

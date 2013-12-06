@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.3)
 # name of the project
 project( 3DMetricTools )
 
@@ -43,6 +43,11 @@ include( ${VTK_USE_FILE} )
 
 find_package(SlicerExecutionModel REQUIRED)
 include( ${SlicerExecutionModel_USE_FILE} )
+
+# find the QT4 headers
+find_package( Qt4 REQUIRED )
+include( ${QT_USE_FILE} )
+
 
 option( Build_Static "Static libraries and executables only" ON )
 if( Build_Static )
