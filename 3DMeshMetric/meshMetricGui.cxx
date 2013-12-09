@@ -17,10 +17,11 @@ meshMetricGui::meshMetricGui( QWidget *Parent , Qt::WFlags f , QString path )
     m_nbIteration = 200;
 
     m_WidgetMesh = new QVTKWidget( this -> scrollAreaMesh );
-    widgetColor->setSize( widgetColor->rect().topLeft() , widgetColor->rect().bottomRight() );
-
+    m_WidgetMesh->resize( scrollAreaMesh->size() );
     m_MyWindowMesh.setSizeH( scrollAreaMesh -> height() );
     m_MyWindowMesh.setSizeW( scrollAreaMesh -> width() );
+
+    widgetColor->setSize( widgetColor->rect().topLeft() , widgetColor->rect().bottomRight() );
 
     lineEditCenter -> setValidator( new QDoubleValidator( this ) );
     lineEditDelta -> setValidator( new QDoubleValidator( this ) );
