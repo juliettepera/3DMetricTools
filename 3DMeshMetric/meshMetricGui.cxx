@@ -63,7 +63,7 @@ meshMetricGui::meshMetricGui( QWidget *Parent , Qt::WFlags f , QString path )
     QObject::connect( radioButtonSurface , SIGNAL( toggled( bool ) ) , this , SLOT( ChangeTypeOfDisplay() ) );
     QObject::connect( radioButtonPoints , SIGNAL( toggled( bool ) ) , this , SLOT( ChangeTypeOfDisplay() ) );
     QObject::connect( radioButtonWireframe , SIGNAL( toggled( bool ) ) , this , SLOT( ChangeTypeOfDisplay() ) );
-    QObject::connect( pushButtonResetAll , SIGNAL( clicked() ) , this , SLOT( ResetSelectedFile() ) );
+    QObject::connect( pushButtonResetAll , SIGNAL( clicked() ) , this , SLOT( ReloadOne() ) );
     QObject::connect( pushButtonDisplayAll , SIGNAL( clicked() ) , this , SLOT( DisplayAll() ) );
     QObject::connect( pushButtonHideAll , SIGNAL( clicked() ) , this , SLOT( HideAll() ) );
     QObject::connect( actionBackgroundColor , SIGNAL( triggered() ) , this , SLOT( ChooseColorBackground() ) );
@@ -309,6 +309,37 @@ void meshMetricGui::DeleteAllFiles()
         actionAddNewFile -> setEnabled( true );
         actionAddNewRepository -> setEnabled( true );
     }
+}
+
+//*************************************************************************************************
+void meshMetricGui::ResetSelectedFile()
+{
+    if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
+    {
+        m_DataList[ m_MeshSelected ].setOpacity( 1.0 );
+        m_DataList[ m_MeshSelected ].initialization();
+        m_MyWindowMesh.updateWindow();
+    }
+
+    lcdNumberOpacity -> display( m_DataList[ m_MeshSelected ].getOpacity() );
+    horizontalSliderOpacity -> setValue( 100 );
+    m_Visibility[ m_MeshSelected ] = true;
+
+    listWidgetLoadedMesh -> item( m_MeshSelected ) -> setCheckState( Qt::Checked );
+
+    if( m_MyProcess.CheckPreviousError( m_DataList[ m_MeshSelected ] ) == 31 || m_MyProcess.CheckPreviousError( m_DataList[ m_MeshSelected ] ) == 32 )
+    {
+        m_ErrorComputed[ m_MeshSelected ] = true;
+        tabWidgetError -> setCurrentWidget( tabResults );
+    }
+    else
+    {
+        m_ErrorComputed[ m_MeshSelected ] = false;
+        tabWidgetError -> setCurrentWidget( tabDistance );
+    }
+    checkBoxError -> setEnabled( m_ErrorComputed[ m_MeshSelected ] );
+    checkBoxColorBar -> setChecked( m_ErrorComputed[ m_MeshSelected ] );
+    checkBoxError -> setChecked( false );
 }
 
 
@@ -891,31 +922,24 @@ void meshMetricGui::ChangeTypeOfDisplay()
     }
 }
 
-
 //*************************************************************************************************
-void meshMetricGui::ResetSelectedFile()
+void meshMetricGui::ReloadOne()
 {
-    if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
+    QMessageBox::StandardButton MsgBox = QMessageBox::question( this, "Reload file" , "Do you really want to reload without saving?" , QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Yes );
+
+    if( MsgBox == QMessageBox::Yes )
     {
-        m_DataList[ m_MeshSelected ].setOpacity( 1.0 );
-        m_DataList[ m_MeshSelected ].initialization();
-        m_MyWindowMesh.updateWindow();
+        ResetSelectedFile();
     }
-
-    lcdNumberOpacity -> display( m_DataList[ m_MeshSelected ].getOpacity() );
-    horizontalSliderOpacity -> setValue( 100 );
-    m_Visibility[ m_MeshSelected ] = true;
-
-    listWidgetLoadedMesh -> item( m_MeshSelected ) -> setCheckState( Qt::Checked );
-
-    m_ErrorComputed[ m_MeshSelected ] = false;
-    checkBoxError -> setEnabled( false );
-    checkBoxError -> setChecked( false );
-
-    checkBoxColorBar -> setChecked( false );
-    tabWidgetError -> setCurrentWidget( tabDistance );
+    else if( MsgBox == QMessageBox::Save )
+    {
+        QString out = SaveFile();
+        if( !out.isEmpty() )
+        {
+            ResetSelectedFile();
+        }
+    }
 }
-
 
 //*************************************************************************************************
 void meshMetricGui::DisplayAll()

@@ -56,6 +56,7 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             void DisplayInit(); // display the files when they are loaded
             void DeleteOneFile();
             void DeleteAllFiles();
+            void ResetSelectedFile();
             void resizeEvent( QResizeEvent *Qevent ); // resize the window
             void PreviousError(); // check if there is a previous error loaded
             double calculNewY( double X , double Min , double Max ); // calcul the new position when delta change
@@ -88,7 +89,7 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             void ChangeValueOpacity();
             void ChooseColor();
             void ChangeTypeOfDisplay();
-            void ResetSelectedFile();
+            void ReloadOne();
             void DisplayAll();
             void HideAll();
             void ChooseColorBackground();
