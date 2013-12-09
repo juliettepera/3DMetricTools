@@ -99,12 +99,11 @@ int processing::CheckPreviousError( dataM &Data1 )
         {
             Names[ i ] = PolyData -> GetPointData() -> GetArrayName( i );
 
-            if( strcmp( Names[ i ] , "Error" ) == 0 )
+            if( strcmp( Names[ i ] , "Signed" ) == 0 || strcmp( Names[ i ] , "Absolute" ) == 0 )
             {
                 Check = Check + 1;
                 Indice = i;
             }
-
             if( strcmp( Names[ i ] , "Original" ) == 0 )
             {
                 Check = Check + 2;
@@ -118,11 +117,24 @@ int processing::CheckPreviousError( dataM &Data1 )
 
             double range[2];
             Array -> GetRange( range );
-
             Data1.setMin( range[ 0 ] );
             Data1.setMax( range[ 1 ] );
 
-            return 3;
+            if( strcmp( Names[ Indice ] , "Signed" ) == 0 )
+            {
+                Data1.setMin( range[ 0 ] );
+                Data1.setMax( range[ 1 ] );
+                Data1.setSignedDistance( true );
+                return 31;
+            }
+            else if( strcmp( Names[ Indice ] , "Absolute" ) == 0 )
+            {
+                Data1.setMin( 0.0 );
+                Data1.setMax( range[ 1 ] );
+                Data1.setSignedDistance( false );
+                return 32;
+            }
+            return 3; // -> pb
         }
         else if( Check == 0 )
         {

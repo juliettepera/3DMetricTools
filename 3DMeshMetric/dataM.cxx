@@ -292,9 +292,14 @@ void dataM::changeActivScalar()
     m_Mapper -> SetLookupTable( m_Lut );
     m_Mapper -> SetScalarModeToUsePointFieldData();
 
-    if( m_DisplayError == true )
+    if( m_DisplayError == true && m_SignedDistance == true )
     {
-        m_Mapper -> SelectColorArray( "Error" );
+        m_Mapper -> SelectColorArray( "Signed" );
+        m_Mapper -> SetScalarVisibility( 1 );
+    }
+    else if( m_DisplayError == true && m_SignedDistance == false )
+    {
+        m_Mapper -> SelectColorArray( "Absolute" );
         m_Mapper -> SetScalarVisibility( 1 );
     }
     else if( m_DisplayError == false )

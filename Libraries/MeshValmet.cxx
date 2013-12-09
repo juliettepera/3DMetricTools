@@ -506,7 +506,14 @@ void meshValmet::drawVertexErrorT()
   m_FinalData -> SetPoints( Points );
   m_FinalData -> SetPolys( Polys );
 
-  ScalarsError -> SetName( "Error" );
+  if( m_Pargs.signeddist == true )
+  {
+    ScalarsError -> SetName( "Signed" );
+  }
+  else
+  {
+    ScalarsError -> SetName( "Absolute" );
+  }
   ScalarsConst -> SetName( "Original" );
 
   m_FinalData -> GetPointData() -> AddArray( ScalarsError );
@@ -518,8 +525,6 @@ void meshValmet::CreateLutError()
     m_Lut = vtkSmartPointer <vtkColorTransferFunction>::New();
 
     m_Lut -> SetColorSpaceToRGB();
-
-    std::cout << " min: " << m_Dmin << " center: " << m_Center << " Delta: " << m_Delta << " max: " << m_Dmax << std::endl;
 
     if( m_Pargs.signeddist == true )
     {

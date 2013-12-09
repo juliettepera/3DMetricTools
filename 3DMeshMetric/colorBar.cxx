@@ -88,8 +88,6 @@ int colorBar::convertPosition( double PosInColorBar )
 //*************************************************************************************************
 void colorBar::updateGradientSigned(double DeltaC , double DeltaY , double Center )
 {
-    //m_ItCyan = 1; m_ItGreen = 2 ; m_ItYellow = 3;
-
     // moove center arrow
     int offset = convertPosition( Center ) - convertPosition( m_GreenPos );
     m_ArrowCenter.translate( offset , 0 );
@@ -126,9 +124,14 @@ void colorBar::updateGradientSigned(double DeltaC , double DeltaY , double Cente
 
 void colorBar::updateGradientAbsolute( double DeltaY )
 {
-    //m_ItYellow = 1;
-    m_ArrowCyan.translate( QPoint( m_XLeftLimit , m_YLimit ) );
-    m_ArrowCenter.translate( QPoint( m_XLeftLimit , m_YLimit ) );
+    int offsetC = convertPosition( 0 ) - convertPosition( m_CyanPos );
+    m_ArrowCyan.translate( offsetC , 0 );
+    m_CyanPos = 0;
+
+    int offsetG = convertPosition( 0 ) - convertPosition( m_GreenPos );
+    m_ArrowCenter.translate( offsetG , 0 );
+    m_GreenPos = 0;
+
     // moove yellow arrow
     int offsetY = convertPosition( DeltaY ) - convertPosition( m_YellowPos );
     m_ArrowYellow.translate( offsetY , 0 );
