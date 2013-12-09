@@ -338,7 +338,7 @@ void meshMetricGui::ResetSelectedFile()
         tabWidgetError -> setCurrentWidget( tabDistance );
     }
     checkBoxError -> setEnabled( m_ErrorComputed[ m_MeshSelected ] );
-    checkBoxColorBar -> setChecked( m_ErrorComputed[ m_MeshSelected ] );
+    checkBoxColorBar -> setChecked( false );
     checkBoxError -> setChecked( false );
 }
 
