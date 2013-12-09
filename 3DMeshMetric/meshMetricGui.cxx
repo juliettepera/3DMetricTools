@@ -13,7 +13,7 @@ meshMetricGui::meshMetricGui( QWidget *Parent , Qt::WFlags f , QString path )
     m_NumberOfDisplay = 0;
     m_SelectedItemA = -1;
     m_SelectedItemB = -1;
-    m_nbDecimate = 10;
+    m_nbDecimate = 0.1;
     m_nbIteration = 200;
 
     m_WidgetMesh = new QVTKWidget( this -> scrollAreaMesh );
@@ -697,7 +697,7 @@ void meshMetricGui::ChangeMeshSelected()
        pushButtonApply -> setEnabled( false );
    }
    m_nbIteration = 200;
-   m_nbDecimate = 10;
+   m_nbDecimate = 0.1;
    m_MeshSelected = listWidgetLoadedMesh -> currentRow();
 
    horizontalSliderOpacity -> setValue( m_DataList[ m_MeshSelected ].getOpacity()*100 );

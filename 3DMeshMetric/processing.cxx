@@ -19,8 +19,9 @@ vtkSmartPointer <vtkPolyData> processing::processSmoothing( vtkSmartPointer <vtk
     if( polyData -> GetNumberOfPoints() != SmoothedData -> GetNumberOfPoints() )
     {
         QMessageBox MsgBox;
-        MsgBox.setText( " WARNING : PROCESSING SMOOTHING ");
+        MsgBox.setText( " ERROR : PROCESSING SMOOTHING ");
         MsgBox.exec();
+        return polyData;
     }
     return SmoothedData;
 }
@@ -32,8 +33,17 @@ vtkSmartPointer <vtkPolyData> processing::processDownSampling(vtkSmartPointer<vt
     vtkSmartPointer <vtkPolyData> DecimatedData = vtkSmartPointer <vtkPolyData>::New();
     vtkSmartPointer <vtkDecimatePro> Decimer = vtkSmartPointer <vtkDecimatePro>::New();
 
+    if( polyData -> GetNumberOfPoints() == 0 )
+    {
+        QMessageBox MsgBox;
+        MsgBox.setText( " ERROR : No data to decimate ");
+        MsgBox.exec();
+        return polyData;
+    }
+
     Decimer -> SetInputData( polyData );
     Decimer -> SetTargetReduction( nbDecimate );
+    Decimer -> PreserveTopologyOn();
     Decimer -> Update();
 
     DecimatedData = Decimer -> GetOutput();
@@ -43,6 +53,7 @@ vtkSmartPointer <vtkPolyData> processing::processDownSampling(vtkSmartPointer<vt
         QMessageBox MsgBox;
         MsgBox.setText( " ERROR : PROCESSING DOWN SAMPLING ");
         MsgBox.exec();
+        return polyData;
     }
     return DecimatedData;
 }
