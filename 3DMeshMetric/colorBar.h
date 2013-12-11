@@ -29,9 +29,12 @@ class colorBar: public QWidget
         /* Set the size of the color bar
          */
         void setSize(QPoint topLeft , QPoint bottomRight );
+
+        /* Convert the position in the colorbar to the actual position on the widget
+         */
         int convertPosition( double PosInColorBar );
 
-        /* init the type of the color bar
+        /* update the color bar
          * signed = 5 points and absolute = 3 points
          */
         void updateGradientSigned( double DeltaC, double DeltaY , double Center );

@@ -114,7 +114,6 @@ void display::initWindow()
     m_ScalarBar -> GetLabelTextProperty() -> SetFontFamilyToTimes();
 
     m_Renderer -> AddActor2D( m_ScalarBar );
-
 }
 
 
@@ -186,8 +185,6 @@ void display::updatePositionCamera()
     }
 
 }
-
-
 
 
 

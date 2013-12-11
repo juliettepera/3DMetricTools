@@ -44,7 +44,7 @@ class processing
 
         /* save the file
          */
-        void SaveFile( std::string Name , dataM &Data1 );
+        int SaveFile( std::string Name , dataM &Data1 );
 
         /* update the color map
          */

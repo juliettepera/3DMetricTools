@@ -337,6 +337,9 @@
     </widget>
    </widget>
    <widget class="QScrollArea" name="scrollAreaMesh">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>480</x>

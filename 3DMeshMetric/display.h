@@ -15,9 +15,8 @@
 #include <vtkTextProperty.h>
 #include <vtkTextActor.h>
 #include <vtkPointPicker.h>
-#include <vtkInteractorStyleTrackballCamera.h>
 
-class display /*: public vtkInteractorStyleTrackballCamera*/
+class display
 {
     public:
         display();
@@ -124,7 +123,6 @@ class display /*: public vtkInteractorStyleTrackballCamera*/
         vtkSmartPointer <vtkOrientationMarkerWidget> m_Marker;
         vtkSmartPointer <vtkScalarBarActor> m_ScalarBar;
         vtkSmartPointer <vtkScalarsToColors> m_Lut;
-        //vtkSmartPointer <vtkContourFilter> m_Isoline;
 };
 
 #endif

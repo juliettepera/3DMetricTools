@@ -173,12 +173,39 @@ int processing::CheckPreviousError( dataM &Data1 )
 
 
 //*************************************************************************************************
-void processing::SaveFile(std::string Name, dataM &Data1)
+int processing::SaveFile(std::string Name, dataM &Data1)
 {
     vtkSmartPointer <vtkPolyDataWriter> Writer = vtkSmartPointer <vtkPolyDataWriter>::New();
 
-    int i = Name.size();
-    if( Name.compare( i-4 , 4 , ".vtk" ) != 0 )
+    for( int i = 0 ; i < Name.size() ; i++ )
+    {
+        if( Name[i] == 46 && i != 0 )
+        {
+            if( Name[i+1] == 118 && Name[i+2] == 116 && Name[i+3] == 107 && i+3 == Name.size()-1 )
+            {
+                Writer -> SetInputData( Data1.getPolyData() );
+                Writer -> SetFileName( Name.c_str() );
+                Writer -> Update();
+                return 0;
+            }
+            else
+            {
+                QMessageBox MsgBox;
+                MsgBox.setText( " please enter a name with a valid extention ( .vtk ) " );
+                MsgBox.exec();
+                return 1;
+            }
+        }
+        else if( !( ( Name[i] >= 65 && Name[i] <= 90 ) || ( Name[i] >= 97 && Name[i] <= 122 ) || Name[i] == 45 || Name[i] == 95 ) )
+        {
+            QMessageBox MsgBox;
+            MsgBox.setText( " please enter a name with valid characters " );
+            MsgBox.exec();
+            return 1;
+        }
+    }
+
+    if( Name.compare( Name.size()-4 , 4 , ".vtk" ) != 0 )
     {
         Name += ".vtk";
     }
@@ -186,6 +213,8 @@ void processing::SaveFile(std::string Name, dataM &Data1)
     Writer -> SetInputData( Data1.getPolyData() );
     Writer -> SetFileName( Name.c_str() );
     Writer -> Update();
+
+    return 0;
 }
 
 

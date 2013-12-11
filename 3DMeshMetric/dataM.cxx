@@ -215,13 +215,13 @@ bool dataM::getColorBar()
     return m_ColorBar;
 }
 
-
 //*************************************************************************************************
 void dataM::initialization()
 {
     vtkSmartPointer <vtkPolyDataReader> Reader = vtkSmartPointer <vtkPolyDataReader>::New();
     vtkSmartPointer <vtkTriangleFilter> Triangler = vtkSmartPointer <vtkTriangleFilter>::New();
     vtkSmartPointer <vtkCleanPolyData> Cleaner = vtkSmartPointer <vtkCleanPolyData>::New();
+    //vtkSmartPointer <vtkDepthSortPolyData> Sorter = vtkSmartPointer <vtkDepthSortPolyData>::New();
 
     Reader -> SetFileName( m_Name.c_str() );
     Reader -> Update();
@@ -246,6 +246,7 @@ void dataM::initialization()
 void dataM::updateActorProperties()
 {
     m_Actor -> GetProperty() -> SetOpacity( m_Opacity );
+    m_Actor -> GetProperty() -> BackfaceCullingOn();
     m_Actor -> GetProperty() -> SetColor( m_Red , m_Green , m_Blue );
 }
 

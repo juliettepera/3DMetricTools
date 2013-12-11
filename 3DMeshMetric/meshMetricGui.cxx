@@ -18,8 +18,9 @@ meshMetricGui::meshMetricGui( QWidget *Parent , Qt::WFlags f , QString path )
 
     m_WidgetMesh = new QVTKWidget( this -> scrollAreaMesh );
     m_WidgetMesh->resize( scrollAreaMesh->size() );
-    m_MyWindowMesh.setSizeH( scrollAreaMesh -> height() );
+    m_MyWindowMesh.setSizeH(  scrollAreaMesh -> height()  );
     m_MyWindowMesh.setSizeW( scrollAreaMesh -> width() );
+    m_MyWindowMesh.setMeshWidget( m_WidgetMesh );
 
     widgetColor->setSize( widgetColor->rect().topLeft() , widgetColor->rect().bottomRight() );
 
@@ -90,10 +91,10 @@ meshMetricGui::meshMetricGui( QWidget *Parent , Qt::WFlags f , QString path )
     QObject::connect( pushButtonApply , SIGNAL( clicked() ) , this , SLOT( ApplyDistance() ) );
     QObject::connect( checkBoxError , SIGNAL( toggled( bool ) ) , this , SLOT( ChangeDisplayError() ) );
 
-    QObject::connect( lineEditMin , SIGNAL( editingFinished() ) , this , SLOT( ChangeValueMin() ) );
-    QObject::connect( lineEditMax , SIGNAL( editingFinished() ) , this , SLOT( ChangeValueMax() ) );
-    QObject::connect( lineEditDelta , SIGNAL( editingFinished() ) , this , SLOT( ChangeValueDelta() ) );
-    QObject::connect( lineEditCenter , SIGNAL( editingFinished() ) , this , SLOT( ChangeValueCenter() ) );
+    QObject::connect( lineEditMin , SIGNAL( returnPressed() ) , this , SLOT( ChangeValueMin() ) );
+    QObject::connect( lineEditMax , SIGNAL( returnPressed() ) , this , SLOT( ChangeValueMax() ) );
+    QObject::connect( lineEditDelta , SIGNAL( returnPressed() ) , this , SLOT( ChangeValueDelta() ) );
+    QObject::connect( lineEditCenter , SIGNAL( returnPressed() ) , this , SLOT( ChangeValueCenter() ) );
 
     QObject::connect( checkBoxColorBar , SIGNAL( toggled( bool ) ) , this , SLOT( ChangeDisplayColorBar() ) );
 
@@ -171,9 +172,7 @@ void meshMetricGui::DisplayInit()
 {
     if( m_NumberOfDisplay == 0 )
     {
-       m_MyWindowMesh.setSizeH(  scrollAreaMesh -> height()  );
-       m_MyWindowMesh.setSizeW( scrollAreaMesh -> width() );
-       m_MyWindowMesh.setMeshWidget( m_WidgetMesh );
+       scrollAreaMesh->setEnabled( true );
     }
 
     m_MyWindowMesh.initWindow();
@@ -627,10 +626,15 @@ QString meshMetricGui::SaveFile()
     if( !m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
     {
         QString fileName = QFileDialog::getSaveFileName( this , " Create a new vtk file or open an existing one" , "./untitled.vtk" , "vtk mesh (*.vtk)" );
+        QFileInfo Name = fileName;
         if( ! fileName.isEmpty() )
         {
             std::cout << fileName.toStdString() << std::endl;
-            m_MyProcess.SaveFile( fileName.toStdString() , m_DataList[ m_MeshSelected ] );
+            int out = m_MyProcess.SaveFile( Name.fileName().toStdString() , m_DataList[ m_MeshSelected ] );
+            if( out != 0 )
+            {
+                SaveFile();
+            }
         }
         return fileName;
     }
@@ -1464,7 +1468,6 @@ void meshMetricGui::ChangeValueCenter()
         }
     }
 }
-
 
 //*************************************************************************************************
 void meshMetricGui::UpdateColor()
