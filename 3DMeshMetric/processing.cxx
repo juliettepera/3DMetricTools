@@ -196,13 +196,13 @@ int processing::SaveFile(std::string Name, dataM &Data1)
                 return 1;
             }
         }
-        else if( !( ( Name[i] >= 65 && Name[i] <= 90 ) || ( Name[i] >= 97 && Name[i] <= 122 ) || Name[i] == 45 || Name[i] == 95 ) )
+        /*else if( !( ( Name[i] >= 65 && Name[i] <= 90 ) || ( Name[i] >= 97 && Name[i] <= 122 ) || Name[i] == 45 || Name[i] == 95 ) )
         {
             QMessageBox MsgBox;
             MsgBox.setText( " please enter a name with valid characters " );
             MsgBox.exec();
             return 1;
-        }
+        }*/
     }
 
     if( Name.compare( Name.size()-4 , 4 , ".vtk" ) != 0 )
