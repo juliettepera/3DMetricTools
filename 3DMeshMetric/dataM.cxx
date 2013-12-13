@@ -221,7 +221,6 @@ void dataM::initialization()
     vtkSmartPointer <vtkPolyDataReader> Reader = vtkSmartPointer <vtkPolyDataReader>::New();
     vtkSmartPointer <vtkTriangleFilter> Triangler = vtkSmartPointer <vtkTriangleFilter>::New();
     vtkSmartPointer <vtkCleanPolyData> Cleaner = vtkSmartPointer <vtkCleanPolyData>::New();
-    //vtkSmartPointer <vtkDepthSortPolyData> Sorter = vtkSmartPointer <vtkDepthSortPolyData>::New();
 
     Reader -> SetFileName( m_Name.c_str() );
     Reader -> Update();

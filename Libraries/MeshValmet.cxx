@@ -6,20 +6,13 @@ meshValmet::meshValmet()
     m_Pargs.min_sample_freq = 2;
     m_Pargs.signeddist = false;
 
-    m_Pargs.verb_analysis = false; // ???
-    m_Pargs.quiet = 0; // ???
+    m_Pargs.verb_analysis = false;
+    m_Pargs.quiet = 0;
 
-    //m_ModelError1
-    //m_ModelError2
-    //m_Stats;
-    //m_StatsRev;
-    //m_AbsSamplingStep;
-    //m_AbsSamplingDens;
+    m_DiceCoefficient[0] = 0.0;
+    m_IntUnionRatio[0] = 0.0;
 
-    m_DiceCoefficient[0] = 0.0; // ????
-    m_IntUnionRatio[0] = 0.0; // ????
-
-    m_Downsampling = 1; // ????
+    m_Downsampling = 1;
     m_Delta = 0.5;
     m_Center = 0;
 
@@ -48,7 +41,7 @@ meshValmet::meshValmet()
     }
 }
 
-//***************************** SET ALL THE PARAMETERS WE WILL NEED LATER ***********************************
+//*************************************************************************************************
 void meshValmet::SetData1( vtkSmartPointer <vtkPolyData> Data1 )
 {
     m_Pargs.Data1 = Data1;
@@ -94,7 +87,7 @@ void meshValmet::SetCenter( double Center )
     m_Center = Center;
 }
 
-//***************************** ACCESSOR TO THE FINAL POLYDATA THAT WE WILL DISPLAY *************************
+//*************************************************************************************************
 vtkSmartPointer <vtkPolyData> meshValmet::GetFinalData()
 {
     vtkSmartPointer <vtkCleanPolyData> Cleaner = vtkSmartPointer <vtkCleanPolyData>::New();
@@ -124,7 +117,7 @@ double meshValmet::GetDelta()
 }
 
 
-//************************************** COMPUTE THE ERROR ***************************************
+//*************************************************************************************************
 void meshValmet::CalculateError()
 {
     printf( "\t-Sampling Step: %f\n\t-Min Sampling Frequency: %d\n\t-Signed Distance: %d\n" , m_Pargs.sampling_step , m_Pargs.min_sample_freq , m_Pargs.signeddist );
@@ -198,19 +191,21 @@ void meshValmet::CalculateError()
       {
         m_Dmax = m_ModelError1.max_error;
         m_Dmin = m_ModelError1.min_error;
+        drawVertexErrorTSigned();
       }
       else
       {
         m_Dmax = m_ModelError1.abs_max_error;
         m_Dmin = m_ModelError1.abs_min_error;
+        drawVertexErrorTAbsolute();
       }
 
-    drawVertexErrorT();
     CreateLutError();
 }
 
-//********************************* CREATE THE FINAL POLYDATA ***********************************
-void meshValmet::drawVertexErrorT()
+
+//*************************************************************************************************
+void meshValmet::drawVertexErrorTSigned()
 {
   vtkSmartPointer <vtkPoints> Points = vtkSmartPointer <vtkPoints>::New();
   vtkSmartPointer <vtkCellArray> Polys = vtkSmartPointer <vtkCellArray>::New();
@@ -506,20 +501,319 @@ void meshValmet::drawVertexErrorT()
   m_FinalData -> SetPoints( Points );
   m_FinalData -> SetPolys( Polys );
 
-  if( m_Pargs.signeddist == true )
-  {
-    ScalarsError -> SetName( "Signed" );
-  }
-  else
-  {
-    ScalarsError -> SetName( "Absolute" );
-  }
+  ScalarsError -> SetName( "Signed" );
   ScalarsConst -> SetName( "Original" );
 
   m_FinalData -> GetPointData() -> AddArray( ScalarsError );
   m_FinalData -> GetPointData() -> AddArray( ScalarsConst );
 }
 
+
+//*************************************************************************************************
+void meshValmet::drawVertexErrorTAbsolute()
+{
+  vtkSmartPointer <vtkPoints> Points = vtkSmartPointer <vtkPoints>::New();
+  vtkSmartPointer <vtkCellArray> Polys = vtkSmartPointer <vtkCellArray>::New();
+  vtkSmartPointer <vtkDoubleArray> ScalarsError = vtkSmartPointer <vtkDoubleArray>::New();
+  vtkSmartPointer <vtkDoubleArray> ScalarsConst = vtkSmartPointer <vtkDoubleArray>::New();
+  int k,i,j,jmax,n;
+  vertex_t u,v;
+  vertex_t a,b,c;
+  face_t *cur_face;
+  int i0,i1,i2,i3;
+  int j0,j1,j2,j3;
+  int l0,l1,l2,l3;
+  vertex_t v0,v1,v2,v3;
+
+  vtkIdType index = 0;
+  double vertex[3];
+  vtkIdType f[3];
+
+  for ( k=0 ; k < m_ModelError1.mesh->num_faces ; k++)
+  {
+    n = m_ModelError1.fe[k].sample_freq;
+
+    cur_face = &(m_ModelError1.mesh->faces[k]);
+
+    if (n == 1 && m_Downsampling == 1)
+    {
+      // displaying only at triangle vertices + center
+      a =m_ModelError1.mesh->vertices[cur_face->f0];
+      b =m_ModelError1.mesh->vertices[cur_face->f1];
+      c =m_ModelError1.mesh->vertices[cur_face->f2];
+
+      v3.x = 1/3.0*(a.x+b.x+c.x);
+      v3.y = 1/3.0*(a.y+b.y+c.y);
+      v3.z = 1/3.0*(a.z+b.z+c.z);
+
+      vertex[0] = a.x;
+      vertex[1] = a.y;
+      vertex[2] = a.z;
+
+      Points->InsertPoint( index , vertex );
+      ScalarsError->InsertTuple1( index++ , fabs( m_ModelError1.verror[cur_face->f0] ) );
+      ScalarsConst->InsertTuple1( index , 1.0 );
+
+      vertex[0] = b.x;
+      vertex[1] = b.y;
+      vertex[2] = b.z;
+
+      Points->InsertPoint(index,vertex);
+      ScalarsError->InsertTuple1(index++, fabs( m_ModelError1.verror[cur_face->f1] ) );
+      ScalarsConst->InsertTuple1( index , 1.0 );
+
+      vertex[0] = v3.x;
+      vertex[1] = v3.y;
+      vertex[2] = v3.z;
+
+      Points->InsertPoint(index,vertex);
+      ScalarsError->InsertTuple1(index++, fabs( m_ModelError1.fe[k].serror[0] ) );
+      ScalarsConst->InsertTuple1( index , 1.0 );
+
+      f[0] = index - 3;
+      f[1] = index - 2;
+      f[2] = index - 1;
+
+      Polys->InsertNextCell(3,f);
+
+      vertex[0] = a.x;
+      vertex[1] = a.y;
+      vertex[2] = a.z;
+
+      Points->InsertPoint(index,vertex);
+      ScalarsError->InsertTuple1(index++, fabs( m_ModelError1.verror[cur_face->f0] ) );
+      ScalarsConst->InsertTuple1( index , 1.0 );
+
+      vertex[0] = v3.x;
+      vertex[1] = v3.y;
+      vertex[2] = v3.z;
+
+      Points->InsertPoint(index,vertex);
+      ScalarsError->InsertTuple1(index++, fabs( m_ModelError1.fe[k].serror[0] ) );
+      ScalarsConst->InsertTuple1( index , 1.0 );
+
+      vertex[0] = c.x;
+      vertex[1] = c.y;
+      vertex[2] = c.z;
+
+      Points->InsertPoint(index,vertex);
+      ScalarsError->InsertTuple1(index++, fabs( m_ModelError1.verror[cur_face->f2] ) );
+      ScalarsConst->InsertTuple1( index , 1.0 );
+
+      f[0] = index - 3;
+      f[1] = index - 2;
+      f[2] = index - 1;
+
+      Polys->InsertNextCell(3,f);
+
+      vertex[0] = b.x;
+      vertex[1] = b.y;
+      vertex[2] = b.z;
+
+      Points->InsertPoint(index,vertex);
+      ScalarsError->InsertTuple1(index++, fabs( m_ModelError1.verror[cur_face->f1] ) );
+      ScalarsConst->InsertTuple1( index , 1.0 );
+
+      vertex[0] = c.x;
+      vertex[1] = c.y;
+      vertex[2] = c.z;
+
+      Points->InsertPoint(index,vertex);
+      ScalarsError->InsertTuple1(index++, fabs( m_ModelError1.verror[cur_face->f2] ) );
+      ScalarsConst->InsertTuple1( index , 1.0 );
+
+      vertex[0] = v3.x;
+      vertex[1] = v3.y;
+      vertex[2] = v3.z;
+
+      Points->InsertPoint(index,vertex);
+      ScalarsError->InsertTuple1(index++, fabs( m_ModelError1.fe[k].serror[0] ) );
+      ScalarsConst->InsertTuple1( index , 1.0 );
+
+      f[0] = index - 3;
+      f[1] = index - 2;
+      f[2] = index - 1;
+
+      Polys->InsertNextCell(3,f);
+
+    }
+    else if ( m_Downsampling >= n)
+    {
+      //displaying only at triangle vertices
+      vertex[0] = m_ModelError1.mesh->vertices[cur_face->f0].x;
+      vertex[1] = m_ModelError1.mesh->vertices[cur_face->f0].y;
+      vertex[2] = m_ModelError1.mesh->vertices[cur_face->f0].z;
+
+      Points->InsertPoint(index,vertex);
+      ScalarsError->InsertTuple1(index++, fabs( m_ModelError1.verror[cur_face->f0] ) );
+      ScalarsConst->InsertTuple1( index , 1.0 );
+
+      vertex[0] = m_ModelError1.mesh->vertices[cur_face->f1].x;
+      vertex[1] = m_ModelError1.mesh->vertices[cur_face->f1].y;
+      vertex[2] = m_ModelError1.mesh->vertices[cur_face->f1].z;
+
+      Points->InsertPoint(index,vertex);
+      ScalarsError->InsertTuple1(index++, fabs( m_ModelError1.verror[cur_face->f1] ) );
+      ScalarsConst->InsertTuple1( index , 1.0 );
+
+      vertex[0] = m_ModelError1.mesh->vertices[cur_face->f2].x;
+      vertex[1] = m_ModelError1.mesh->vertices[cur_face->f2].y;
+      vertex[2] = m_ModelError1.mesh->vertices[cur_face->f2].z;
+
+      Points->InsertPoint(index,vertex);
+      ScalarsError->InsertTuple1(index++, fabs( m_ModelError1.verror[cur_face->f2] ) );
+      ScalarsConst->InsertTuple1( index , 1.0 );
+
+      f[0] = index - 3;
+      f[1] = index - 2;
+      f[2] = index - 1;
+
+      Polys->InsertNextCell(3,f);
+    }
+    else
+    {
+      /* displaying at error samples and triangle vertices */
+      //assert(n > 1);
+      a = m_ModelError1.mesh->vertices[cur_face->f0];
+      b = m_ModelError1.mesh->vertices[cur_face->f1];
+      c = m_ModelError1.mesh->vertices[cur_face->f2];
+
+      substract_v(&b,&a,&u);
+      substract_v(&c,&a,&v);
+
+      prod_v(1/(float)(n-1),&u,&u);
+      prod_v(1/(float)(n-1),&v,&v);
+
+      for (i=0; i<n-1; i+=m_Downsampling)
+      {
+        i2 = (i+m_Downsampling < n) ? i+m_Downsampling : n-1;
+
+        for (j=0, jmax=n-i-1; j<jmax; j+=m_Downsampling)
+        {
+          if (i+j+m_Downsampling < n)
+          {
+            i0 = i;
+            j0 = j;
+            i1 = i+m_Downsampling;
+            j1 = j;
+            i2 = i;
+            j2 = j+m_Downsampling;
+            i3 = i1;
+            j3 = j2;
+          }
+          else
+          {
+            i2 = i;
+            j2 = j;
+            i0 = (i+m_Downsampling < n) ? i+m_Downsampling : n-1;
+            j0 = (j>0) ? j-m_Downsampling : j;
+            //assert(j0 >= 0);
+            i1 = i0;
+            j1 = n-1-i1;
+            i3 = i;
+            j3 = n-1-i3;
+            //assert(j3 >= 0);
+          }
+
+          l0 = j0+i0*(2*n-i0+1)/2;
+          l1 = j1+i1*(2*n-i1+1)/2;
+          l2 = j2+i2*(2*n-i2+1)/2;
+          v0.x = a.x+i0*u.x+j0*v.x;
+          v0.y = a.y+i0*u.y+j0*v.y;
+          v0.z = a.z+i0*u.z+j0*v.z;
+          v1.x = a.x+i1*u.x+j1*v.x;
+          v1.y = a.y+i1*u.y+j1*v.y;
+          v1.z = a.z+i1*u.z+j1*v.z;
+          v2.x = a.x+i2*u.x+j2*v.x;
+          v2.y = a.y+i2*u.y+j2*v.y;
+          v2.z = a.z+i2*u.z+j2*v.z;
+
+          if (i0 != i1 || j0 != j1) /* avoid possible degenerate */
+          {
+            vertex[0] = v0.x;
+            vertex[1] = v0.y;
+            vertex[2] = v0.z;
+
+            Points->InsertPoint(index,vertex);
+            ScalarsError->InsertTuple1(index++, fabs( m_ModelError1.fe[k].serror[l0] ) );
+            ScalarsConst->InsertTuple1( index , 1.0 );
+
+            vertex[0] = v1.x;
+            vertex[1] = v1.y;
+            vertex[2] = v1.z;
+
+            Points->InsertPoint(index,vertex);
+            ScalarsError->InsertTuple1(index++, fabs( m_ModelError1.fe[k].serror[l1] ) );
+            ScalarsConst->InsertTuple1( index , 1.0 );
+
+            vertex[0] = v2.x;
+            vertex[1] = v2.y;
+            vertex[2] = v2.z;
+
+            Points->InsertPoint(index,vertex);
+            ScalarsError->InsertTuple1(index++, fabs( m_ModelError1.fe[k].serror[l2] ) );
+            ScalarsConst->InsertTuple1( index , 1.0 );
+
+            f[0] = index - 3;
+            f[1] = index - 2;
+            f[2] = index - 1;
+
+            Polys->InsertNextCell(3,f);
+          }
+
+          if (i3+j3 < n)
+          {
+            l3 = j3+i3*(2*n-i3+1)/2;
+            v3.x = a.x+i3*u.x+j3*v.x;
+            v3.y = a.y+i3*u.y+j3*v.y;
+            v3.z = a.z+i3*u.z+j3*v.z;
+
+            vertex[0] = v3.x;
+            vertex[1] = v3.y;
+            vertex[2] = v3.z;
+
+            Points->InsertPoint(index,vertex);
+            ScalarsError->InsertTuple1(index++, fabs( m_ModelError1.fe[k].serror[l3] ) );
+            ScalarsConst->InsertTuple1( index , 1.0 );
+
+            vertex[0] = v2.x;
+            vertex[1] = v2.y;
+            vertex[2] = v2.z;
+
+            Points->InsertPoint(index,vertex);
+            ScalarsError->InsertTuple1(index++, fabs( m_ModelError1.fe[k].serror[l2] ) );
+            ScalarsConst->InsertTuple1( index , 1.0 );
+
+            vertex[0] = v1.x;
+            vertex[1] = v1.y;
+            vertex[2] = v1.z;
+
+            Points->InsertPoint(index,vertex);
+            ScalarsError->InsertTuple1(index++, fabs( m_ModelError1.fe[k].serror[l1] ) );
+            ScalarsConst->InsertTuple1( index , 1.0 );
+
+            f[0] = index - 3;
+            f[1] = index - 2;
+            f[2] = index - 1;
+
+            Polys->InsertNextCell(3,f);
+          }
+        }
+      }
+    }
+  }
+
+  m_FinalData -> SetPoints( Points );
+  m_FinalData -> SetPolys( Polys );
+  ScalarsError -> SetName( "Absolute" );
+  ScalarsConst -> SetName( "Original" );
+
+  m_FinalData -> GetPointData() -> AddArray( ScalarsError );
+  m_FinalData -> GetPointData() -> AddArray( ScalarsConst );
+}
+
+
+//*************************************************************************************************
 void meshValmet::CreateLutError()
 {
     m_Lut = vtkSmartPointer <vtkColorTransferFunction>::New();
@@ -546,6 +840,8 @@ void meshValmet::CreateLutError()
     }
 }
 
+
+//*************************************************************************************************
 int meshValmet::testPolyData( vtkSmartPointer <vtkPolyData> inData , vtkSmartPointer <vtkPolyData> outData )
 {
     // comparer pointeurs

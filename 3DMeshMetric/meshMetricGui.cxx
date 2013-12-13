@@ -626,7 +626,7 @@ QString meshMetricGui::SaveFile()
     if( !m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
     {
         QFileInfo CurrentMesh = QString::fromStdString( m_DataList[ m_MeshSelected ].getName() );
-        QString fileName = QFileDialog::getSaveFileName( this , " Create a new vtk file or open an existing one" , CurrentMesh.fileName() , "vtk mesh (*.vtk)" );
+        QString fileName = QFileDialog::getSaveFileName( this , " Create a new vtk file or open an existing one" , CurrentMesh.absolutePath() , "vtk file (*.vtk)" );
         if( ! fileName.isEmpty() )
         {
             std::cout << fileName.toStdString() << std::endl;

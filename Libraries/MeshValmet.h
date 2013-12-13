@@ -57,7 +57,8 @@ class meshValmet
                              outbuf *out, prog_reporter *progress,
                              dist_surf_surf_stats *stats, dist_surf_surf_stats *stats_rev,
                              double *abs_sampling_step, double *abs_sampling_dens);
-        void drawVertexErrorT();
+        void drawVertexErrorTSigned();
+        void drawVertexErrorTAbsolute();
         void CreateLutError();
         int testPolyData( vtkSmartPointer <vtkPolyData> inData , vtkSmartPointer <vtkPolyData> outData );
 
