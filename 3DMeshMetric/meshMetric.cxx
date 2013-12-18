@@ -9,10 +9,12 @@ int main( int argc , char* argv[] )
 
       QWidget * parent = 0;
       Qt::WFlags f = 0;
+
       QString path = app.applicationDirPath();
+
       #ifdef __APPLE__
-        path -= "MacOS";
-        path += "Ressources";
+        path.remove( path.size()-5 , 5 );
+        path += "Resources";
       #endif
 
       meshMetricGui myMainWindow( parent , f , path );
