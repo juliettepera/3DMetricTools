@@ -24,4 +24,10 @@ SEMMacroBuildCLI(
     ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
 )
 
+#include_directories( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${MeshValmetLib_SOURCE_DIRECTORY} )
+#link_directories( ${MeshValmetLib_BINARY_DIRECTORY} )
+#generateclp( Dsources meshMetric.xml )
+#add_executable( errorMetric errorMetric.cxx )
+#target_link_libraries( errorMetric MeshValmetLib ${VTK_LIBRARIES} )
+
 
