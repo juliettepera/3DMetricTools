@@ -3763,6 +3763,7 @@
     </property>
     <addaction name="actionBackgroundColor"/>
     <addaction name="action3DMeshMetric"/>
+    <addaction name="actionAbout"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuOption"/>
@@ -3810,6 +3811,11 @@
   <action name="action3DMeshMetric">
    <property name="text">
     <string>3DMeshMetric</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
    </property>
   </action>
  </widget>

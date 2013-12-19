@@ -90,6 +90,7 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
     public slots:
 
             void MeshMetric();
+            void About();
 
             /* Load a file or repository
              * Save a file

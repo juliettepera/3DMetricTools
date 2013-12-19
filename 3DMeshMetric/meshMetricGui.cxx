@@ -76,6 +76,7 @@ meshMetricGui::meshMetricGui( QWidget *Parent , Qt::WFlags f , QString path )
     // connections
     QObject::connect( actionQuit , SIGNAL( triggered() ) , qApp , SLOT( quit() ) );
     QObject::connect( action3DMeshMetric , SIGNAL( triggered() ) , this , SLOT( MeshMetric() ) );
+    QObject::connect( actionAbout , SIGNAL( triggered() ) , this , SLOT( About() ) );
 
     QObject::connect( actionAddNewFile , SIGNAL( triggered() ) , this , SLOT( OpenBrowseWindowFile() ) );
     QObject::connect( pushButtonAdd , SIGNAL( clicked() ) , this , SLOT( OpenBrowseWindowFile() ) );
@@ -528,16 +529,33 @@ double meshMetricGui::calculNewY( double X , double Min , double Max )
 void meshMetricGui::MeshMetric()
 {
     QMessageBox MsgBox;
-    std::string text( "3DMeshMetric\n\nVersion: " );
+    QString text( "\t3DMeshMetric\n\nVersion: " );
     text += MESHMETRIC3D_VERSION;
     text += "\n\nSoftware Developers:\n";
     text += MESHMETRIC3D_CONTRIBUTOR;
     text += "\n\nDocumentation:\n";
     text += MESHMETRIC3D_DOCUMENTATION;
-    MsgBox.setText( QString::fromStdString( text ) );
+    MsgBox.setText( text );
     MsgBox.exec();
 }
 
+
+//*************************************************************************************************
+void meshMetricGui::About()
+{
+    QMessageBox MsgBox;
+    QString text( "GNU General Public License" );
+    text += "\nThis program is free software: you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by";
+    text += "\nthe Free Software Foundation, either version 3 of the License, or\n(at your option) any later version.";
+    text += "\n\nThis program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of";
+    text += "\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.";
+    text += "\n\nYou should have received a copy of the GNU General Public License\nalong with this program.  If not, see <http://www.gnu.org/licenses/>.";
+    text += "\n\nReference\nMeshValmet, Validation Metric for Meshes\nhttp://www.nitrc.org/projects/meshvalmet/";
+    text += "\n\nThis program also uses Qt libraries\nhttp://www.qt-project.org/";
+
+    MsgBox.setText( text );
+    MsgBox.exec();
+}
 
 
 //*************************************************************************************************
