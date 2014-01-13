@@ -125,7 +125,60 @@ meshMetricGui::meshMetricGui( QWidget *Parent , Qt::WFlags f , QString path )
 
     QObject::connect( checkBoxColorBar , SIGNAL( toggled( bool ) ) , this , SLOT( ChangeDisplayColorBar() ) );
 
+    QObject::connect( pushButtonClick , SIGNAL( clicked() ) , this , SLOT( GetValueByClicking() ) );
+
 }
+
+
+//*************************************************************************************************
+void meshMetricGui::dragEnterEvent(QDragEnterEvent *Qevent)
+{
+    Qevent->accept();
+}
+
+
+//*************************************************************************************************
+void meshMetricGui::dropEvent(QDropEvent* Qevent)
+{
+    const QMimeData* mimeData = Qevent->mimeData();
+    if( mimeData->hasUrls() )
+    {
+        QList <QUrl> urlList = mimeData->urls();
+        for( int i = 0 ; i < urlList.size() ; i++ )
+        {
+            QString filePath = urlList.at(i).toLocalFile();
+
+            if( filePath.endsWith( ".vtk" ) && QFileInfo( filePath ).exists() )
+            {
+                m_DataList.push_back( filePath.toStdString() );
+                m_DataList[ m_NumberOfMesh ].initialization();
+
+                QFileInfo File = QFileInfo(filePath);
+                listWidgetLoadedMesh -> addItem( File.fileName().toStdString().c_str() );
+
+                QListWidgetItem* currentIndex = listWidgetLoadedMesh -> item( m_NumberOfMesh );
+                currentIndex -> setFlags( listWidgetLoadedMesh -> item( m_NumberOfMesh ) -> flags() | Qt::ItemIsUserCheckable );
+                currentIndex -> setCheckState( Qt::Checked );
+
+                comboBoxMeshB -> addItem( m_NotOkIcon , File.fileName().toStdString().c_str() );
+
+                m_MyWindowMesh.addData( m_DataList[ m_NumberOfMesh ].getActor() );
+
+                m_ErrorComputed.push_back( false );
+                m_Visibility.push_back( true );
+
+                m_MeshSelected = m_NumberOfMesh;
+                m_NumberOfMesh++;
+                listWidgetLoadedMesh -> setCurrentRow( m_MeshSelected );
+
+                PreviousError();
+                DisplayInit();
+                ChangeMeshSelected();
+            }
+        }
+    }
+}
+
 
 //*************************************************************************************************
 void meshMetricGui::InitIcon()
@@ -317,6 +370,8 @@ void meshMetricGui::DeleteAllFiles()
         comboBoxMeshB -> addItem( m_NotOkIcon , QString(" no file selected ") );
         comboBoxMeshB -> setCurrentIndex( 0 );
         lineEditMeshA -> clear();
+        //added
+        lineEditNameMesh -> clear();
         m_DataList.clear();
         m_ErrorComputed.clear();
         m_Visibility.clear();
@@ -829,6 +884,8 @@ void meshMetricGui::ChangeMeshSelected()
 
        tabWidgetError -> setCurrentWidget( tabResults );
        tabResults -> setEnabled( true );
+       //added
+       tabClick -> setEnabled( true );
 
        m_MyWindowMesh.setLut( m_DataList[ m_MeshSelected ].getMapper()->GetLookupTable() );
 
@@ -863,6 +920,9 @@ void meshMetricGui::ChangeMeshSelected()
        lineEditCenter -> setText( QString::number( m_DataList[ m_MeshSelected ].getCenter() ) );
        lineEditDelta -> setText( QString::number( m_DataList[ m_MeshSelected ].getDelta() ) );
 
+       //added
+       lineEditNameMesh -> setText( File.fileName() );
+
        if( m_DataList[ m_MeshSelected ].getSignedDistance() == true )
        {
            double DeltaY = calculNewY( m_DataList[ m_MeshSelected ].getCenter() + m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
@@ -889,6 +949,8 @@ void meshMetricGui::ChangeMeshSelected()
        checkBoxError -> setChecked( false );
        tabWidgetError -> setCurrentWidget( tabDistance );
        tabResults -> setEnabled( false );
+       //added
+       tabClick -> setEnabled( false );
        lineEditMaxR -> clear();
        lineEditMinR -> clear();
        lineEditA -> clear();
@@ -898,6 +960,8 @@ void meshMetricGui::ChangeMeshSelected()
        lineEditMax -> setText( "1.0" );
        lineEditDelta -> setText( "0.5" );
        lineEditCenter -> setText( "0.0" );
+       //added
+       lineEditNameMesh -> clear();
 
     }
 
@@ -1516,7 +1580,7 @@ void meshMetricGui::ChangeValueCenter()
 //*************************************************************************************************
 void meshMetricGui::UpdateColor()
 {
-    if( ! m_DataList.empty() && m_MeshSelected != -1  && m_MeshSelected != -1 && m_ErrorComputed[ m_MeshSelected ] == true )
+    if( ! m_DataList.empty() && m_MeshSelected != -1  && m_ErrorComputed[ m_MeshSelected ] == true )
     {
         if( m_DataList[ m_MeshSelected ].getSignedDistance() == true )
         {
@@ -1561,3 +1625,20 @@ void meshMetricGui::ChangeDisplayColorBar()
         m_MyWindowMesh.updateWindow();
     }
 }
+
+
+//*************************************************************************************************
+void meshMetricGui::GetValueByClicking()
+{
+    if( ! m_DataList.empty() && m_MeshSelected != -1  && m_ErrorComputed[ m_MeshSelected ] == true )
+    {
+        std::cout << "pouet " << std::endl;
+    }
+}
+
+
+
+
+
+
+

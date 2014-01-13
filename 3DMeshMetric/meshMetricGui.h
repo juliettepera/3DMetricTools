@@ -44,6 +44,8 @@
 #include <QPalette>
 #include <QResizeEvent>
 #include <QLinearGradient>
+#include <QMimeData>
+#include <QUrl>
 
 // VTK libraries
 #include <QVTKWidget.h>
@@ -78,6 +80,8 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
     public:
             meshMetricGui(QWidget * Parent = 0 , Qt::WFlags f = 0 , QString path = "" );
 
+            void dragEnterEvent(QDragEnterEvent *Qevent); // enable drag&drop
+            void dropEvent(QDropEvent* Qevent); // drag&drop event
             void InitIcon(); // init all the icons
             void DisplayInit(); // display the files when they are loaded
             void DeleteOneFile();
@@ -166,6 +170,11 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             void ChangeValueCenter();
             void UpdateColor();
             void ChangeDisplayColorBar();
+
+
+            /* Get the value of the point by clicking on it
+             */
+            void GetValueByClicking();
 
     private:
             // attibuts for the icons
