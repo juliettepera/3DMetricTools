@@ -40,6 +40,7 @@
 #include <vtkTriangleFilter.h>
 #include <vtkAbstractArray.h>
 #include <vtkCleanPolyData.h>
+#include <vtkPointData.h>
 
 // QT libraries
 #include <QMessageBox>
@@ -86,13 +87,13 @@ class dataM
         void setNameB( std::string NameB );
         void setMinSamplingFrequency(int MinSamplingFrequency );
         void setSamplingStep( double SamplingStep );
-        void setSignedDistance( bool SignedDistance );
+        void setTypeDistance(int TypeDistance );
         void setDisplayError( bool DisplayError );
 
         std::string getNameB();
         int getMinSamplingFrequency();
         double getSamplingStep();
-        bool getSignedDistance();
+        int getTypeDistance();
         bool getDisplayError();
 
         /* set and get the parameters used to compute the color bar
@@ -135,6 +136,14 @@ class dataM
          */
         void changeActivScalar();
 
+        /* Get the Id of a point by knowing is coordinates
+         */
+        vtkIdType getIdPointClicked( double ClickedPosition[3] );
+
+        /* Get the Scalar value of a point by knowing is Id
+         */
+        QString getScalarValue( vtkIdType MyId );
+
     private:
         std::string m_Name;
         vtkSmartPointer <vtkPolyData> m_PolyData;
@@ -150,7 +159,7 @@ class dataM
         std::string m_NameB;
         int m_MinSamplingFrequency;
         double m_SamplingStep;
-        bool m_SignedDistance;
+        int m_TypeDistance; // 0=absolute 1=signed 2=correspondant
         bool m_DisplayError;
 
         vtkSmartPointer <vtkColorTransferFunction> m_Lut;

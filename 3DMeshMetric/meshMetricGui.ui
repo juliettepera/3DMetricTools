@@ -1131,22 +1131,6 @@
         <height>281</height>
        </rect>
       </property>
-      <widget class="QRadioButton" name="radioButtonAbsoluteDistance">
-       <property name="geometry">
-        <rect>
-         <x>202</x>
-         <y>86</y>
-         <width>151</width>
-         <height>22</height>
-        </rect>
-       </property>
-       <property name="toolTip">
-        <string>compute the absolute distance</string>
-       </property>
-       <property name="text">
-        <string>Absolute Distance</string>
-       </property>
-      </widget>
       <widget class="QSpinBox" name="spinBoxMinSampFreq">
        <property name="geometry">
         <rect>
@@ -1239,25 +1223,6 @@
         <string>choose 2nd file for distance error</string>
        </property>
       </widget>
-      <widget class="QRadioButton" name="radioButtonSignedDistance">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>86</y>
-         <width>141</width>
-         <height>22</height>
-        </rect>
-       </property>
-       <property name="toolTip">
-        <string>compute the signed distance</string>
-       </property>
-       <property name="text">
-        <string>Signed Distance</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
       <widget class="QLineEdit" name="lineEditMeshA">
        <property name="geometry">
         <rect>
@@ -1323,6 +1288,57 @@
        </property>
        <property name="toolTip">
         <string>choose the sampling step</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="radioButtonSignedDistance">
+       <property name="geometry">
+        <rect>
+         <x>160</x>
+         <y>80</y>
+         <width>134</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>compute the signed distance</string>
+       </property>
+       <property name="text">
+        <string>Signed Distance</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="radioButtonCorrespondantDistance">
+       <property name="geometry">
+        <rect>
+         <x>300</x>
+         <y>80</y>
+         <width>129</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>compute the absolute distance</string>
+       </property>
+       <property name="text">
+        <string>Correspondant </string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="radioButtonAbsoluteDistance">
+       <property name="geometry">
+        <rect>
+         <x>7</x>
+         <y>80</y>
+         <width>147</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>compute the absolute distance</string>
+       </property>
+       <property name="text">
+        <string>Absolute Distance</string>
        </property>
       </widget>
      </widget>
@@ -2230,7 +2246,7 @@
        <bool>true</bool>
       </property>
       <property name="cursorMoveStyle">
-       <enum>Qt::VisualMoveStyle</enum>
+       <enum>Qt::LogicalMoveStyle</enum>
       </property>
      </widget>
      <widget class="QLabel" name="label_3">
@@ -4222,7 +4238,7 @@
        <bool>true</bool>
       </property>
       <property name="cursorMoveStyle">
-       <enum>Qt::VisualMoveStyle</enum>
+       <enum>Qt::LogicalMoveStyle</enum>
       </property>
      </widget>
      <widget class="QLabel" name="label_9">

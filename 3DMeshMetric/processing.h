@@ -80,6 +80,9 @@ class processing
          */
         int testPolyData( vtkSmartPointer <vtkPolyData> inData , vtkSmartPointer <vtkPolyData> outData );
 
+        /* process the error with another method
+         */
+        int processError2( dataM &Data1 , dataM &Data2 );
 
 
     private:

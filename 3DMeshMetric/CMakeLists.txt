@@ -20,7 +20,6 @@ dataM.cxx
 processing.cxx
 display.cxx
 colorBar.cxx
-#doubleClick.cxx
 ${QtProject_HEADERS_MOC}
 ${UI_FILES}
 )

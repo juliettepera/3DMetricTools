@@ -42,11 +42,12 @@ dataM::dataM( std::string Name )
     m_NameB = "";
     m_MinSamplingFrequency = 2;
     m_SamplingStep = 0.5;
-    m_SignedDistance = false;
+    m_TypeDistance = 0;
     m_DisplayError = false;
 
     m_Dmin = -1.0;
     m_Dmax = 1.0;
+    m_Delta = 0.5;
     m_ColorBar = false;
 }
 
@@ -143,9 +144,9 @@ void dataM::setSamplingStep( double SamplingStep )
     m_SamplingStep = SamplingStep;
 }
 
-void dataM::setSignedDistance( bool SignedDistance )
+void dataM::setTypeDistance( int TypeDistance )
 {
-    m_SignedDistance = SignedDistance;
+    m_TypeDistance = TypeDistance;
 }
 
 void dataM::setDisplayError( bool DisplayError )
@@ -168,9 +169,9 @@ double dataM::getSamplingStep()
     return m_SamplingStep;
 }
 
-bool dataM::getSignedDistance()
+int dataM::getTypeDistance()
 {
-    return m_SignedDistance;
+    return m_TypeDistance;
 }
 
 bool dataM::getDisplayError()
@@ -318,14 +319,19 @@ void dataM::changeActivScalar()
     m_Mapper -> SetLookupTable( m_Lut );
     m_Mapper -> SetScalarModeToUsePointFieldData();
 
-    if( m_DisplayError == true && m_SignedDistance == true )
+    if( m_DisplayError == true && m_TypeDistance == 0 )
+    {
+        m_Mapper -> SelectColorArray( "Absolute" );
+        m_Mapper -> SetScalarVisibility( 1 );
+    }
+    else if( m_DisplayError == true && m_TypeDistance == 1 )
     {
         m_Mapper -> SelectColorArray( "Signed" );
         m_Mapper -> SetScalarVisibility( 1 );
     }
-    else if( m_DisplayError == true && m_SignedDistance == false )
+    else if( m_DisplayError == true && m_TypeDistance == 2 )
     {
-        m_Mapper -> SelectColorArray( "Absolute" );
+        m_Mapper -> SelectColorArray( "Correspondant" );
         m_Mapper -> SetScalarVisibility( 1 );
     }
     else if( m_DisplayError == false )
@@ -337,3 +343,90 @@ void dataM::changeActivScalar()
     m_Mapper -> Update();
     m_Actor -> SetMapper( m_Mapper );
 }
+
+
+//*************************************************************************************************
+vtkIdType dataM::getIdPointClicked( double ClickedPosition[3] )
+{
+    std::vector <vtkIdType> IdPicked;
+    double delta = 0.5;
+
+    for( vtkIdType i = 0 ; i < m_PolyData->GetNumberOfPoints() ; i++ )
+    {
+      double Point[3];
+      m_PolyData -> GetPoints() -> GetPoint( i , Point );
+
+      double delta0 = fabs( Point[0]-ClickedPosition[0] );
+      double delta1 = fabs( Point[1]-ClickedPosition[1] );
+      double delta2 = fabs( Point[2]-ClickedPosition[2] );
+
+      if( delta0 < delta && delta1 < delta && delta2 < delta )
+      {
+          IdPicked.push_back( i );
+      }
+    }
+
+    if( IdPicked.empty() == false )
+    {
+        double delta = 0.5;
+        while( IdPicked.size() != 1 )
+        {
+            for( int i = 0 ; i < IdPicked.size() ; i++ )
+            {
+                double Point[3];
+                m_PolyData -> GetPoints() -> GetPoint( IdPicked.at( i ) , Point );
+
+                double delta0 = fabs( Point[0]-ClickedPosition[0] );
+                double delta1 = fabs( Point[1]-ClickedPosition[1] );
+                double delta2 = fabs( Point[2]-ClickedPosition[2] );
+
+                if( !( delta0 < delta && delta1 < delta && delta2 < delta ) )
+                {
+                    IdPicked.erase( IdPicked.begin() + i );
+                }
+            }
+            delta = delta - 0.05;
+        }
+        return IdPicked.at(0);
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+
+//*************************************************************************************************
+QString dataM::getScalarValue( vtkIdType MyId )
+{
+    if( MyId != -1 )
+    {
+        std::cout << "Id received : " << MyId << std::endl;
+
+        double point[3];
+        m_PolyData -> GetPoints() -> GetPoint( MyId , point );
+
+        std::cout << "Coordonees of this point : ( " << point[0] << " , " << point[1] << " , " << point[2] << " )" << std::endl;
+
+        int NbArray = m_PolyData -> GetPointData() -> GetNumberOfArrays();
+        if( NbArray == 0 )
+        {
+            std::cout << "No value for this point " << std::endl;
+        }
+        else
+        {
+            double value = m_PolyData -> GetPointData() -> GetArray(0) -> GetComponent( MyId , 0 );
+            std::cout << "Value of this point : " << value << std::endl;
+
+            QString StrValue = QString::number( value );
+            return StrValue;
+        }
+    }
+    else
+    {
+       std::cout << "Not a point" << std::endl;
+       QString NotPoint = "Not a Point";
+       return NotPoint;
+    }
+}
+
