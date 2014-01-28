@@ -403,8 +403,8 @@ int processing::processError2( dataM &Data1 , dataM &Data2 )
 
         if( range[1] >= 0.5 )
         {
-            ErrorLut -> AddRGBSegment( range[0] , 0 , 1 , 0 , 0.5 , 1 , 1 , 0 );
-            ErrorLut -> AddRGBSegment( 0.5 , 1 , 1 , 0 , range[1] , 1 , 0 , 0 );
+            ErrorLut -> AddRGBSegment( range[0] , 0 , 1 , 0 , range[0] + 0.5 , 1 , 1 , 0 );
+            ErrorLut -> AddRGBSegment( range[0] + 0.5 , 1 , 1 , 0 , range[1] , 1 , 0 , 0 );
         }
         else
         {
