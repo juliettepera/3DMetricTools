@@ -58,16 +58,15 @@ install(TARGETS meshMetric
       BUNDLE DESTINATION  ${INSTALL_RUNTIME_DESTINATION}
       )
       
-# launcher
-add_executable( meshMetricLauncher Launcher.cxx )
-target_link_libraries( meshMetricLauncher ${ITK_LIBRARIES} )
-
-
 #install(DIRECTORY ${QT_LIBRARY_DIR} DESTINATION ${INSTALL_RUNTIME_DESTINATION} )
 #install(DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/icons DESTINATION ${INSTALL_RUNTIME_DESTINATION}${MeshMetricDir} )
 
-# create the bundle
+
 if(APPLE)
+      # launcher
+      add_executable( meshMetricLauncher Launcher.cxx ${Dsources} )
+      target_link_libraries( meshMetricLauncher ${ITK_LIBRARIES} )
+      # create the bundle
       set(plugin_dest_dir ${INSTALL_RUNTIME_DESTINATION}/meshMetric.app/Contents/MacOS)
       set(qtconf_dest_dir ${INSTALL_RUNTIME_DESTINATION}/meshMetric.app/Contents/Resources)
       set(APPS "\${CMAKE_INSTALL_PREFIX}/${INSTALL_RUNTIME_DESTINATION}/meshMetric.app")

@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
-  <category>Mesh</category>
-  <title>3DErrorMetric</title>
+  <category>Shape Analysis</category>
+  <title>Model To Model Distance</title>
   <description>
-   This module computes distance between 2 meshes
+   This module computes distance point by point between 2 meshes
   </description>
-  <version>0.1</version>
+  <version>1.0</version>
   <documentation-url></documentation-url>
   <license></license>
   <contributor>Francois Budin, Juliette Pera</contributor>
 <acknowledgements>
+This work was funded by National Institute of Dental and Craniofacial Research (NIDCR) and the National Institute of Biomedical Imaging and Bioengineering (NIBIB) through the Grant R01 DE024450
 </acknowledgements>
   <parameters>
     <label>Input/Output</label>

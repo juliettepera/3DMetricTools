@@ -3,6 +3,17 @@ cmake_policy(VERSION 2.8.3)
 
 set( LOCAL_PROJECT_NAME 3DMetricTools )
 
+set(EXTENSION_NAME ModelToModelDistance)
+set(EXTENSION_HOMEPAGE "https://www.nitrc.org/projects/meshmetric3d/")
+set(EXTENSION_CATEGORY "Shape Analysis")
+set(EXTENSION_CONTRIBUTORS "Francois Budin (UNC), Juliette Pera (UNC), Beatriz Paniagua (UNC)")
+set(EXTENSION_DESCRIPTION "This extension computes the distance between two 3D models")
+set(EXTENSION_ICONURL "http://slicer.org/slicerWiki/images/4/43/Slicer4ExtensionModelToModelDistance.png")
+set(EXTENSION_SCREENSHOTURLS "")
+set(EXTENSION_STATUS "")
+set(EXTENSION_DEPENDS "NA") # Specified as a space separated list or 'NA' if any
+set(EXTENSION_BUILD_SUBDIRECTORY .)
+
 ## NOTE THERE SHOULD BE NO PROJECT STATEMENT HERE!
 ## This file acts as a simple switch to initiate
 ## two completely independant CMake build environments.
@@ -19,6 +30,18 @@ set( LOCAL_PROJECT_NAME 3DMetricTools )
 #                   Phase II: Build the ${LOCAL_PROJECT_NAME}, referencing the support
 #                             packages built in Phase I.
 #-----------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
+# 3DSlicer Extension
+#-----------------------------------------------------------------------------
+
+if( ${EXTENSION_NAME}_BUILD_SLICER_EXTENSION )
+  set( ${LOCAL_PROJECT_NAME}_SUPERBUILD OFF CACHE BOOL 
+        "Build ${LOCAL_PROJECT_NAME} and the projects it depends on via SuperBuild.cmake." FORCE )
+endif()
+
+#-----------------------------------------------------------------------------
+
 option(${LOCAL_PROJECT_NAME}_SUPERBUILD "Build ${LOCAL_PROJECT_NAME} and the projects it depends on via SuperBuild.cmake." ON)
 
 #-----------------------------------------------------------------------------

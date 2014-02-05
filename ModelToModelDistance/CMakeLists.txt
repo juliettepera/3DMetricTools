@@ -1,17 +1,17 @@
 # name of the project
-PROJECT( errorMetric )
+PROJECT( ModelToModelDistance )
 
 if( Use_VTK_Filter )
   ADD_DEFINITIONS(-DUSE_VTK_FILTER=1)
   set( MeshValmetLib "" )
+  configure_file(ModelToModelDistanceVTK.xml.in ${CMAKE_CURRENT_BINARY_DIR}/ModelToModelDistance.xml)
 else()
   set( MeshValmetLib MeshValmetLib )
+  configure_file(ModelToModelDistanceMeshValmet.xml.in ${CMAKE_CURRENT_BINARY_DIR}/ModelToModelDistance.xml)
 endif()
 
-
-
 SEMMacroBuildCLI(
-    NAME errorMetric
+    NAME ModelToModelDistance
     ${STATIC}
     INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${MeshValmetLib_SOURCE_DIRECTORY}
     LINK_DIRECTORIES ${MeshValmetLib_BINARY_DIRECTORY}
@@ -23,11 +23,5 @@ SEMMacroBuildCLI(
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
     ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
 )
-
-#include_directories( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${MeshValmetLib_SOURCE_DIRECTORY} )
-#link_directories( ${MeshValmetLib_BINARY_DIRECTORY} )
-#generateclp( Dsources meshMetric.xml )
-#add_executable( errorMetric errorMetric.cxx )
-#target_link_libraries( errorMetric MeshValmetLib ${VTK_LIBRARIES} )
 
 
