@@ -103,7 +103,7 @@ void mesh_run(const struct args *args,
   *abs_sampling_step = args->sampling_step*bbox2_diag;
   *abs_sampling_dens = 1/((*abs_sampling_step)*(*abs_sampling_step));
 
-  outbuf_printf(out,"\nSampling_step : %f\n",*abs_sampling_step);
+  /*outbuf_printf(out,"\nSampling_step : %f\n",*abs_sampling_step);
   outbuf_printf(out,"\n\tModel information\n(degenerate faces ignored for manifold/closed info)\n\n");
   outbuf_printf(out,"Number of vertices:\t\t%11d\t%11d\n", model1->mesh->num_vert , model2->mesh->num_vert );
   outbuf_printf(out,"Number of triangles:\t\t%11d\t%11d\n", model1->mesh->num_faces , model2->mesh->num_faces );
@@ -113,7 +113,7 @@ void mesh_run(const struct args *args,
   outbuf_printf(out,"Manifold:\t\t\t%11s\t%11s\n", (m1info->manifold ? "yes" : "no") , (m2info->manifold ? "yes" : "no") );
   outbuf_printf(out,"Originally oriented:\t\t%11s\t%11s\n", (m1info->orig_oriented ? "yes" : "no") , (m2info->orig_oriented ? "yes" : "no") );
   outbuf_printf(out,"Orientable:\t\t\t%11s\t%11s\n", (m1info->orientable ? "yes" : "no") , (m2info->orientable ? "yes" : "no") );
-  outbuf_printf(out,"Closed:\t\t\t%11s\t%11s\n" , (m1info->closed ? "yes" : "no") , (m2info->closed ? "yes" : "no") );
+  outbuf_printf(out,"Closed:\t\t\t%11s\t%11s\n" , (m1info->closed ? "yes" : "no") , (m2info->closed ? "yes" : "no") );*/
 
 
   //********************************************************************************************************************************
@@ -121,11 +121,11 @@ void mesh_run(const struct args *args,
   dist_surf_surf(model1,model2->mesh,*abs_sampling_dens,args->min_sample_freq,
                    stats,1,(args->quiet ? NULL : progress));
 
-  outbuf_printf( out,"Surface area:\t%11g\t%11g\n", stats->m1_area , stats->m2_area );
-  outbuf_flush(out);
+  /*outbuf_printf( out,"Surface area:\t%11g\t%11g\n", stats->m1_area , stats->m2_area );
+  outbuf_flush(out);*/
 
   /* Print results */
-  outbuf_printf( out , "\n\tCompute the distance from A to B\n" );
+ /* outbuf_printf( out , "\n\tCompute the distance from A to B\n" );
   outbuf_printf(out,"Min:\t%11g\t%11g\n" , stats->min_dist , fabs(stats->min_dist/bbox2_diag)*100 );
   outbuf_printf(out,"Max:\t%11g\t%11g\n", stats->max_dist , fabs(stats->max_dist/bbox2_diag)*100 );
   outbuf_printf(out,"Mean:\t%11g\t%11g\n" , stats->mean_dist , fabs(stats->mean_dist/bbox2_diag)*100 );
@@ -168,7 +168,7 @@ void mesh_run(const struct args *args,
   outbuf_printf(out,"\n");
   outbuf_printf(out,"Analysis and measuring time (secs.):\t%.2f\n",
                 (double)(clock()-start_time)/CLOCKS_PER_SEC);
-  outbuf_flush(out);
+  outbuf_flush(out);*/
 
 //--------------------------------------------------------------------------------------
   /* Get the per vertex error metric */
@@ -176,7 +176,7 @@ void mesh_run(const struct args *args,
 
     calc_vertex_error( model1 , &nv_empty , &nf_empty );
 
-    if (nv_empty>0) {
+    /*if (nv_empty>0) {
        outbuf_printf(out,
                       "WARNING: %.2f%% of vertices (%i out of %i) have no error "
                       "samples\n",100.0*nv_empty/model1->mesh->num_vert,
@@ -188,7 +188,7 @@ void mesh_run(const struct args *args,
                       "samples\n",100.0*nf_empty/model1->mesh->num_faces,
                       nf_empty,model1->mesh->num_faces);
     }
-  outbuf_flush(out);
+  outbuf_flush(out);*/
 }
 
 

@@ -174,7 +174,7 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
 
             /* Get the value of the point by clicking on it
              */
-            void GetValueByClicking();
+            void GetValueByClicking( double X , double Y , double Z );
 
     private:
             // attibuts for the icons

@@ -74,15 +74,12 @@ class processing
 
         /* update the color map
          */
-        void updateColor(double Min , double Max, double Center, double Delta , dataM &Data1);
+        void updateColor(dataM &Data1);
 
         /* function for testing equality between two datas
          */
         int testPolyData( vtkSmartPointer <vtkPolyData> inData , vtkSmartPointer <vtkPolyData> outData );
 
-        /* process the error with another method
-         */
-        int processError2( dataM &Data1 , dataM &Data2 );
 
 
     private:

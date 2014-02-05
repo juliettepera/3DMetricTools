@@ -41,9 +41,19 @@
 #include <vtkTextProperty.h>
 #include <vtkTextActor.h>
 #include <vtkPointPicker.h>
+#include <vtkInteractorObserver.h>
+#include <vtkCallbackCommand.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkCommand.h>
+#include <vtkRendererCollection.h>
 
-class display
-{
+//Qt Libraries
+#include <QObject>
+
+class display: public QObject
+{ 
+    Q_OBJECT
+
     public:
         display();
 
@@ -99,6 +109,14 @@ class display
          */
         void updateLut( int Visibility );
 
+        /*
+         */
+        void KeypressCallbackFunction ( vtkObject* caller, unsigned long notUseduLong, void* notUsedVoid );
+        double* getPickedPosition();
+
+    signals:
+        void positionPicked(double X , double Y ,double Z );
+
     private:
         int m_SizeH;
         int m_SizeW;
@@ -112,6 +130,8 @@ class display
         int m_CameraZ;
 
         int m_NumberOfMesh;
+
+        double m_PickedPosition[3];
 
         std::vector < vtkSmartPointer <vtkActor> > m_ActorList;
         vtkSmartPointer <vtkRenderer> m_Renderer;

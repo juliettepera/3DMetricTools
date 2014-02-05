@@ -36,6 +36,8 @@ display::display()
 
     m_NumberOfMesh = 0;
 
+    m_PickedPosition[0] = 0 ; m_PickedPosition[1] = 0 ; m_PickedPosition[2] = 0;
+
     m_Renderer = vtkSmartPointer <vtkRenderer>::New();
     m_RenderWindow = vtkSmartPointer <vtkRenderWindow>::New();
 
@@ -43,7 +45,8 @@ display::display()
     m_Axes = vtkSmartPointer <vtkAxesActor>::New();
     m_Marker = vtkSmartPointer <vtkOrientationMarkerWidget>::New();
     m_ScalarBar = vtkSmartPointer <vtkScalarBarActor>::New();
-    m_Lut = vtkSmartPointer <vtkScalarsToColors>::New();    
+    m_Lut = vtkSmartPointer <vtkScalarsToColors>::New();
+
 }
 
 
@@ -120,6 +123,8 @@ void display::initWindow()
 
     m_Renderer -> ResetCamera();
     updatePositionCamera();
+
+    m_RenderWindow->GetInteractor()->AddObserver ( vtkCommand::KeyPressEvent, this , &display::KeypressCallbackFunction );
 
     m_Marker -> SetOutlineColor( 0.9300, 0.5700, 0.1300 );
     m_Marker -> SetOrientationMarker( m_Axes );
@@ -212,10 +217,25 @@ void display::updatePositionCamera()
 
 }
 
+//*************************************************************************************************
+void display::KeypressCallbackFunction( vtkObject* caller, unsigned long notUseduLong, void* notUsedVoid )
+{
+  vtkRenderWindowInteractor *iren = static_cast< vtkRenderWindowInteractor* >(caller);
+  if( strcmp( iren->GetKeySym() , "v" ) == 0 )
+  {
+      int clickedPosition[2];
+      double pickedPosition[3];
 
+      iren->GetEventPosition( clickedPosition );
+      iren->GetPicker()->Pick( clickedPosition[0] , clickedPosition[1] , 0 , iren->GetRenderWindow()->GetRenderers()->GetFirstRenderer() );
+      iren->GetPicker()->GetPickPosition( pickedPosition );
 
+      emit this->positionPicked(pickedPosition[0],pickedPosition[1],pickedPosition[2]);
+  }
+}
 
-
-
-
+double* display::getPickedPosition()
+{
+    return m_PickedPosition;
+}
 

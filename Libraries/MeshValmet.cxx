@@ -142,6 +142,11 @@ double meshValmet::GetDelta()
     return m_Delta;
 }
 
+double meshValmet::GetCenter()
+{
+    return m_Center;
+}
+
 
 //*************************************************************************************************
 void meshValmet::CalculateError()
@@ -846,9 +851,23 @@ void meshValmet::CreateLutError()
 
     m_Lut -> SetColorSpaceToRGB();
 
+    // check for delta
+    double Delta = rint( (m_Dmax - m_Dmin)/2.0 );
+    if( Delta >= 1 )
+    {
+        m_Delta = 0.5;
+    }
+    else
+    {
+        m_Delta = 0.02;
+    }
+
     if( m_Pargs.signeddist == true )
     {
-        if( m_Dmin < - m_Delta && -m_Delta < 0 && 0 < m_Delta && m_Delta < m_Dmax )
+
+        m_Center = (m_Dmax + m_Dmin)/2.0;
+
+        if( m_Dmin < (m_Center - m_Delta) && (m_Center + m_Delta) < m_Dmax )
         {
            m_Lut -> AddRGBSegment( m_Dmin , 0 , 0 , 1 , m_Center-m_Delta , 0 , 1 , 1 );
            m_Lut -> AddRGBSegment( m_Center-m_Delta , 0 , 1 , 1 , m_Center  , 0 , 1 , 0 );
@@ -858,6 +877,8 @@ void meshValmet::CreateLutError()
     }
     else
     {
+        m_Center = m_Dmin;
+
         if( m_Dmin < m_Delta && m_Delta < m_Dmax )
         {
            m_Lut -> AddRGBSegment( m_Dmin , 0 , 1 , 0 , m_Dmin+m_Delta , 1 , 1 , 0 );

@@ -38,7 +38,10 @@ SETIFEMPTY( INSTALL_LIBRARY_DESTINATION ${INSTALL_RUNTIME_DESTINATION}/lib )
 SETIFEMPTY( INSTALL_ARCHIVE_DESTINATION 3DMetricTools-static_lib )
 
 # find the VTK headers
-find_package( VTK 6 REQUIRED )
+find_package( VTK REQUIRED )
+if( ${VTK_MAJOR_VERSION} VERSION_LESS 6 )
+  message( FATAL_ERROR "VTK version 6 or higher needed" )
+endif()
 include( ${VTK_USE_FILE} )
 
 # find the SlicerExecutionModel headers

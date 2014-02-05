@@ -76,6 +76,7 @@ class meshValmet
         double GetMin();
         double GetMax();
         double GetDelta();
+        double GetCenter();
 
         void CalculateError();
         friend void mesh_run(const args *args,

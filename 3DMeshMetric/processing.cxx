@@ -88,29 +88,113 @@ vtkSmartPointer <vtkPolyData> processing::processDownSampling(vtkSmartPointer<vt
 //*************************************************************************************************
 int processing::processError( dataM &Data1 , dataM &Data2 )
 {
-    vtkSmartPointer <vtkPolyData> ErrorData = vtkSmartPointer<vtkPolyData>::New();
-    vtkSmartPointer <vtkColorTransferFunction> ErrorLut = vtkSmartPointer <vtkColorTransferFunction>::New();
+    if( Data1.getTypeDistance() == 0 || Data1.getTypeDistance() == 1 )
+    {
+        vtkSmartPointer <vtkPolyData> ErrorData = vtkSmartPointer<vtkPolyData>::New();
+        vtkSmartPointer <vtkColorTransferFunction> ErrorLut = vtkSmartPointer <vtkColorTransferFunction>::New();
 
-    m_MyMeshValmet.SetData1( Data1.getPolyData() );
-    m_MyMeshValmet.SetData2( Data2.getPolyData() );
-    m_MyMeshValmet.SetSignedDistance( Data1.getTypeDistance() );
-    m_MyMeshValmet.SetSamplingStep( Data1.getSamplingStep() );
-    m_MyMeshValmet.SetMinSampleFrequency( Data1.getMinSamplingFrequency() );
+        m_MyMeshValmet.SetData1( Data1.getPolyData() );
+        m_MyMeshValmet.SetData2( Data2.getPolyData() );
+        m_MyMeshValmet.SetSignedDistance( Data1.getTypeDistance() );
+        m_MyMeshValmet.SetSamplingStep( Data1.getSamplingStep() );
+        m_MyMeshValmet.SetMinSampleFrequency( Data1.getMinSamplingFrequency() );
 
-    m_MyMeshValmet.CalculateError();
+        m_MyMeshValmet.CalculateError();
 
-    ErrorData = m_MyMeshValmet.GetFinalData();
-    ErrorLut = m_MyMeshValmet.GetLut();
+        ErrorData = m_MyMeshValmet.GetFinalData();
+        ErrorLut = m_MyMeshValmet.GetLut();
 
-    Data1.setPolyData( ErrorData );
-    Data1.setLut( ErrorLut );
+        Data1.setPolyData( ErrorData );
+        Data1.setLut( ErrorLut );
 
-    Data1.setMin( m_MyMeshValmet.GetMin() );
-    Data1.setMax( m_MyMeshValmet.GetMax() );
+        Data1.setMin( m_MyMeshValmet.GetMin() );
+        Data1.setMax( m_MyMeshValmet.GetMax() );
+        Data1.setCenter( m_MyMeshValmet.GetCenter() );
+        Data1.setDelta( m_MyMeshValmet.GetDelta() );
 
-    Data1.changeMapperInput();
+        Data1.changeMapperInput();
 
-    return 0;
+        return 0;
+    }
+    else if( Data1.getTypeDistance() == 2 )
+    {
+        if( Data1.getPolyData()->GetNumberOfPoints() == Data2.getPolyData()->GetNumberOfPoints() )
+        {
+            vtkSmartPointer <vtkPolyData> ErrorData = vtkSmartPointer<vtkPolyData>::New();
+            vtkSmartPointer <vtkColorTransferFunction> ErrorLut = vtkSmartPointer <vtkColorTransferFunction>::New();
+            vtkSmartPointer <vtkDoubleArray> ScalarsError = vtkSmartPointer <vtkDoubleArray>::New();
+            vtkSmartPointer <vtkDoubleArray> ScalarsConst = vtkSmartPointer <vtkDoubleArray>::New();
+
+            double Point1[3];
+            double Point2[3];
+            double Diff[3];
+            double Result;
+
+            ErrorData = Data1.getPolyData();
+
+            for( vtkIdType Id = 0 ; Id < Data1.getPolyData()->GetNumberOfPoints() ; Id++ )
+            {
+                Data1.getPolyData()->GetPoints()->GetPoint( Id , Point1 );
+                Data2.getPolyData()->GetPoints()->GetPoint( Id , Point2 );
+
+                Diff[0] = Point1[0]-Point2[0];
+                Diff[1] = Point1[1]-Point2[1];
+                Diff[2] = Point1[2]-Point2[2];
+
+                Result = sqrt( Diff[0]*Diff[0] + Diff[1]*Diff[1] + Diff[2]*Diff[2] );
+
+                ScalarsError->InsertTuple1( Id , Result );
+                ScalarsConst->InsertTuple1( Id , 1.0 );
+            }
+
+            ScalarsError->SetName( "Correspondant");
+            ScalarsConst->SetName( "Original" );
+
+            ErrorData->GetPointData()->AddArray( ScalarsError );
+            ErrorData->GetPointData()->AddArray( ScalarsConst );
+
+            Data1.setPolyData( ErrorData );
+
+            double range[2];
+            ScalarsError-> GetRange( range );
+
+            Data1.setMin( range[0] );
+            Data1.setMax( range[1] );
+
+            // check for delta
+            double Delta = rint( ( range[1] - range[0] )/2.0 );
+            if( Delta >= 1 )
+            {
+                Data1.setDelta( 0.5 );
+            }
+            else
+            {
+                Data1.setDelta( 0.02 );
+            }
+
+            //check for center
+            Data1.setCenter( range[0] );
+
+            ErrorLut -> SetColorSpaceToRGB();
+
+            ErrorLut -> AddRGBSegment( range[0] , 0 , 1 , 0 , range[0] + Data1.getDelta() , 1 , 1 , 0 );
+            ErrorLut -> AddRGBSegment( range[0] + Data1.getDelta() , 1 , 1 , 0 , range[1] , 1 , 0 , 0 );
+
+            Data1.setLut( ErrorLut );
+
+            Data1.changeMapperInput();
+
+            return 0;
+        }
+        else
+        {
+            return -1;
+        }
+    }
+    else
+    {
+        return -1;
+    }
 }
 
 
@@ -154,30 +238,35 @@ int processing::CheckPreviousError( dataM &Data1 )
 
             double range[2];
             Array -> GetRange( range );
+
             Data1.setMin( range[ 0 ] );
             Data1.setMax( range[ 1 ] );
 
+            if( rint( (range[1] - range[0])/2.0 ) >= 1 )
+            {
+                Data1.setDelta( 0.5 );
+            }
+            else
+            {
+                Data1.setDelta( 0.02 );
+            }
+
             if( strcmp( Names[ Indice ] , "Signed" ) == 0 )
             {
-                Data1.setMin( range[ 0 ] );
-                Data1.setMax( range[ 1 ] );
+                Data1.setCenter( (range[1] + range[0])/2.0 );
                 Data1.setTypeDistance( 1 );
                 return 31;
             }
             else if( strcmp( Names[ Indice ] , "Absolute" ) == 0 )
             {
-                Data1.setMin( range[ 0 ] );
-                Data1.setMax( range[ 1 ] );
                 Data1.setCenter( range[ 0 ] );
                 Data1.setTypeDistance( 0 );
                 return 32;
             }
             else if( strcmp( Names[ Indice ] , "Correspondant" ) == 0 )
             {
-                Data1.setMin( range[ 0 ] );
-                Data1.setMax( range[ 1 ] );
                 Data1.setCenter( range[0]);
-                Data1.setTypeDistance( 0 );
+                Data1.setTypeDistance( 2 );
                 return 33;
             }
             return 3; // -> pb
@@ -247,37 +336,28 @@ int processing::SaveFile(std::string Name, dataM &Data1)
 
 
 //*************************************************************************************************
-void processing::updateColor( double Min , double Max , double Center , double Delta ,  dataM &Data1 )
+void processing::updateColor( dataM &Data1 )
 {
     vtkSmartPointer <vtkColorTransferFunction> ErrorLut = vtkSmartPointer <vtkColorTransferFunction>::New();
 
-    if( Data1.getTypeDistance() == 0 || Data1.getTypeDistance() == 1 )
-    {
-        m_MyMeshValmet.SetMin( Min );
-        m_MyMeshValmet.SetMax( Max );
-        m_MyMeshValmet.SetDelta( Delta );
-        m_MyMeshValmet.SetCenter( Center );
-        m_MyMeshValmet.SetSignedDistance( Data1.getTypeDistance() );
+    ErrorLut -> SetColorSpaceToRGB();
 
-        m_MyMeshValmet.CreateLutError();
-
-        ErrorLut = m_MyMeshValmet.GetLut();
+    if( Data1.getTypeDistance() == 1 )
+    {   
+         ErrorLut -> AddRGBSegment( Data1.getMin() , 0 , 0 , 1 , Data1.getCenter()-Data1.getDelta() , 0 , 1 , 1 );
+         ErrorLut -> AddRGBSegment( Data1.getCenter()-Data1.getDelta() , 0 , 1 , 1 , Data1.getCenter()  , 0 , 1 , 0 );
+         ErrorLut -> AddRGBSegment( Data1.getCenter() , 0 , 1 , 0 , Data1.getCenter()+Data1.getDelta() , 1 , 1 , 0 );
+         ErrorLut -> AddRGBSegment( Data1.getCenter()+Data1.getDelta() , 1 , 1 , 0 , Data1.getMax() , 1 , 0 , 0 );
     }
-    else
+    else if( Data1.getTypeDistance() == 2 || Data1.getTypeDistance() == 0 )
     {
-        ErrorLut -> SetColorSpaceToRGB();
-
-        if( 0.02 < Delta && Center+Delta < Max )
-        {
-            ErrorLut -> AddRGBSegment( Center , 0 , 1 , 0 , Center+Delta , 1 , 1 , 0 );
-            ErrorLut -> AddRGBSegment( Center+Delta , 1 , 1 , 0 , Max , 1 , 0 , 0 );
-        }
+         ErrorLut -> AddRGBSegment( Data1.getMin() , 0 , 1 , 0 , Data1.getMin()+Data1.getDelta() , 1 , 1 , 0 );
+         ErrorLut -> AddRGBSegment( Data1.getMin()+Data1.getDelta() , 1 , 1 , 0 , Data1.getMax() , 1 , 0 , 0 );
     }
 
     Data1.setLut( ErrorLut );
 
     Data1.changeActivScalar();
-
 }
 
 
@@ -351,7 +431,7 @@ int processing::testPolyData( vtkSmartPointer <vtkPolyData> inData , vtkSmartPoi
 
 
 //*************************************************************************************************
-int processing::processError2( dataM &Data1 , dataM &Data2 )
+/*int processing::processError2( dataM &Data1 , dataM &Data2 )
 {
     vtkSmartPointer <vtkPolyData> ErrorData = vtkSmartPointer<vtkPolyData>::New();
     vtkSmartPointer <vtkColorTransferFunction> ErrorLut = vtkSmartPointer <vtkColorTransferFunction>::New();
@@ -425,7 +505,7 @@ int processing::processError2( dataM &Data1 , dataM &Data2 )
     {
         return -1;
     }
-}
+}*/
 
 
 

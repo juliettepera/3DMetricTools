@@ -9,7 +9,7 @@ find_package( Qt4 REQUIRED )
 include( ${QT_USE_FILE} )
 
 # generate moc and ui files
-QT4_WRAP_CPP( QtProject_HEADERS_MOC meshMetricGui.h colorBar.h)
+QT4_WRAP_CPP( QtProject_HEADERS_MOC meshMetricGui.h colorBar.h display.h )
 QT4_WRAP_UI( UI_FILES meshMetricGui.ui )
 
 # set the sources files

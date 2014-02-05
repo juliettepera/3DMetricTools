@@ -399,34 +399,33 @@ vtkIdType dataM::getIdPointClicked( double ClickedPosition[3] )
 //*************************************************************************************************
 QString dataM::getScalarValue( vtkIdType MyId )
 {
+    QString Value;
+
     if( MyId != -1 )
     {
-        std::cout << "Id received : " << MyId << std::endl;
+        //std::cout << "Id received : " << MyId << std::endl;
 
         double point[3];
         m_PolyData -> GetPoints() -> GetPoint( MyId , point );
 
-        std::cout << "Coordonees of this point : ( " << point[0] << " , " << point[1] << " , " << point[2] << " )" << std::endl;
+        //std::cout << "Coordinates of this point : ( " << point[0] << " , " << point[1] << " , " << point[2] << " )" << std::endl;
 
         int NbArray = m_PolyData -> GetPointData() -> GetNumberOfArrays();
         if( NbArray == 0 )
         {
-            std::cout << "No value for this point " << std::endl;
+            Value = "No Value";
         }
         else
         {
             double value = m_PolyData -> GetPointData() -> GetArray(0) -> GetComponent( MyId , 0 );
-            std::cout << "Value of this point : " << value << std::endl;
-
-            QString StrValue = QString::number( value );
-            return StrValue;
+            Value = QString::number( value );
         }
     }
     else
     {
-       std::cout << "Not a point" << std::endl;
-       QString NotPoint = "Not a Point";
-       return NotPoint;
+       Value = "Not a Point";
     }
+    std::cout << Value.toStdString() << std::endl;
+    return Value;
 }
 
