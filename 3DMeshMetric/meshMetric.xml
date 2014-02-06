@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
-  <category>Mesh</category>
+  <category>Shape Analysis</category>
   <title>3DMeshMetric</title>
   <description>
    This module computes distance between 2 meshes
@@ -10,6 +10,7 @@
   <license></license>
   <contributor>Juliette Pera, Francois Budin, Beatriz Paniagua</contributor>
 <acknowledgements>
+This work was funded by National Institute of Dental and Craniofacial Research (NIDCR) and the National Institute of Biomedical Imaging and Bioengineering (NIBIB) through the Grant R01 DE024450
 </acknowledgements>
   <parameters>
   </parameters>
