@@ -492,59 +492,66 @@ void meshMetricGui::PreviousError()
         }
         else if( out != -1 ) // diff from no previous error
         {
-            m_ErrorComputed[ m_MeshSelected ] = true;
-            m_DataList[ m_MeshSelected ].setDisplayError( true );
-            m_DataList[ m_MeshSelected ].setColorBar( true );
-            checkBoxColorBar -> setChecked( true );
-
-            m_MyProcess.updateColor( m_DataList[ m_MeshSelected ] );
-
-            File = QString::fromStdString( m_DataList[ m_MeshSelected ].getName() );
-            lineEditA -> setText( File.fileName() );
-            lineEditB -> setText( QString::fromStdString( " Unknown " ) );
-            m_DataList[ m_MeshSelected ].setNameB( "Unknown" );
-            lineEditNbPointsA->setText( "-" );
-            lineEditNbPointsB->setText( "-" );
-
-            lineEditMinR -> setText( QString::number( m_DataList[ m_MeshSelected ].getMin() ) );
-            lineEditMaxR -> setText( QString::number( m_DataList[ m_MeshSelected ].getMax() ) );
-
-            lineEditMin -> setText( QString::number( m_DataList[ m_MeshSelected ].getMin() ) );
-            lineEditMax -> setText( QString::number( m_DataList[ m_MeshSelected ].getMax() ) );
-            lineEditCenter -> setText( QString::number( m_DataList[ m_MeshSelected ].getCenter() ) );
-            lineEditDelta -> setText( QString::number( m_DataList[ m_MeshSelected ].getDelta() ) );
-
-             m_MyWindowMesh.setLut( m_DataList[ m_MeshSelected ].getMapper()->GetLookupTable() );
-             m_MyWindowMesh.updateLut( 1 );
-
-            if( out == 31 )
+            if( out == 31 || out == 32 || out == 33 )
             {
-                double DeltaY = calculNewY( m_DataList[ m_MeshSelected ].getCenter() + m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
-                double DeltaC = calculNewY( m_DataList[ m_MeshSelected ].getCenter() - m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
-                double Center = calculNewY( m_DataList[ m_MeshSelected ].getCenter() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+                m_ErrorComputed[ m_MeshSelected ] = true;
+                m_DataList[ m_MeshSelected ].setDisplayError( true );
+                m_DataList[ m_MeshSelected ].setColorBar( true );
+                checkBoxColorBar -> setChecked( true );
 
-                widgetColor->updateGradientSigned( DeltaC , DeltaY , Center );
-                lineEditType -> setText( QString( "Signed distance" ) );
-                lineEditMin -> setReadOnly( false );
-                lineEditCenter -> setReadOnly( false );
+                m_MyProcess.updateColor( m_DataList[ m_MeshSelected ] );
+
+                File = QString::fromStdString( m_DataList[ m_MeshSelected ].getName() );
+                lineEditA -> setText( File.fileName() );
+                lineEditB -> setText( QString::fromStdString( " Unknown " ) );
+                m_DataList[ m_MeshSelected ].setNameB( "Unknown" );
+                lineEditNbPointsA->setText( "-" );
+                lineEditNbPointsB->setText( "-" );
+
+                lineEditMinR -> setText( QString::number( m_DataList[ m_MeshSelected ].getMin() ) );
+                lineEditMaxR -> setText( QString::number( m_DataList[ m_MeshSelected ].getMax() ) );
+
+                lineEditMin -> setText( QString::number( m_DataList[ m_MeshSelected ].getMin() ) );
+                lineEditMax -> setText( QString::number( m_DataList[ m_MeshSelected ].getMax() ) );
+                lineEditCenter -> setText( QString::number( m_DataList[ m_MeshSelected ].getCenter() ) );
+                lineEditDelta -> setText( QString::number( m_DataList[ m_MeshSelected ].getDelta() ) );
+
+                 m_MyWindowMesh.setLut( m_DataList[ m_MeshSelected ].getMapper()->GetLookupTable() );
+                 m_MyWindowMesh.updateLut( 1 );
+
+                if( out == 31 )
+                {
+                    double DeltaY = calculNewY( m_DataList[ m_MeshSelected ].getCenter() + m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+                    double DeltaC = calculNewY( m_DataList[ m_MeshSelected ].getCenter() - m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+                    double Center = calculNewY( m_DataList[ m_MeshSelected ].getCenter() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+
+                    widgetColor->updateGradientSigned( DeltaC , DeltaY , Center );
+                    lineEditType -> setText( QString( "Signed distance" ) );
+                    lineEditMin -> setReadOnly( false );
+                    lineEditCenter -> setReadOnly( false );
+                }
+                else if( out == 32 )
+                {
+                    double DeltaY = calculNewY( m_DataList[ m_MeshSelected ].getMin() + m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+
+                    widgetColor->updateGradientAbsolute( DeltaY );
+                    lineEditType -> setText( QString( "Absolute distance" ) );
+                    lineEditMin -> setReadOnly( true );
+                    lineEditCenter -> setReadOnly( true );
+                }
+                else if( out == 33 )
+                {
+                    double DeltaY = calculNewY( m_DataList[ m_MeshSelected ].getMin() + m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
+
+                    widgetColor->updateGradientAbsolute( DeltaY );
+                    lineEditType -> setText( QString( "Correspondant" ) );
+                    lineEditMin -> setReadOnly( true );
+                    lineEditCenter -> setReadOnly( true );
+                }
             }
-            else if( out == 32 )
+            else
             {
-                double DeltaY = calculNewY( m_DataList[ m_MeshSelected ].getMin() + m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
 
-                widgetColor->updateGradientAbsolute( DeltaY );
-                lineEditType -> setText( QString( "Absolute distance" ) );
-                lineEditMin -> setReadOnly( true );
-                lineEditCenter -> setReadOnly( true );
-            }
-            else if( out == 33 )
-            {
-                double DeltaY = calculNewY( m_DataList[ m_MeshSelected ].getMin() + m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
-
-                widgetColor->updateGradientAbsolute( DeltaY );
-                lineEditType -> setText( QString( "Correspondant" ) );
-                lineEditMin -> setReadOnly( true );
-                lineEditCenter -> setReadOnly( true );
             }
         }
     }

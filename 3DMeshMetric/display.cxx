@@ -36,8 +36,6 @@ display::display()
 
     m_NumberOfMesh = 0;
 
-    m_PickedPosition[0] = 0 ; m_PickedPosition[1] = 0 ; m_PickedPosition[2] = 0;
-
     m_Renderer = vtkSmartPointer <vtkRenderer>::New();
     m_RenderWindow = vtkSmartPointer <vtkRenderWindow>::New();
 
@@ -124,7 +122,7 @@ void display::initWindow()
     m_Renderer -> ResetCamera();
     updatePositionCamera();
 
-    m_RenderWindow->GetInteractor()->AddObserver ( vtkCommand::KeyPressEvent, this , &display::KeypressCallbackFunction );
+    m_RenderWindow->GetInteractor()->AddObserver ( vtkCommand::KeyReleaseEvent, this , &display::KeypressCallbackFunction );
 
     m_Marker -> SetOutlineColor( 0.9300, 0.5700, 0.1300 );
     m_Marker -> SetOrientationMarker( m_Axes );
@@ -233,9 +231,3 @@ void display::KeypressCallbackFunction( vtkObject* caller, unsigned long notUsed
       emit this->positionPicked(pickedPosition[0],pickedPosition[1],pickedPosition[2]);
   }
 }
-
-double* display::getPickedPosition()
-{
-    return m_PickedPosition;
-}
-

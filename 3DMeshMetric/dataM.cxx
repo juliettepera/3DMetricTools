@@ -349,7 +349,7 @@ void dataM::changeActivScalar()
 vtkIdType dataM::getIdPointClicked( double ClickedPosition[3] )
 {
     std::vector <vtkIdType> IdPicked;
-    double delta = 0.5;
+    double Delta = 1;
 
     for( vtkIdType i = 0 ; i < m_PolyData->GetNumberOfPoints() ; i++ )
     {
@@ -360,7 +360,7 @@ vtkIdType dataM::getIdPointClicked( double ClickedPosition[3] )
       double delta1 = fabs( Point[1]-ClickedPosition[1] );
       double delta2 = fabs( Point[2]-ClickedPosition[2] );
 
-      if( delta0 < delta && delta1 < delta && delta2 < delta )
+      if( delta0 < Delta && delta1 < Delta && delta2 < Delta )
       {
           IdPicked.push_back( i );
       }
@@ -368,7 +368,7 @@ vtkIdType dataM::getIdPointClicked( double ClickedPosition[3] )
 
     if( IdPicked.empty() == false )
     {
-        double delta = 0.5;
+        double delta = 1;
         while( IdPicked.size() != 1 )
         {
             for( int i = 0 ; i < IdPicked.size() ; i++ )
@@ -425,7 +425,7 @@ QString dataM::getScalarValue( vtkIdType MyId )
     {
        Value = "Not a Point";
     }
-    std::cout << Value.toStdString() << std::endl;
+    //std::cout << Value.toStdString() << std::endl;
     return Value;
 }
 

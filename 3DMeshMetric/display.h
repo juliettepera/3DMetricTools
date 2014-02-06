@@ -109,10 +109,9 @@ class display: public QObject
          */
         void updateLut( int Visibility );
 
-        /*
+        /* on keypress event, check if the keypressed is v and then send signal to gui
          */
         void KeypressCallbackFunction ( vtkObject* caller, unsigned long notUseduLong, void* notUsedVoid );
-        double* getPickedPosition();
 
     signals:
         void positionPicked(double X , double Y ,double Z );
@@ -130,8 +129,6 @@ class display: public QObject
         int m_CameraZ;
 
         int m_NumberOfMesh;
-
-        double m_PickedPosition[3];
 
         std::vector < vtkSmartPointer <vtkActor> > m_ActorList;
         vtkSmartPointer <vtkRenderer> m_Renderer;
