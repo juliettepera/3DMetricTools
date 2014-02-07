@@ -170,6 +170,7 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             void ChangeValueCenter();
             void UpdateColor();
             void ChangeDisplayColorBar();
+            void RefreshColorBar();
 
 
             /* Get the value of the point by clicking on it
@@ -225,6 +226,7 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             int m_SelectedItemB;
             std::vector <bool> m_ErrorComputed;
             std::vector <bool> m_Visibility;
+
 };
 
 #endif

@@ -130,6 +130,7 @@ meshMetricGui::meshMetricGui( QWidget *Parent , Qt::WFlags f , QString path )
     QObject::connect( lineEditMax , SIGNAL( returnPressed() ) , this , SLOT( ChangeValueMax() ) );
     QObject::connect( lineEditDelta , SIGNAL( returnPressed() ) , this , SLOT( ChangeValueDelta() ) );
     QObject::connect( lineEditCenter , SIGNAL( returnPressed() ) , this , SLOT( ChangeValueCenter() ) );
+    QObject::connect( pushButtonRefresh , SIGNAL( clicked() ) , this , SLOT( RefreshColorBar() ) );
 
     QObject::connect( checkBoxColorBar , SIGNAL( toggled( bool ) ) , this , SLOT( ChangeDisplayColorBar() ) );
 
@@ -528,7 +529,9 @@ void meshMetricGui::PreviousError()
                     widgetColor->updateGradientSigned( DeltaC , DeltaY , Center );
                     lineEditType -> setText( QString( "Signed distance" ) );
                     lineEditMin -> setReadOnly( false );
+                    lineEditMin -> setPalette( lineEditMax->palette() );
                     lineEditCenter -> setReadOnly( false );
+                    lineEditCenter -> setPalette( lineEditMax->palette() );
                 }
                 else if( out == 32 )
                 {
@@ -537,7 +540,9 @@ void meshMetricGui::PreviousError()
                     widgetColor->updateGradientAbsolute( DeltaY );
                     lineEditType -> setText( QString( "Absolute distance" ) );
                     lineEditMin -> setReadOnly( true );
+                    lineEditMin -> setPalette( lineEditA->palette() );
                     lineEditCenter -> setReadOnly( true );
+                    lineEditCenter -> setPalette( lineEditA->palette() );
                 }
                 else if( out == 33 )
                 {
@@ -546,7 +551,9 @@ void meshMetricGui::PreviousError()
                     widgetColor->updateGradientAbsolute( DeltaY );
                     lineEditType -> setText( QString( "Correspondant" ) );
                     lineEditMin -> setReadOnly( true );
+                    lineEditMin -> setPalette( lineEditA->palette() );
                     lineEditCenter -> setReadOnly( true );
+                    lineEditCenter -> setPalette( lineEditA->palette() );
                 }
             }
             else
@@ -1435,7 +1442,9 @@ void meshMetricGui::ApplyDistance()
                 widgetColor->updateGradientSigned( DeltaC , DeltaY , Center );
                 lineEditType -> setText( QString( "Signed distance" ) );
                 lineEditMin -> setReadOnly( false );
+                lineEditMin -> setPalette( lineEditMax->palette() );
                 lineEditCenter -> setReadOnly( false );
+                lineEditCenter-> setPalette( lineEditMax->palette() );
             }
             else if( m_DataList[ m_MeshSelected ].getTypeDistance() == 0 )
             {
@@ -1443,7 +1452,9 @@ void meshMetricGui::ApplyDistance()
                 widgetColor->updateGradientAbsolute( DeltaY );
                 lineEditType -> setText( QString( "Absolute distance" ) );
                 lineEditMin -> setReadOnly( true );
+                lineEditMin -> setPalette( lineEditA->palette() );
                 lineEditCenter -> setReadOnly( true );
+                lineEditCenter -> setPalette( lineEditA->palette() );
             }
             else if( m_DataList[ m_MeshSelected ].getTypeDistance() == 2 )
             {
@@ -1451,7 +1462,9 @@ void meshMetricGui::ApplyDistance()
                 widgetColor->updateGradientAbsolute( DeltaY );
                 lineEditType -> setText( QString( "Correspondant distance" ) );
                 lineEditMin -> setReadOnly( true );
+                lineEditMin -> setPalette( lineEditA->palette() );
                 lineEditCenter -> setReadOnly( true );
+                lineEditCenter -> setPalette( lineEditA->palette() );
             }
 
             comboBoxMeshB -> setCurrentIndex( 0 );
@@ -1676,6 +1689,15 @@ void meshMetricGui::ChangeDisplayColorBar()
     }
 }
 
+
+//*************************************************************************************************
+void meshMetricGui::RefreshColorBar()
+{
+    ChangeValueMin();
+    ChangeValueCenter();
+    ChangeValueDelta();
+    ChangeValueMax();
+}
 
 //*************************************************************************************************
 void meshMetricGui::GetValueByClicking(double X, double Y, double Z)

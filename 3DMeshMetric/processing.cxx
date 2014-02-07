@@ -301,7 +301,7 @@ int processing::SaveFile(std::string Name, dataM &Data1)
 {
     vtkSmartPointer <vtkPolyDataWriter> Writer = vtkSmartPointer <vtkPolyDataWriter>::New();
 
-    for( int i = 0 ; i < Name.size() ; i++ )
+    for( unsigned int i = 0 ; i < Name.size() ; i++ )
     {
         if( Name[i] == 46 && i != 0 )
         {

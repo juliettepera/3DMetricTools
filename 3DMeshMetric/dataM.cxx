@@ -371,7 +371,7 @@ vtkIdType dataM::getIdPointClicked( double ClickedPosition[3] )
         double delta = 1;
         while( IdPicked.size() != 1 )
         {
-            for( int i = 0 ; i < IdPicked.size() ; i++ )
+            for( unsigned int i = 0 ; i < IdPicked.size() ; i++ )
             {
                 double Point[3];
                 m_PolyData -> GetPoints() -> GetPoint( IdPicked.at( i ) , Point );
