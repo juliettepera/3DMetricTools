@@ -42,10 +42,13 @@ meshMetricGui::meshMetricGui( QWidget *Parent , Qt::WFlags f , QString path )
     m_nbDecimate = 0.1;
     m_nbIteration = 200;
 
+    m_IdealHeightWindow = 768;
+    m_IdealWidthWindow = 1024;
+
     m_WidgetMesh = new QVTKWidget( this -> scrollAreaMesh );
     m_WidgetMesh->resize( scrollAreaMesh->size() );
-    m_MyWindowMesh.setSizeH(  scrollAreaMesh -> height()  );
-    m_MyWindowMesh.setSizeW( scrollAreaMesh -> width() );
+    m_MyWindowMesh.setSizeH( m_WidgetMesh->height() );
+    m_MyWindowMesh.setSizeW( m_WidgetMesh->width() );
     m_MyWindowMesh.setMeshWidget( m_WidgetMesh );
 
     widgetColor->setSize( widgetColor->rect().topLeft() , widgetColor->rect().bottomRight() );
@@ -442,28 +445,31 @@ void meshMetricGui::ResetSelectedFile()
 //*************************************************************************************************
 void meshMetricGui::resizeEvent( QResizeEvent *Qevent )
 {
-    if( m_NumberOfDisplay >= 1 )
+    /*if( m_NumberOfDisplay == 0 )
     {
-        int oldHeight = Qevent -> oldSize().height();
-        int newHeight = Qevent -> size().height();
-        int xHeight = newHeight - oldHeight;
+        scrollAreaMesh->resize( scrollAreaMesh->minimumWidth() + ( width() - m_IdealWidthWindow ) ,  scrollAreaMesh->minimumHeight() + ( height() - m_IdealHeightWindow ) );
+        m_WidgetMesh->resize( scrollAreaMesh->size() );
+        m_MyWindowMesh.setSizeH( m_WidgetMesh->height() );
+        m_MyWindowMesh.setSizeW( m_WidgetMesh->width() );
 
-        int oldWidth = Qevent -> oldSize().width();
-        int newWidth = Qevent -> size().width();
-        int xWidth = newWidth - oldWidth;
+        if( width() < m_IdealWidthWindow || height() < m_IdealHeightWindow )
+        {
+            std::cout << " Need to add scroll " << std::endl;
+        }
 
-        int scrollH = scrollAreaMesh->height();
-        int scrollW = scrollAreaMesh->width();
-
-        scrollAreaMesh -> resize( scrollW + xWidth , scrollH + xHeight );
-        m_MyWindowMesh.setSizeH( scrollAreaMesh -> height() );
-        m_MyWindowMesh.setSizeW( scrollAreaMesh -> width() );
-        m_WidgetMesh -> resize( scrollAreaMesh -> size() );
     }
-    else
-    {
-        resize( minimumSize() );
-    }
+    else if( m_NumberOfDisplay >= 1 )
+    {*/
+        scrollAreaMesh->resize( scrollAreaMesh->minimumWidth() + ( Qevent->size().width() - m_IdealWidthWindow ) ,  scrollAreaMesh->minimumHeight() + ( Qevent->size().height() - m_IdealHeightWindow ) );
+        m_WidgetMesh->resize( scrollAreaMesh->size() );
+        m_MyWindowMesh.setSizeH( m_WidgetMesh->height() );
+        m_MyWindowMesh.setSizeW( m_WidgetMesh->width() );
+
+         if( Qevent->size().width() < m_IdealWidthWindow || Qevent->size().height() < m_IdealHeightWindow )
+        {
+            std::cout << " Need to add scroll " << std::endl;
+        }
+    //}
 }
 
 

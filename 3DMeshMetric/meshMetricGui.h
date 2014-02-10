@@ -46,6 +46,7 @@
 #include <QLinearGradient>
 #include <QMimeData>
 #include <QUrl>
+#include <QScreen>
 
 // VTK libraries
 #include <QVTKWidget.h>
@@ -226,6 +227,9 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             int m_SelectedItemB;
             std::vector <bool> m_ErrorComputed;
             std::vector <bool> m_Visibility;
+
+            int m_IdealHeightWindow;
+            int m_IdealWidthWindow;
 
 };
 

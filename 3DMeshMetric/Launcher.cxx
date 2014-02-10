@@ -5,6 +5,8 @@
 
 int main( int argc , char* argv[] )
 { 
+  PARSE_ARGS;
+
   std::string path = argv[0];
   
   if( path.find('/' ) == std::string::npos )

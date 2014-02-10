@@ -45,6 +45,8 @@ int main( int argc , char* argv[] )
 
       meshMetricGui myMainWindow( parent , f , path );
 
+      myMainWindow.setWindowState( Qt::WindowMaximized );
+
       myMainWindow.show();
       int ret = app.exec() ;
       if( ret )

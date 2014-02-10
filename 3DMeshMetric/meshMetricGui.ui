@@ -15,8 +15,8 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>1024</width>
-    <height>768</height>
+    <width>768</width>
+    <height>576</height>
    </size>
   </property>
   <property name="acceptDrops">

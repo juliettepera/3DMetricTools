@@ -47,8 +47,8 @@ ADD_DEFINITIONS(-DMESHMETRIC3D_DOCUMENTATION="${documentation-url}")
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${MeshValmetLib_SOURCE_DIRECTORY} ${QT_INCLUDE_DIR} )
 link_directories( ${MeshValmetLib_BINARY_DIRECTORY} )
-generateclp( Dsources meshMetric.xml )
-add_executable( meshMetric MACOSX_BUNDLE ${Dsources} )
+generateclp( GUISources meshMetric.xml )
+add_executable( meshMetric MACOSX_BUNDLE ${Dsources} ${GUISources} )
 
 target_link_libraries( meshMetric MeshValmetLib ${VTK_LIBRARIES} ${QT_LIBRARIES} )
 install(TARGETS meshMetric
@@ -64,7 +64,7 @@ install(TARGETS meshMetric
 
 if(APPLE)
       # launcher
-      add_executable( meshMetricLauncher Launcher.cxx ${Dsources} )
+      add_executable( meshMetricLauncher Launcher.cxx ${GUISources} )
       target_link_libraries( meshMetricLauncher ${ITK_LIBRARIES} )
       # create the bundle
       set(plugin_dest_dir ${INSTALL_RUNTIME_DESTINATION}/meshMetric.app/Contents/MacOS)
@@ -76,7 +76,7 @@ if(APPLE)
          " COMPONENT Runtime)
 
       install(CODE "
-         execute_process(COMMAND cp -r \"${QT_LIBRARY_DIR}/QtGui.framework/Resources/qt_menu.nib\" \".\" WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${qtconf_dest_dir})")
+         execute_process(COMMAND cp -r \"${QT_LIBRARY_DIR}/QtGui.framework/Resources/qt_menu.nib\" \"${CMAKE_INSTALL_PREFIX}/${qtconf_dest_dir}\")")
       
       set(DIRS
       ${QT_LIBRARY_DIRS}
