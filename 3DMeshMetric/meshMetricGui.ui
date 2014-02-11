@@ -9,14 +9,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1024</width>
-    <height>768</height>
+    <width>1017</width>
+    <height>722</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>768</width>
-    <height>576</height>
+    <width>1017</width>
+    <height>722</height>
    </size>
   </property>
   <property name="acceptDrops">
@@ -38,7 +38,7 @@
       <x>10</x>
       <y>10</y>
       <width>461</width>
-      <height>261</height>
+      <height>241</height>
      </rect>
     </property>
     <property name="title">
@@ -47,8 +47,8 @@
     <widget class="QLabel" name="labelLoaded">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>30</y>
+       <x>10</x>
+       <y>20</y>
        <width>111</width>
        <height>16</height>
       </rect>
@@ -64,7 +64,7 @@
      <property name="geometry">
       <rect>
        <x>420</x>
-       <y>130</y>
+       <y>120</y>
        <width>31</width>
        <height>31</height>
       </rect>
@@ -82,8 +82,8 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>50</y>
+       <x>10</x>
+       <y>40</y>
        <width>391</width>
        <height>191</height>
       </rect>
@@ -142,7 +142,7 @@
      <property name="geometry">
       <rect>
        <x>420</x>
-       <y>170</y>
+       <y>160</y>
        <width>31</width>
        <height>31</height>
       </rect>
@@ -167,7 +167,7 @@
      <property name="geometry">
       <rect>
        <x>420</x>
-       <y>50</y>
+       <y>40</y>
        <width>31</width>
        <height>31</height>
       </rect>
@@ -186,7 +186,7 @@
      <property name="geometry">
       <rect>
        <x>420</x>
-       <y>90</y>
+       <y>80</y>
        <width>31</width>
        <height>31</height>
       </rect>
@@ -205,7 +205,7 @@
      <property name="geometry">
       <rect>
        <x>420</x>
-       <y>210</y>
+       <y>200</y>
        <width>31</width>
        <height>31</height>
       </rect>
@@ -236,7 +236,7 @@
       <x>480</x>
       <y>10</y>
       <width>431</width>
-      <height>61</height>
+      <height>51</height>
      </rect>
     </property>
     <property name="title">
@@ -346,15 +346,15 @@
     <property name="geometry">
      <rect>
       <x>480</x>
-      <y>80</y>
+      <y>70</y>
       <width>531</width>
-      <height>631</height>
+      <height>621</height>
      </rect>
     </property>
     <property name="minimumSize">
      <size>
       <width>531</width>
-      <height>631</height>
+      <height>621</height>
      </size>
     </property>
     <property name="contextMenuPolicy">
@@ -375,7 +375,7 @@
        <x>0</x>
        <y>0</y>
        <width>529</width>
-       <height>629</height>
+       <height>619</height>
       </rect>
      </property>
     </widget>
@@ -387,7 +387,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>280</y>
+      <y>260</y>
       <width>461</width>
       <height>181</height>
      </rect>
@@ -2034,7 +2034,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>470</y>
+      <y>450</y>
       <width>461</width>
       <height>241</height>
      </rect>
@@ -5601,13 +5601,12 @@
     </widget>
    </widget>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1024</width>
+     <width>1017</width>
      <height>25</height>
     </rect>
    </property>

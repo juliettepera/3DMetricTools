@@ -239,7 +239,6 @@ int processing::CheckPreviousError( dataM &Data1 )
             double range[2];
             Array -> GetRange( range );
 
-            Data1.setMin( range[ 0 ] );
             Data1.setMax( range[ 1 ] );
 
             if( rint( (range[1] - range[0])/2.0 ) >= 1 )
@@ -253,19 +252,41 @@ int processing::CheckPreviousError( dataM &Data1 )
 
             if( strcmp( Names[ Indice ] , "Signed" ) == 0 )
             {
+                Data1.setMin( range[ 0 ] );
                 Data1.setCenter( (range[1] + range[0])/2.0 );
+
                 Data1.setTypeDistance( 1 );
                 return 31;
             }
             else if( strcmp( Names[ Indice ] , "Absolute" ) == 0 )
             {
-                Data1.setCenter( range[ 0 ] );
+                if( range[ 0 ] >= 0 )
+                {
+                    Data1.setMin( range[ 0 ] );
+                    Data1.setCenter( range[ 0 ] );
+                }
+                else
+                {
+                    Data1.setMin( 0 );
+                    Data1.setCenter( 0 );
+                }
+
                 Data1.setTypeDistance( 0 );
                 return 32;
             }
             else if( strcmp( Names[ Indice ] , "Correspondant" ) == 0 )
             {
-                Data1.setCenter( range[0]);
+                if( range[ 0 ] >= 0 )
+                {
+                    Data1.setMin( range[ 0 ] );
+                    Data1.setCenter( range[ 0 ] );
+                }
+                else
+                {
+                    Data1.setMin( 0 );
+                    Data1.setCenter( 0 );
+                }
+
                 Data1.setTypeDistance( 2 );
                 return 33;
             }

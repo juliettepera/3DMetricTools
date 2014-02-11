@@ -42,8 +42,8 @@ meshMetricGui::meshMetricGui( QWidget *Parent , Qt::WFlags f , QString path )
     m_nbDecimate = 0.1;
     m_nbIteration = 200;
 
-    m_IdealHeightWindow = 768;
-    m_IdealWidthWindow = 1024;
+    m_IdealHeightWindow = 722;
+    m_IdealWidthWindow = 1017;
 
     m_WidgetMesh = new QVTKWidget( this -> scrollAreaMesh );
     m_WidgetMesh->resize( scrollAreaMesh->size() );
@@ -445,31 +445,15 @@ void meshMetricGui::ResetSelectedFile()
 //*************************************************************************************************
 void meshMetricGui::resizeEvent( QResizeEvent *Qevent )
 {
-    /*if( m_NumberOfDisplay == 0 )
-    {
-        scrollAreaMesh->resize( scrollAreaMesh->minimumWidth() + ( width() - m_IdealWidthWindow ) ,  scrollAreaMesh->minimumHeight() + ( height() - m_IdealHeightWindow ) );
-        m_WidgetMesh->resize( scrollAreaMesh->size() );
-        m_MyWindowMesh.setSizeH( m_WidgetMesh->height() );
-        m_MyWindowMesh.setSizeW( m_WidgetMesh->width() );
+     scrollAreaMesh->resize( scrollAreaMesh->minimumWidth() + ( Qevent->size().width() - m_IdealWidthWindow ) ,  scrollAreaMesh->minimumHeight() + ( Qevent->size().height() - m_IdealHeightWindow ) );
+     m_WidgetMesh->resize( scrollAreaMesh->size() );
+     m_MyWindowMesh.setSizeH( m_WidgetMesh->height() );
+     m_MyWindowMesh.setSizeW( m_WidgetMesh->width() );
 
-        if( width() < m_IdealWidthWindow || height() < m_IdealHeightWindow )
-        {
-            std::cout << " Need to add scroll " << std::endl;
-        }
-
-    }
-    else if( m_NumberOfDisplay >= 1 )
-    {*/
-        scrollAreaMesh->resize( scrollAreaMesh->minimumWidth() + ( Qevent->size().width() - m_IdealWidthWindow ) ,  scrollAreaMesh->minimumHeight() + ( Qevent->size().height() - m_IdealHeightWindow ) );
-        m_WidgetMesh->resize( scrollAreaMesh->size() );
-        m_MyWindowMesh.setSizeH( m_WidgetMesh->height() );
-        m_MyWindowMesh.setSizeW( m_WidgetMesh->width() );
-
-         if( Qevent->size().width() < m_IdealWidthWindow || Qevent->size().height() < m_IdealHeightWindow )
-        {
-            std::cout << " Need to add scroll " << std::endl;
-        }
-    //}
+     if( Qevent->size().width() < m_IdealWidthWindow || Qevent->size().height() < m_IdealHeightWindow )
+     {
+         //to do if I want a smaller size
+     }
 }
 
 
@@ -948,7 +932,9 @@ void meshMetricGui::ChangeMeshSelected()
            widgetColor->updateGradientSigned( DeltaC , DeltaY , Center );
            lineEditType -> setText( QString( "Signed distance" ) );
            lineEditMin -> setReadOnly( false );
+           lineEditMin -> setPalette( lineEditMax->palette() );
            lineEditCenter -> setReadOnly( false );
+           lineEditCenter -> setPalette( lineEditMax->palette() );
        }
        else if( m_DataList[ m_MeshSelected ].getTypeDistance() == 0 )
        {
@@ -956,7 +942,9 @@ void meshMetricGui::ChangeMeshSelected()
            widgetColor->updateGradientAbsolute( DeltaY );
            lineEditType -> setText( QString( "Absolute distance" ) );
            lineEditMin -> setReadOnly( true );
+           lineEditMin -> setPalette( lineEditA->palette() );
            lineEditCenter -> setReadOnly( true );
+           lineEditCenter -> setPalette( lineEditA->palette() );
        }
        else if( m_DataList[ m_MeshSelected ].getTypeDistance() == 2 )
        {
@@ -964,7 +952,9 @@ void meshMetricGui::ChangeMeshSelected()
            widgetColor->updateGradientAbsolute( DeltaY );
            lineEditType -> setText( QString( "Correspondant" ) );
            lineEditMin -> setReadOnly( true );
+           lineEditMin -> setPalette( lineEditA->palette() );
            lineEditCenter -> setReadOnly( true );
+           lineEditCenter -> setPalette( lineEditA->palette() );
        }
 
    }
