@@ -206,7 +206,7 @@ ExternalProject_Add(${proj}
     ${COMMON_EXTERNAL_PROJECT_ARGS}
     -D${LOCAL_PROJECT_NAME}_SUPERBUILD:BOOL=OFF
     -DBuild_Static:BOOL=ON
-    -DBuild_3DErrorMetric:BOOL=ON
+    -DBuild_ModelToModelDistance:BOOL=ON
     -DBuild_3DMeshMetric:BOOL=ON
   INSTALL_COMMAND ""
   )
