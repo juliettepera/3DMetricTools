@@ -138,6 +138,9 @@ meshMetricGui::meshMetricGui( QWidget *Parent , Qt::WFlags f , QString path )
     QObject::connect( checkBoxColorBar , SIGNAL( toggled( bool ) ) , this , SLOT( ChangeDisplayColorBar() ) );
 
     QObject::connect( &m_MyWindowMesh , SIGNAL( positionPicked(double,double,double) ) , this , SLOT( GetValueByClicking(double,double,double) ) );
+
+    QObject::connect( horizontalSliderCloudRadius , SIGNAL( sliderReleased() ) , this , SLOT( ChangeValueRadius() ) );
+    QObject::connect( pushButtonColorCloud , SIGNAL( clicked() ) , this , SLOT( ChangeColorCloud() ) );
 }
 
 
@@ -221,6 +224,12 @@ void meshMetricGui::InitIcon()
     std::string reset = m_Path;
     reset += "/icons/reset.png";
 
+    std::string minBubble = m_Path;
+    minBubble += "/icons/miniBubble.png";
+
+    std::string maxBubble = m_Path;
+    maxBubble += "/icons/maxiBubble.png";
+
     m_Visible = QString::fromStdString( visible );
     m_Unvisible = QString::fromStdString( unvisible );
     m_Ok = QString::fromStdString( ok );
@@ -230,6 +239,8 @@ void meshMetricGui::InitIcon()
     m_Delete = QString::fromStdString( deleteAll );
     m_Display = QString::fromStdString( display );
     m_Reset = QString::fromStdString( reset );
+    m_MiniBubble = QString::fromStdString( minBubble );
+    m_MaxiBubble = QString::fromStdString( maxBubble );
 
     m_VisibleIcon = QIcon( m_Visible );
     m_UnvisibleIcon = QIcon( m_Unvisible );
@@ -255,6 +266,9 @@ void meshMetricGui::InitIcon()
     styleSheetLoadedMesh += m_Path;
     styleSheetLoadedMesh += "/icons/unvisible.png);}";
     listWidgetLoadedMesh -> setStyleSheet( QString::fromStdString( styleSheetLoadedMesh ) );
+
+    labelMiniBubble->setPixmap( m_MiniBubble );
+    labelMaxiBubble->setPixmap( m_MaxiBubble );
 }
 
 
@@ -329,6 +343,7 @@ void meshMetricGui::DeleteOneFile()
 
         lineEditMeshA -> clear();
         lineEditNameMesh -> clear();
+        lineEditClickValue -> clear();
 
         tabWidgetVisualization -> setEnabled( false );
         tabWidgetError -> setEnabled( false );
@@ -383,6 +398,7 @@ void meshMetricGui::DeleteAllFiles()
         comboBoxMeshB -> setCurrentIndex( 0 );
         lineEditMeshA -> clear();
         lineEditNameMesh -> clear();
+        lineEditClickValue -> clear();
         m_DataList.clear();
         m_ErrorComputed.clear();
         m_Visibility.clear();
@@ -880,6 +896,7 @@ void meshMetricGui::ChangeMeshSelected()
    QFileInfo File = QString::fromStdString( m_DataList[ m_MeshSelected ].getName() );
    lineEditMeshA -> setText( File.fileName() );
    lineEditNameMesh -> setText( File.fileName() );
+   m_MyWindowMesh.EraseCloud();
    lineEditClickValue->clear();
    AvailableMesh();
 
@@ -1698,7 +1715,7 @@ void meshMetricGui::RefreshColorBar()
 //*************************************************************************************************
 void meshMetricGui::GetValueByClicking(double X, double Y, double Z)
 {
-    if( ! m_DataList.empty() && m_MeshSelected != -1 )
+    if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
     {
         double Picked[3];
         Picked[0] = X;
@@ -1708,8 +1725,43 @@ void meshMetricGui::GetValueByClicking(double X, double Y, double Z)
         vtkIdType MyId = m_DataList[ m_MeshSelected ].getIdPointClicked( Picked );
         QString value = m_DataList[ m_MeshSelected ].getScalarValue( MyId );
 
+        if( value != "Not a Point" )
+        {
+           m_MyWindowMesh.PointCloud( X ,Y , Z );
+        }
+        else
+        {
+           m_MyWindowMesh.EraseCloud();
+        }
+
         tabWidgetVisualization->setCurrentWidget( tabClickPoint );
         lineEditClickValue -> setText( value );
+     }
+}
+
+
+//*************************************************************************************************
+void meshMetricGui::ChangeValueRadius()
+{
+    if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
+    {
+        double NewValue = horizontalSliderCloudRadius->value()*0.045;
+        m_MyWindowMesh.ChangeCloudRadius( NewValue );
+    }
+}
+
+
+//*************************************************************************************************
+void meshMetricGui::ChangeColorCloud()
+{
+    if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
+    {
+        m_Color = QColorDialog::getColor( Qt::white , this );
+
+        if( m_Color.isValid() )
+        {
+            m_MyWindowMesh.ChangeCloudColor( m_Color.redF() , m_Color.greenF() , m_Color.blueF() );
+        }
     }
 }
 

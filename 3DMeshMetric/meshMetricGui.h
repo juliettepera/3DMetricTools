@@ -178,6 +178,11 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
              */
             void GetValueByClicking( double X , double Y , double Z );
 
+            /* Change the radius and color of the dot on the selected point
+             */
+            void ChangeValueRadius();
+            void ChangeColorCloud();
+
     private:
             // attibuts for the icons
             std::string m_Path;
@@ -190,6 +195,7 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             QIcon m_DeleteIcon;
             QIcon m_DisplayIcon;
             QIcon m_ResetIcon;
+
             QString m_Visible;
             QString m_Unvisible;
             QString m_Ok;
@@ -199,6 +205,8 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             QString m_Delete;
             QString m_Display;
             QString m_Reset;
+            QString m_MiniBubble;
+            QString m_MaxiBubble;
 
             // attibuts for the display
             int m_NumberOfDisplay;
@@ -228,6 +236,7 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             std::vector <bool> m_ErrorComputed;
             std::vector <bool> m_Visibility;
 
+            // attributs for resizing the window
             int m_IdealHeightWindow;
             int m_IdealWidthWindow;
 

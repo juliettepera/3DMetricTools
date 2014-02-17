@@ -9,14 +9,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1017</width>
-    <height>722</height>
+    <width>1020</width>
+    <height>674</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>1017</width>
-    <height>722</height>
+    <width>1020</width>
+    <height>674</height>
    </size>
   </property>
   <property name="acceptDrops">
@@ -32,201 +32,6 @@
    <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QGroupBox" name="groupBoxVisualization">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>461</width>
-      <height>241</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>DATA</string>
-    </property>
-    <widget class="QLabel" name="labelLoaded">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>111</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Loaded Files :</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButtonDelete">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>420</x>
-       <y>120</y>
-       <width>31</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>close all files</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QListWidget" name="listWidgetLoadedMesh">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>40</y>
-       <width>391</width>
-       <height>191</height>
-      </rect>
-     </property>
-     <property name="palette">
-      <palette>
-       <active>
-        <colorrole role="Shadow">
-         <brush brushstyle="SolidPattern">
-          <color alpha="255">
-           <red>134</red>
-           <green>171</green>
-           <blue>217</blue>
-          </color>
-         </brush>
-        </colorrole>
-       </active>
-       <inactive>
-        <colorrole role="Shadow">
-         <brush brushstyle="SolidPattern">
-          <color alpha="255">
-           <red>134</red>
-           <green>171</green>
-           <blue>217</blue>
-          </color>
-         </brush>
-        </colorrole>
-       </inactive>
-       <disabled>
-        <colorrole role="Shadow">
-         <brush brushstyle="SolidPattern">
-          <color alpha="255">
-           <red>134</red>
-           <green>171</green>
-           <blue>217</blue>
-          </color>
-         </brush>
-        </colorrole>
-       </disabled>
-      </palette>
-     </property>
-     <property name="dragEnabled">
-      <bool>false</bool>
-     </property>
-     <property name="dragDropMode">
-      <enum>QAbstractItemView::NoDragDrop</enum>
-     </property>
-     <property name="selectionMode">
-      <enum>QAbstractItemView::SingleSelection</enum>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButtonDisplayAll">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>420</x>
-       <y>160</y>
-       <width>31</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>display all files</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="autoDefault">
-      <bool>false</bool>
-     </property>
-     <property name="default">
-      <bool>false</bool>
-     </property>
-     <property name="flat">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButtonAdd">
-     <property name="geometry">
-      <rect>
-       <x>420</x>
-       <y>40</y>
-       <width>31</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>add files</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButtonDeleteOne">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>420</x>
-       <y>80</y>
-       <width>31</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>close selected file</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButtonHideAll">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>420</x>
-       <y>200</y>
-       <width>31</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>hide all files</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="autoDefault">
-      <bool>false</bool>
-     </property>
-     <property name="default">
-      <bool>false</bool>
-     </property>
-     <property name="flat">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </widget>
    <widget class="QGroupBox" name="groupBoxCamera">
     <property name="enabled">
      <bool>false</bool>
@@ -348,13 +153,13 @@
       <x>480</x>
       <y>70</y>
       <width>531</width>
-      <height>621</height>
+      <height>571</height>
      </rect>
     </property>
     <property name="minimumSize">
      <size>
       <width>531</width>
-      <height>621</height>
+      <height>571</height>
      </size>
     </property>
     <property name="contextMenuPolicy">
@@ -375,7 +180,7 @@
        <x>0</x>
        <y>0</y>
        <width>529</width>
-       <height>619</height>
+       <height>569</height>
       </rect>
      </property>
     </widget>
@@ -387,7 +192,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>260</y>
+      <y>210</y>
       <width>461</width>
       <height>181</height>
      </rect>
@@ -2025,6 +1830,79 @@
        <string>( Use Key V )</string>
       </property>
      </widget>
+     <widget class="QPushButton" name="pushButtonColorCloud">
+      <property name="geometry">
+       <rect>
+        <x>8</x>
+        <y>91</y>
+        <width>91</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>change the color of the selected point</string>
+      </property>
+      <property name="text">
+       <string>Point Color</string>
+      </property>
+     </widget>
+     <widget class="QSlider" name="horizontalSliderCloudRadius">
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>95</y>
+        <width>181</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>change the size of the selected point</string>
+      </property>
+      <property name="minimum">
+       <number>1</number>
+      </property>
+      <property name="maximum">
+       <number>10</number>
+      </property>
+      <property name="value">
+       <number>4</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="tickPosition">
+       <enum>QSlider::TicksBelow</enum>
+      </property>
+      <property name="tickInterval">
+       <number>1</number>
+      </property>
+     </widget>
+     <widget class="QLabel" name="labelMiniBubble">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>90</y>
+        <width>36</width>
+        <height>36</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="labelMaxiBubble">
+      <property name="geometry">
+       <rect>
+        <x>350</x>
+        <y>90</y>
+        <width>31</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
     </widget>
    </widget>
    <widget class="QTabWidget" name="tabWidgetError">
@@ -2034,7 +1912,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>450</y>
+      <y>400</y>
       <width>461</width>
       <height>241</height>
      </rect>
@@ -5445,7 +5323,7 @@
      <widget class="QLabel" name="label_2">
       <property name="geometry">
        <rect>
-        <x>250</x>
+        <x>240</x>
         <y>130</y>
         <width>31</width>
         <height>21</height>
@@ -5471,7 +5349,7 @@
      <widget class="QLabel" name="label_5">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>90</x>
         <y>130</y>
         <width>45</width>
         <height>20</height>
@@ -5598,7 +5476,205 @@
        <string>Refresh</string>
       </property>
      </widget>
+     <widget class="QLabel" name="label_7">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>130</y>
+        <width>45</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Range</string>
+      </property>
+     </widget>
     </widget>
+   </widget>
+   <widget class="QPushButton" name="pushButtonAdd">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>30</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>add files</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonDelete">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>110</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>close all files</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="listWidgetLoadedMesh">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>421</width>
+      <height>161</height>
+     </rect>
+    </property>
+    <property name="palette">
+     <palette>
+      <active>
+       <colorrole role="Shadow">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>134</red>
+          <green>171</green>
+          <blue>217</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </active>
+      <inactive>
+       <colorrole role="Shadow">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>134</red>
+          <green>171</green>
+          <blue>217</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </inactive>
+      <disabled>
+       <colorrole role="Shadow">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>134</red>
+          <green>171</green>
+          <blue>217</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </disabled>
+     </palette>
+    </property>
+    <property name="dragEnabled">
+     <bool>false</bool>
+    </property>
+    <property name="dragDropMode">
+     <enum>QAbstractItemView::NoDragDrop</enum>
+    </property>
+    <property name="selectionMode">
+     <enum>QAbstractItemView::SingleSelection</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonHideAll">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>190</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>hide all files</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="autoDefault">
+     <bool>false</bool>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelLoaded">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>111</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Loaded Files :</string>
+    </property>
+    <property name="textFormat">
+     <enum>Qt::AutoText</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonDeleteOne">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>70</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>close selected file</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonDisplayAll">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>150</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>display all files</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="autoDefault">
+     <bool>false</bool>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -5606,7 +5682,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1017</width>
+     <width>1020</width>
      <height>25</height>
     </rect>
    </property>

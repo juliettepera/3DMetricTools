@@ -403,13 +403,6 @@ QString dataM::getScalarValue( vtkIdType MyId )
 
     if( MyId != -1 )
     {
-        //std::cout << "Id received : " << MyId << std::endl;
-
-        double point[3];
-        m_PolyData -> GetPoints() -> GetPoint( MyId , point );
-
-        //std::cout << "Coordinates of this point : ( " << point[0] << " , " << point[1] << " , " << point[2] << " )" << std::endl;
-
         int NbArray = m_PolyData -> GetPointData() -> GetNumberOfArrays();
         if( NbArray == 0 )
         {
@@ -425,7 +418,6 @@ QString dataM::getScalarValue( vtkIdType MyId )
     {
        Value = "Not a Point";
     }
-    //std::cout << Value.toStdString() << std::endl;
     return Value;
 }
 

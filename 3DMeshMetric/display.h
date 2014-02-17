@@ -46,6 +46,10 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkCommand.h>
 #include <vtkRendererCollection.h>
+#include <vtkPointSource.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
+
 
 //Qt Libraries
 #include <QObject>
@@ -113,6 +117,16 @@ class display: public QObject
          */
         void KeypressCallbackFunction ( vtkObject* caller, unsigned long notUseduLong, void* notUsedVoid );
 
+        /* Display a dot on the selected point
+         */
+        void PointCloud( double X , double Y , double Z );
+        void EraseCloud();
+
+        /* Change the radius and color of the dot
+         */
+        void ChangeCloudRadius( double NewRadius );
+        void ChangeCloudColor( double r , double g , double b );
+
     signals:
         void positionPicked(double X , double Y ,double Z );
 
@@ -140,6 +154,9 @@ class display: public QObject
         vtkSmartPointer <vtkOrientationMarkerWidget> m_Marker;
         vtkSmartPointer <vtkScalarBarActor> m_ScalarBar;
         vtkSmartPointer <vtkScalarsToColors> m_Lut;
+
+        vtkSmartPointer <vtkPointSource> m_PointSource;
+        vtkSmartPointer <vtkActor> m_Actor;
 };
 
 #endif

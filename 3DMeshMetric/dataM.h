@@ -41,6 +41,7 @@
 #include <vtkAbstractArray.h>
 #include <vtkCleanPolyData.h>
 #include <vtkPointData.h>
+#include <vtkDoubleArray.h>
 
 // QT libraries
 #include <QMessageBox>

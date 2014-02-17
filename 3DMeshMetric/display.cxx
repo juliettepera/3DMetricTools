@@ -45,6 +45,14 @@ display::display()
     m_ScalarBar = vtkSmartPointer <vtkScalarBarActor>::New();
     m_Lut = vtkSmartPointer <vtkScalarsToColors>::New();
 
+    m_PointSource = vtkSmartPointer <vtkPointSource>::New();
+    m_PointSource->SetNumberOfPoints(20000);
+    m_PointSource->SetDistributionToUniform();
+    m_PointSource->SetRadius(0.18);
+
+    m_Actor = vtkSmartPointer <vtkActor>::New();
+    m_Actor->GetProperty()->SetColor( 0 , 0 , 0 );
+
 }
 
 
@@ -187,6 +195,7 @@ void display::deleteAll()
     {
         m_Renderer -> RemoveActor( m_ActorList[ IndiceOfMesh ] );
     }
+    m_Renderer->RemoveActor( m_Actor );
 
     m_ActorList.clear();
     m_NumberOfMesh = 0;
@@ -231,3 +240,48 @@ void display::KeypressCallbackFunction( vtkObject* caller, unsigned long notUsed
       emit this->positionPicked(pickedPosition[0],pickedPosition[1],pickedPosition[2]);
   }
 }
+
+
+//*************************************************************************************************
+void display::PointCloud( double X , double Y , double Z )
+{
+    m_PointSource->SetCenter( X , Y , Z );
+    m_PointSource->Update();
+
+    vtkSmartPointer <vtkPolyDataMapper> mapper = vtkSmartPointer <vtkPolyDataMapper>::New();
+    mapper->SetInputConnection( m_PointSource->GetOutputPort() );
+
+    m_Actor->SetMapper(mapper);
+    m_Renderer->AddActor( m_Actor );
+    updateWindow();
+}
+
+void display::EraseCloud()
+{
+    m_Renderer->RemoveActor( m_Actor );
+    updateWindow();
+}
+
+
+//*************************************************************************************************
+void display::ChangeCloudRadius( double NewRadius )
+{
+    m_PointSource->SetRadius( NewRadius );
+    updateWindow();
+}
+
+
+//*************************************************************************************************
+void display::ChangeCloudColor( double r , double g , double b )
+{
+    m_Actor->GetProperty()->SetColor( r , g , b );
+    updateWindow();
+}
+
+
+
+
+
+
+
+
