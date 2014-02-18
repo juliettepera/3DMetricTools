@@ -349,6 +349,9 @@ void meshMetricGui::DeleteOneFile()
         tabWidgetError -> setEnabled( false );
         pushButtonDeleteOne -> setEnabled( false );
         actionSaveFile -> setEnabled( false );
+
+        m_MyWindowMesh.EraseCloud();
+
     }
 
     if( m_DataList.empty() )
@@ -369,7 +372,8 @@ void meshMetricGui::DeleteOneFile()
 
         m_MeshSelected = -1;
         m_MyWindowMesh.updateLut( 0 );
-    }
+
+     }
 }
 
 
