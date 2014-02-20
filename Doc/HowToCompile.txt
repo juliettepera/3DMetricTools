@@ -1,0 +1,87 @@
+********************************NOSuperBuild Linux********************************
+****CMake:
+ 3DMetricTools_SUPERBUILD         OFF                                                                                                                                                                                                       
+ BUILD_TESTING                    OFF                                                                                                                                                                                                       
+ Build_3DMeshMetric               ON                                                                                                                                                                                                        
+ Build_ModelToModelDistance       ON                                                                                                                                                                                                        
+ Build_Static                     ON                                                                                                                                                                                                        
+ CMAKE_BUILD_TYPE                 Debug                                                                                                                                                                                                     
+ CMAKE_INSTALL_PREFIX             /usr/local                                                                                                                                                                                                
+ ITK_VERSION_MAJOR                4                                                                                                                                                                                                         
+ QT_QMAKE_EXECUTABLE              /tools/Qt/Qt4.8.2/Qt4.8.2_linux64_THL/bin/qmake                                                                                                                                                           
+ SlicerExecutionModel_DIR         /devel/linux/SlicerExecutionModel/SlicerExecutionModel-build_ITKv4.3.0_v3Compatible_linux64                                                                                                               
+ Use_VTK_Filter                   OFF                                                                                                                                                                                                       
+ VTK_DIR                          /tools/VTK/VTK_6.1.0/VTK_6.1.0_linux64_dyn_release_Python2.7.5_Qt4.8.2/lib/cmake/vtk-6.1  
+
+****make:
+nothing particular
+
+****execute:
+/NIRAL/work/jpera/Project/3DMetricTools-build-NoSuperBuild/bin/meshMetric
+
+
+
+
+
+********************************SuperBuild Linux********************************
+****CMake:
+ 3DMetricTools_SUPERBUILD         ON                                                                                                                                                                                                        
+ CMAKE_BUILD_TYPE                 Release                                                                                                                                                                                                   
+ CMAKE_INSTALL_PREFIX             /work/jpera/Project/3DMetricTools-install-Linux                                                                                                                                                           
+ FORCE_EXTERNAL_BUILDS            OFF                                                                                                                                                                                                       
+ ITK_VERSION_MAJOR                4                                                                                                                                                                                                         
+ QT_QMAKE_EXECUTABLE              /tools/Qt/Qt4.8.2/Qt4.8.2_linux64_THL/bin/qmake                                                                                                                                                           
+ USE_GIT_PROTOCOL_3DMetricTools   ON                                                                                                                                                                                                        
+ USE_SYSTEM_ITK                   OFF                                                                                                                                                                                                       
+ USE_SYSTEM_SlicerExecutionMode   OFF                                                                                                                                                                                                       
+ USE_SYSTEM_VTK                   OFF 
+
+****make:
+Compile the tool a first time, it's long because all the library are compiled
+
+****make install:
+To do the install, you have to be on /NIRAL/work/jpera/Project/3DMetricTools-build-Linux/3DMetricTools-build
+because the install command is not installed on the superbuild
+
+****make install:
+When you need to compile again because you change things on 3DMeshMetric, do a make install only on:
+/NIRAL/work/jpera/Project/3DMetricTools-build-Linux/3DMetricTools-build
+
+****execute:
+/work/jpera/Project/3DMetricTools-install-Linux/3DMetricTools-package/meshMetric
+
+
+
+
+
+********************************SuperBuild Mac********************************
+****CMake:
+ 3DMetricTools_SUPERBUILD         ON                                                                                                                                                                                                        
+ CMAKE_BUILD_TYPE                 Release                                                                                                                                                                                                   
+ CMAKE_INSTALL_PREFIX             /NIRAL/work/jpera/Project/3DMetricTools-install-Mac                                                                                                                                                       
+ CMAKE_OSX_ARCHITECTURES                                                                                                                                                                                                                    
+ CMAKE_OSX_DEPLOYMENT_TARGET                                                                                                                                                                                                                
+ CMAKE_OSX_SYSROOT                                                                                                                                                                                                                          
+ FORCE_EXTERNAL_BUILDS            OFF                                                                                                                                                                                                       
+ ITK_VERSION_MAJOR                4                                                                                                                                                                                                         
+ QT_QMAKE_EXECUTABLE              /tools_mac/Lib/Qt/qt-4.8.5-build/bin/qmake                                                                                                                                                                
+ USE_GIT_PROTOCOL_3DMetricTools   ON                                                                                                                                                                                                        
+ USE_SYSTEM_ITK                   OFF                                                                                                                                                                                                       
+ USE_SYSTEM_SlicerExecutionMode   OFF                                                                                                                                                                                                       
+ USE_SYSTEM_VTK                   OFF       
+
+****make:
+Compile the tool a first time, it's long because all the library are compiled
+
+****make install:
+To do the install, you have to be on /NIRAL/work/jpera/Project/3DMetricTools-build-Mac/3DMetricTools-build/
+because the install command is not installed on the superbuild
+
+****make install:
+When you need to compile again because you change things on 3DMeshMetric, do a make install only on:
+/NIRAL/work/jpera/Project/3DMetricTools-build-Mac/3DMetricTools-build/
+
+****execute:
+To execute, you have to launch the launcher, we did that because we couldn't install Qt
+/NIRAL/work/jpera/Project/3DMetricTools-install-Mac/3DMetricTools-package/meshMetric.app/meshMetricLauncher
+

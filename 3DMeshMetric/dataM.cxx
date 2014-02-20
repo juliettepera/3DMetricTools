@@ -406,12 +406,21 @@ QString dataM::getScalarValue( vtkIdType MyId )
         int NbArray = m_PolyData -> GetPointData() -> GetNumberOfArrays();
         if( NbArray == 0 )
         {
-            Value = "No Value";
+            Value = "No Distance Value";
         }
         else
         {
-            double value = m_PolyData -> GetPointData() -> GetArray(0) -> GetComponent( MyId , 0 );
-            Value = QString::number( value );
+            if( strcmp( m_PolyData -> GetPointData() -> GetArray(0) -> GetName() , "Absolute" ) == 0
+             || strcmp( m_PolyData -> GetPointData() -> GetArray(0) -> GetName() , "Signed" ) == 0
+             || strcmp( m_PolyData -> GetPointData() -> GetArray(0) -> GetName() , "Correspondant" ) == 0 )
+            {
+                double value = m_PolyData -> GetPointData() -> GetArray(0) -> GetComponent( MyId , 0 );
+                Value = QString::number( value );
+            }
+            else
+            {
+                Value = "No Distance Value";
+            }
         }
     }
     else

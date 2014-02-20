@@ -1437,7 +1437,6 @@ void meshMetricGui::ApplyDistance()
             m_DataList[ m_SelectedItemA ].updateActorProperties();
             File = QString::fromStdString( m_DataList[ m_SelectedItemA ].getName() );
             lineEditA -> setText( File.fileName() );
-            //lineEditNbPointsA -> setText( QString::number( m_DataList[ m_SelectedItemA ].getPolyData()->GetNumberOfPoints() ) );
 
             lineEditMinR -> setText( QString::number( m_DataList[ m_SelectedItemA ].getMin() ) );
             lineEditMaxR -> setText( QString::number( m_DataList[ m_SelectedItemA ].getMax()) );
