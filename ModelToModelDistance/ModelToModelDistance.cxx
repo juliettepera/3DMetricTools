@@ -16,6 +16,8 @@
 #include <vtkCleanPolyData.h>
 #include <vtkTriangleFilter.h>
 #include <vtkCellData.h>
+#include <vtkPointData.h>
+#include <vtkDoubleArray.h>
 
 //class ErrorObserver copied from http://www.vtk.org/Wiki/VTK/Examples/Cxx/Utilities/ObserveError
 class ErrorObserver : public vtkCommand
@@ -171,11 +173,31 @@ int main( int argc , char* argv[] )
     distanceFilter->Update();
     //We are only interested in the point distance, not in the cell distance, so we remove the cell distance
     distanceFilter->GetOutput()->GetCellData()->RemoveArray("Distance") ;
+    //We rename the output array name to match the expected names in 3DMeshMetric
+    std::string distanceName ;
+    if( signedDistance )
+    {
+      distanceName = "Signed" ;
+    }
+    else
+    {
+      distanceName = "Absolute" ;
+    }
+    distanceFilter->GetOutput()->GetPointData()->GetArray("Distance")->SetName(distanceName.c_str()) ;
+    //We add a constant field that we call "original" that allows to show easily the model with no color map (constant color)
+    vtkSmartPointer<vtkPolyData> distancePolyData = distanceFilter->GetOutput() ;
+    vtkSmartPointer <vtkDoubleArray> ScalarsConst = vtkSmartPointer <vtkDoubleArray>::New();
+    for( vtkIdType Id = 0 ; Id < distancePolyData->GetNumberOfPoints() ; Id++ )
+    {
+      ScalarsConst->InsertTuple1( Id , 1.0 );
+    }
+    ScalarsConst->SetName( "Original" );
+    distancePolyData->GetPointData()->AddArray( ScalarsConst );
     vtkSmartPointer <vtkCleanPolyData> Cleaner = vtkSmartPointer <vtkCleanPolyData>::New() ;
   #if VTK_MAJOR_VERSION > 5
-    Cleaner->SetInputData( distanceFilter->GetOutput() ) ;
+    Cleaner->SetInputData( distancePolyData ) ;
   #else
-    Cleaner->SetInput( distanceFilter->GetOutput() ) ;
+    Cleaner->SetInput( distancePolyData ) ;
   #endif
     Cleaner->Update() ;
 #else
@@ -194,6 +216,7 @@ int main( int argc , char* argv[] )
   #endif
     Cleaner->Update() ;
 #endif
+
 	  if (vtkOutput.rfind(".vtk") != std::string::npos )
 	  {
 			vtkSmartPointer<vtkPolyDataWriter> writer = vtkPolyDataWriter::New() ;
