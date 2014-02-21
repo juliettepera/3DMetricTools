@@ -202,18 +202,17 @@ int processing::processError( dataM &Data1 , dataM &Data2 )
 int processing::CheckPreviousError( dataM &Data1 )
 {
     vtkSmartPointer <vtkPolyData> PolyData = vtkSmartPointer <vtkPolyData>::New();
-
     PolyData = Data1.getPolyData();
 
     int NumberOfArrays = PolyData -> GetPointData() -> GetNumberOfArrays();
     int Check = 0;
     int Indice = 0;
 
-    if( NumberOfArrays == 0 )
+    if( NumberOfArrays == 0 ) // no array
     {
         return -1;
     }
-    else
+    else // some arrays
     {
         const char* Names[ NumberOfArrays ];
         for( int i = 0; i < NumberOfArrays ; i++ )
@@ -231,9 +230,8 @@ int processing::CheckPreviousError( dataM &Data1 )
             }
         }
 
-        if( Check == 3 )
+        if( Check == 3 ) // both error and original are present
         {
-            // both error and original are present
             vtkDataArray* Array = vtkDataArray::SafeDownCast( PolyData -> GetPointData() -> GetArray( Indice ) );
 
             double range[2];
@@ -292,25 +290,14 @@ int processing::CheckPreviousError( dataM &Data1 )
             }
             return 3; // -> pb
         }
-        else if( Check == 0 )
+        else if( Check == 0 || Check == 1 || Check == 2 )
         {
-            // there is some arrays but no error or original
+            // there is some arrays but no error AND original
             return 0;
         }
-        else if( Check == 1)
-        {
-            // there is only the error -> pb
-            return 1;
-        }
-        else if( Check == 2 )
-        {
-            // there is only the original -> pb
-            return 2;
-        }
         else
-        {
-            // pb
-            return 4;
+        {         
+            return 4; // pb
         }
     }
 

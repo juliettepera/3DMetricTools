@@ -204,10 +204,10 @@ void meshMetricGui::InitIcon()
     unvisible += "/icons/unvisible.png";
 
     std::string ok = m_Path;
-    ok += "/icons/ok.jpeg";
+    ok += "/icons/ok.png";
 
     std::string notok = m_Path;
-    notok += "/icons/NotOk.jpeg";
+    notok += "/icons/NotOk.png";
 
     std::string plus = m_Path;
     plus += "/icons/plus.png";
@@ -216,10 +216,10 @@ void meshMetricGui::InitIcon()
     minus += "/icons/minus.png";
 
     std::string deleteAll = m_Path;
-    deleteAll += "/icons/deleteAll.jpeg";
+    deleteAll += "/icons/deleteAll.png";
 
     std::string display = m_Path;
-    display += "/icons/display.jpeg";
+    display += "/icons/display.png";
 
     std::string reset = m_Path;
     reset += "/icons/reset.png";
@@ -486,7 +486,7 @@ void meshMetricGui::PreviousError()
         QMessageBox MsgBox;
         QFileInfo File;
 
-        if( out == 1 )
+        /*if( out == 1 )
         {
             MsgBox.setText( " the original scalar is missing ");
             MsgBox.exec();
@@ -496,7 +496,7 @@ void meshMetricGui::PreviousError()
             MsgBox.setText( " the error scalar is missing ");
             MsgBox.exec();
         }
-        else if( out == 3 || out == 4 )
+        else*/ if( out == 3 || out == 4 )
         {
             MsgBox.setText( " problem ");
             MsgBox.exec();
@@ -1317,29 +1317,17 @@ void meshMetricGui::SelectMeshB()
             lineEditNbPointsB -> setText( "-" );
         }
 
-        if( m_DataList[ m_SelectedItemA ].getName() == m_DataList[ m_SelectedItemB ].getName() )
+        pushButtonApply -> setEnabled( true );
+        radioButtonAbsoluteDistance->setEnabled( true );
+        radioButtonSignedDistance->setEnabled( true );
+        if( m_DataList[ m_SelectedItemA ].getPolyData()->GetNumberOfPoints() == m_DataList[ m_SelectedItemB ].getPolyData()->GetNumberOfPoints() )
         {
-            QMessageBox MsgBox;
-            MsgBox.setText( "The two files are the same\nPlease choose another file for mesh B");
-            MsgBox.exec();
-            m_SelectedItemB = -1;
+           radioButtonCorrespondantDistance -> setEnabled( true );
         }
         else
         {
-            pushButtonApply -> setEnabled( true );
-            radioButtonAbsoluteDistance->setEnabled( true );
-            radioButtonSignedDistance->setEnabled( true );
-
-            if( m_DataList[ m_SelectedItemA ].getPolyData()->GetNumberOfPoints() == m_DataList[ m_SelectedItemB ].getPolyData()->GetNumberOfPoints() )
-            {
-                radioButtonCorrespondantDistance -> setEnabled( true );
-            }
-            else
-            {
-                radioButtonCorrespondantDistance -> setEnabled( false );
-            }
+           radioButtonCorrespondantDistance -> setEnabled( false );
         }
-
     }
     else
     {
