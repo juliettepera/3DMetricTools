@@ -90,12 +90,14 @@ class dataM
         void setSamplingStep( double SamplingStep );
         void setTypeDistance(int TypeDistance );
         void setDisplayError( bool DisplayError );
+        void setColorBar( bool ColorBar );
 
         std::string getNameB();
         int getMinSamplingFrequency();
         double getSamplingStep();
         int getTypeDistance();
         bool getDisplayError();
+        bool getColorBar();
 
         /* set and get the parameters used to compute the color bar
          */
@@ -104,14 +106,12 @@ class dataM
         void setMax( double Dmax );
         void setCenter( double Center );
         void setDelta( double Delta );
-        void setColorBar( bool ColorBar );
 
         vtkSmartPointer <vtkColorTransferFunction> getLut();
         double getMin();
         double getMax();
         double getCenter();
         double getDelta();
-        bool getColorBar();
 
         /* Read the file
          * Pass by a cleaner and triangler filter
@@ -162,13 +162,13 @@ class dataM
         double m_SamplingStep;
         int m_TypeDistance; // 0=absolute 1=signed 2=correspondant
         bool m_DisplayError;
+        bool m_ColorBar;
 
         vtkSmartPointer <vtkColorTransferFunction> m_Lut;
         double m_Dmin;
         double m_Dmax;
         double m_Center;
         double m_Delta;
-        bool m_ColorBar;
 };
 
 #endif

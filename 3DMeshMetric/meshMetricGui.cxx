@@ -59,7 +59,6 @@ meshMetricGui::meshMetricGui( QWidget *Parent , Qt::WFlags f , QString path )
     lineEditMax -> setValidator( new QDoubleValidator( this ) );
 
     m_Path = path.toStdString();
-    std::cout<< "Path: " <<m_Path << std::endl;
     InitIcon();
 
     // shortcuts
@@ -128,14 +127,13 @@ meshMetricGui::meshMetricGui( QWidget *Parent , Qt::WFlags f , QString path )
     QObject::connect( radioButtonCorrespondantDistance , SIGNAL( toggled( bool ) ), this, SLOT( ChangeSignedDistance() ) );
     QObject::connect( pushButtonApply , SIGNAL( clicked() ) , this , SLOT( ApplyDistance() ) );
     QObject::connect( checkBoxError , SIGNAL( toggled( bool ) ) , this , SLOT( ChangeDisplayError() ) );
+    QObject::connect( checkBoxColorBar , SIGNAL( toggled( bool ) ) , this , SLOT( HideColorBar() ) );
 
     QObject::connect( lineEditMin , SIGNAL( returnPressed() ) , this , SLOT( ChangeValueMin() ) );
     QObject::connect( lineEditMax , SIGNAL( returnPressed() ) , this , SLOT( ChangeValueMax() ) );
     QObject::connect( lineEditDelta , SIGNAL( returnPressed() ) , this , SLOT( ChangeValueDelta() ) );
     QObject::connect( lineEditCenter , SIGNAL( returnPressed() ) , this , SLOT( ChangeValueCenter() ) );
     QObject::connect( pushButtonRefresh , SIGNAL( clicked() ) , this , SLOT( RefreshColorBar() ) );
-
-    QObject::connect( checkBoxColorBar , SIGNAL( toggled( bool ) ) , this , SLOT( ChangeDisplayColorBar() ) );
 
     QObject::connect( &m_MyWindowMesh , SIGNAL( positionPicked(double,double,double) ) , this , SLOT( GetValueByClicking(double,double,double) ) );
 
@@ -330,15 +328,19 @@ void meshMetricGui::DeleteOneFile()
 
         checkBoxError -> setChecked( m_ErrorComputed[ m_MeshSelected ] );
 
-        if( m_DataList[ m_MeshSelected ].getColorBar() == true )
+        if( checkBoxError->isChecked() == true )
         {
-            checkBoxColorBar -> setChecked( true );
-            m_MyWindowMesh.updateLut( 1 );
+            checkBoxColorBar->setChecked( true );
+            checkBoxColorBar->setEnabled( true );
+            m_DataList[ m_MeshSelected ].setColorBar( true );
+            m_DataList[ m_MeshSelected ].setDisplayError( true );
         }
-        else if( m_DataList[ m_MeshSelected ].getColorBar() == false )
+        else
         {
-            checkBoxColorBar -> setChecked( false );
-            m_MyWindowMesh.updateLut( 0 );
+            checkBoxColorBar->setChecked( false );
+            checkBoxColorBar->setEnabled( false );
+            m_DataList[ m_MeshSelected ].setColorBar( false );
+            m_DataList[ m_MeshSelected ].setDisplayError( false );
         }
 
         lineEditMeshA -> clear();
@@ -359,13 +361,15 @@ void meshMetricGui::DeleteOneFile()
         groupBoxCamera -> setEnabled( false );
         tabWidgetVisualization -> setEnabled( false );
         tabWidgetError -> setEnabled( false );
+        tabWidgetError->setCurrentIndex(0);
         pushButtonDeleteOne -> setEnabled( false );
         pushButtonDelete -> setEnabled( false );
         pushButtonDisplayAll -> setEnabled( false );
         pushButtonHideAll -> setEnabled( false );
         listWidgetLoadedMesh -> setEnabled( false );
         actionSaveFile -> setEnabled( false );
-
+        checkBoxError -> setChecked( false );
+        checkBoxColorBar->setChecked( false );
         pushButtonAdd -> setEnabled( true );
         actionAddNewFile -> setEnabled( true );
         actionAddNewRepository -> setEnabled( true );
@@ -396,6 +400,7 @@ void meshMetricGui::DeleteAllFiles()
         spinBoxDecimate -> setValue( 10 );
         radioButtonPoints -> setChecked( true );
         checkBoxError -> setChecked( false );
+        checkBoxColorBar->setChecked( false );
         listWidgetLoadedMesh -> clear();
         comboBoxMeshB -> clear();
         comboBoxMeshB -> addItem( m_NotOkIcon , QString(" no file selected ") );
@@ -415,6 +420,7 @@ void meshMetricGui::DeleteAllFiles()
         groupBoxCamera -> setEnabled( false );
         tabWidgetVisualization -> setEnabled( false );
         tabWidgetError -> setEnabled( false );
+        tabWidgetError->setCurrentIndex(0);
         pushButtonDeleteOne -> setEnabled( false );
         pushButtonDelete -> setEnabled( false );
         pushButtonDisplayAll -> setEnabled( false );
@@ -455,7 +461,6 @@ void meshMetricGui::ResetSelectedFile()
         tabWidgetError -> setCurrentWidget( tabDistance );
     }
     checkBoxError -> setEnabled( m_ErrorComputed[ m_MeshSelected ] );
-    checkBoxColorBar -> setChecked( false );
     checkBoxError -> setChecked( false );
 
     ChangeMeshSelected();
@@ -507,8 +512,6 @@ void meshMetricGui::PreviousError()
             {
                 m_ErrorComputed[ m_MeshSelected ] = true;
                 m_DataList[ m_MeshSelected ].setDisplayError( true );
-                m_DataList[ m_MeshSelected ].setColorBar( true );
-                checkBoxColorBar -> setChecked( true );
 
                 m_MyProcess.updateColor( m_DataList[ m_MeshSelected ] );
 
@@ -527,7 +530,7 @@ void meshMetricGui::PreviousError()
                 lineEditCenter -> setText( QString::number( m_DataList[ m_MeshSelected ].getCenter() ) );
                 lineEditDelta -> setText( QString::number( m_DataList[ m_MeshSelected ].getDelta() ) );
 
-                 m_MyWindowMesh.setLut( m_DataList[ m_MeshSelected ].getMapper()->GetLookupTable() );
+                 m_MyWindowMesh.setLut( m_DataList[ m_MeshSelected ].getMapper()->GetLookupTable() , "File "+QString::number( m_MeshSelected + 1 ).toStdString() );
                  m_MyWindowMesh.updateLut( 1 );
 
                 if( out == 31 )
@@ -888,15 +891,6 @@ void meshMetricGui::ChangeMeshSelected()
        radioButtonCorrespondantDistance -> setChecked( true );
    }
 
-   if( m_DataList[ m_MeshSelected ].getColorBar() == true )
-   {
-       checkBoxColorBar -> setChecked( true );
-   }
-   else if( m_DataList[ m_MeshSelected ].getColorBar() == false )
-   {
-       checkBoxColorBar -> setChecked( false );
-   }
-
    QFileInfo File = QString::fromStdString( m_DataList[ m_MeshSelected ].getName() );
    lineEditMeshA -> setText( File.fileName() );
    lineEditNameMesh -> setText( File.fileName() );
@@ -907,32 +901,27 @@ void meshMetricGui::ChangeMeshSelected()
    if( m_ErrorComputed[ m_MeshSelected ] == true )
    {
        checkBoxError -> setEnabled( true );
-       checkBoxColorBar -> setEnabled( true );
 
        tabWidgetError -> setCurrentWidget( tabResults );
        tabResults -> setEnabled( true );
 
-       m_MyWindowMesh.setLut( m_DataList[ m_MeshSelected ].getMapper()->GetLookupTable() );
-
        if( m_DataList[ m_MeshSelected ].getDisplayError() == true )
        {
            checkBoxError -> setChecked( true );
+           checkBoxColorBar -> setEnabled( true );
+           m_DataList[ m_MeshSelected ].setColorBar( true );
+           checkBoxColorBar -> setChecked( true );
        }
        else if( m_DataList[ m_MeshSelected ].getDisplayError() == false )
        {
            checkBoxError -> setChecked( false );
+           checkBoxColorBar -> setEnabled( false );
+           m_DataList[ m_MeshSelected ].setColorBar( false );
+           checkBoxColorBar -> setChecked( false );
        }
 
-       if( m_DataList[ m_MeshSelected ].getColorBar() == true )
-       {
-           checkBoxColorBar -> setChecked( true );
-           m_MyWindowMesh.updateLut( 1 );
-       }
-       else if( m_DataList[ m_MeshSelected ].getColorBar() == false )
-       {
-           checkBoxColorBar -> setChecked( false );
-           m_MyWindowMesh.updateLut( 0 );
-       }
+       m_MyWindowMesh.setLut( m_DataList[ m_MeshSelected ].getMapper()->GetLookupTable() , "File "+QString::number( m_MeshSelected + 1 ).toStdString() );
+       m_MyWindowMesh.updateLut( m_DataList[m_MeshSelected].getColorBar() );
 
        lineEditA -> setText( File.fileName() );
        lineEditB -> setText( QString::fromStdString( m_DataList[ m_MeshSelected ].getNameB() ) );
@@ -1406,9 +1395,9 @@ void meshMetricGui::ApplyDistance()
         else
         {
             checkBoxError -> setChecked( true );
-            m_ErrorComputed[ m_MeshSelected ] = true;
+            checkBoxColorBar -> setEnabled( true );
             checkBoxColorBar -> setChecked( true );
-            m_DataList[ m_MeshSelected ].setColorBar( true );
+            m_ErrorComputed[ m_MeshSelected ] = true;
 
             m_DataList[ m_SelectedItemB ].setOpacity( 0.0 );
             m_Visibility[ m_SelectedItemB ] = false;
@@ -1418,6 +1407,8 @@ void meshMetricGui::ApplyDistance()
             lineEditB -> setText( File.fileName() );
             lineEditNbPointsB -> setText( QString::number( m_DataList[ m_SelectedItemB ].getPolyData()->GetNumberOfPoints() ) );
 
+            m_DataList[ m_SelectedItemA ].setColorBar( true );
+            m_DataList[ m_SelectedItemA ].setDisplayError( true );
             m_DataList[ m_SelectedItemA ].setNameB( File.fileName().toStdString() );
             m_DataList[ m_SelectedItemA ].setOpacity( 1.0 );
             m_Visibility[ m_SelectedItemA ] = true;
@@ -1434,7 +1425,7 @@ void meshMetricGui::ApplyDistance()
             lineEditDelta -> setText( QString::number( m_DataList[ m_MeshSelected ].getDelta() ) );
             lineEditCenter -> setText( QString::number( m_DataList[ m_SelectedItemA ].getCenter() ) );
 
-            m_MyWindowMesh.setLut( m_DataList[ m_SelectedItemA ].getMapper()->GetLookupTable() );
+            m_MyWindowMesh.setLut( m_DataList[ m_SelectedItemA ].getMapper()->GetLookupTable() , "File "+QString::number( m_SelectedItemA + 1 ).toStdString() );
             m_MyWindowMesh.updateLut( 1 );
             m_MyWindowMesh.updateWindow();
 
@@ -1485,15 +1476,40 @@ void meshMetricGui::ChangeDisplayError()
     {
         if( checkBoxError -> isChecked() )
         {
+            checkBoxColorBar->setEnabled( true );
+            checkBoxColorBar->setChecked( true );
             m_DataList[ m_MeshSelected ].setDisplayError( true );
+            m_DataList[ m_MeshSelected ].setColorBar( true );
         }
         else if( ! checkBoxError -> isChecked() )
         {
+            checkBoxColorBar->setEnabled( false );
+            checkBoxColorBar->setChecked( false );
             m_DataList[ m_MeshSelected ].setDisplayError( false );
+            m_DataList[ m_MeshSelected ].setColorBar( false );
         }
 
         m_DataList[ m_MeshSelected ].changeActivScalar();
+        m_MyWindowMesh.updateLut( m_DataList[ m_MeshSelected ].getColorBar() );
         m_MyWindowMesh.updateWindow();
+    }
+}
+
+void meshMetricGui::HideColorBar()
+{
+    if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 && checkBoxError->isChecked() )
+    {
+        if( checkBoxColorBar -> isChecked() )
+        {
+            m_DataList[ m_MeshSelected ].setColorBar( true );
+        }
+        else if( ! checkBoxColorBar -> isChecked() )
+        {
+            m_DataList[ m_MeshSelected ].setColorBar( false );
+        }
+        m_MyWindowMesh.updateLut( m_DataList[ m_MeshSelected ].getColorBar() );
+        m_MyWindowMesh.updateWindow();
+
     }
 }
 
@@ -1650,7 +1666,7 @@ void meshMetricGui::UpdateColor()
         if( m_DataList[ m_MeshSelected ].getTypeDistance() == 1 )
         {
            m_MyProcess.updateColor( m_DataList[ m_MeshSelected ] );
-           m_MyWindowMesh.setLut( m_DataList[ m_MeshSelected ].getMapper()->GetLookupTable() );
+           m_MyWindowMesh.setLut( m_DataList[ m_MeshSelected ].getMapper()->GetLookupTable() , "File "+QString::number( m_MeshSelected + 1 ).toStdString() );
            m_MyWindowMesh.updateWindow();
 
            double DeltaY = calculNewY( m_DataList[ m_MeshSelected ].getCenter() + m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
@@ -1663,7 +1679,7 @@ void meshMetricGui::UpdateColor()
         else if( m_DataList[ m_MeshSelected ].getTypeDistance() == 0 || m_DataList[ m_MeshSelected ].getTypeDistance() == 2 )
         {
                m_MyProcess.updateColor( m_DataList[ m_MeshSelected ] );
-               m_MyWindowMesh.setLut( m_DataList[ m_MeshSelected ].getMapper()->GetLookupTable() );
+               m_MyWindowMesh.setLut( m_DataList[ m_MeshSelected ].getMapper()->GetLookupTable() , "File "+QString::number( m_MeshSelected + 1 ).toStdString() );
                m_MyWindowMesh.updateWindow();
 
                double DeltaY = calculNewY( m_DataList[ m_MeshSelected ].getMin() + m_DataList[ m_MeshSelected ].getDelta() , m_DataList[ m_MeshSelected ].getMin() , m_DataList[ m_MeshSelected ].getMax() );
@@ -1672,27 +1688,6 @@ void meshMetricGui::UpdateColor()
         }
     }
 }
-
-
-//*************************************************************************************************
-void meshMetricGui::ChangeDisplayColorBar()
-{
-    if( ! m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
-    {
-        if( checkBoxColorBar -> isChecked() )
-        {
-            m_DataList[ m_MeshSelected ].setColorBar( true );
-            m_MyWindowMesh.updateLut( 1 );
-        }
-        else if( ! checkBoxColorBar -> isChecked() )
-        {
-            m_DataList[ m_MeshSelected ].setColorBar( false );
-            m_MyWindowMesh.updateLut( 0 );
-        }
-        m_MyWindowMesh.updateWindow();
-    }
-}
-
 
 //*************************************************************************************************
 void meshMetricGui::RefreshColorBar()

@@ -44,11 +44,11 @@ dataM::dataM( std::string Name )
     m_SamplingStep = 0.5;
     m_TypeDistance = 0;
     m_DisplayError = false;
+    m_ColorBar = false;
 
     m_Dmin = -1.0;
     m_Dmax = 1.0;
     m_Delta = 0.5;
-    m_ColorBar = false;
 }
 
 
@@ -154,6 +154,11 @@ void dataM::setDisplayError( bool DisplayError )
     m_DisplayError = DisplayError;
 }
 
+void dataM::setColorBar( bool ColorBar )
+{
+    m_ColorBar = ColorBar;
+}
+
 std::string dataM::getNameB()
 {
     return m_NameB;
@@ -177,6 +182,11 @@ int dataM::getTypeDistance()
 bool dataM::getDisplayError()
 {
     return m_DisplayError;
+}
+
+bool dataM::getColorBar()
+{
+    return m_ColorBar;
 }
 
 
@@ -207,11 +217,6 @@ void dataM::setDelta( double Delta )
     m_Delta = Delta;
 }
 
-void dataM::setColorBar( bool ColorBar )
-{
-    m_ColorBar = ColorBar;
-}
-
 vtkSmartPointer <vtkColorTransferFunction> dataM::getLut()
 {
     return m_Lut;
@@ -235,11 +240,6 @@ double dataM::getCenter()
 double dataM::getDelta()
 {
     return m_Delta;
-}
-
-bool dataM::getColorBar()
-{
-    return m_ColorBar;
 }
 
 //*************************************************************************************************

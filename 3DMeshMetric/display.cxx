@@ -42,7 +42,17 @@ display::display()
     m_Camera = vtkSmartPointer <vtkCamera>::New();
     m_Axes = vtkSmartPointer <vtkAxesActor>::New();
     m_Marker = vtkSmartPointer <vtkOrientationMarkerWidget>::New();
+
     m_ScalarBar = vtkSmartPointer <vtkScalarBarActor>::New();
+    m_ScalarBar -> SetTitle( "" );
+    m_ScalarBar -> SetNumberOfLabels( 5 );
+    m_ScalarBar -> SetTextPositionToPrecedeScalarBar();
+    m_ScalarBar -> SetHeight( 0.55 );
+    m_ScalarBar -> SetWidth( 0.09 );
+    m_ScalarBar -> SetPosition( 0.85 , 0.4 );
+    m_ScalarBar -> GetLabelTextProperty() -> SetColor( 0 , 0 , 0 );
+    m_ScalarBar -> GetLabelTextProperty() -> SetFontFamilyToTimes();
+
     m_Lut = vtkSmartPointer <vtkScalarsToColors>::New();
 
     m_PointSource = vtkSmartPointer <vtkPointSource>::New();
@@ -104,11 +114,13 @@ void display::changeBackgroundColor( double Red , double Green , double Blue )
 
 
 //*************************************************************************************************
-void display::setLut( vtkSmartPointer <vtkScalarsToColors> Lut )
+void display::setLut( vtkSmartPointer <vtkScalarsToColors> Lut , std::string Title )
 {
     m_Lut = vtkSmartPointer <vtkScalarsToColors>::New();
     m_Lut = Lut;
     m_ScalarBar -> SetLookupTable( m_Lut );
+    m_ScalarBar -> SetTitle( Title.c_str() );
+    m_Renderer->AddActor2D( m_ScalarBar );
 }
 
 
@@ -139,18 +151,7 @@ void display::initWindow()
     m_Marker -> SetEnabled( 1 );
     m_Marker -> InteractiveOff();
 
-    m_ScalarBar -> SetTitle( "" );
-    m_ScalarBar -> SetVisibility( 0 );
-    m_ScalarBar -> SetLookupTable( m_Lut );
-    m_ScalarBar -> SetNumberOfLabels( 5 );
-    m_ScalarBar -> SetTextPositionToPrecedeScalarBar();
-    m_ScalarBar -> SetHeight( 0.55 );
-    m_ScalarBar -> SetWidth( 0.09 );
-    m_ScalarBar -> SetPosition( 0.85 , 0.4 );
-    m_ScalarBar -> GetLabelTextProperty() -> SetColor( 0 , 0 , 0 );
-    m_ScalarBar -> GetLabelTextProperty() -> SetFontFamilyToTimes();
-
-    m_Renderer -> AddActor2D( m_ScalarBar );
+    //m_Renderer -> AddActor2D( m_ScalarBar );
 }
 
 

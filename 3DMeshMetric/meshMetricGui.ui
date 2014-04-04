@@ -4854,22 +4854,6 @@
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBoxColorBar">
-      <property name="geometry">
-       <rect>
-        <x>310</x>
-        <y>90</y>
-        <width>131</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="toolTip">
-       <string>(un)display the colorbar</string>
-      </property>
-      <property name="text">
-       <string>DisplayColorBar</string>
-      </property>
-     </widget>
      <widget class="colorBar" name="widgetColor" native="true">
       <property name="geometry">
        <rect>
@@ -5487,6 +5471,19 @@
       </property>
       <property name="text">
        <string>Range</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBoxColorBar">
+      <property name="geometry">
+       <rect>
+        <x>320</x>
+        <y>100</y>
+        <width>121</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Show ColorBar</string>
       </property>
      </widget>
     </widget>

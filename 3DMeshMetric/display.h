@@ -82,7 +82,7 @@ class display: public QObject
 
         /* Set the look up table
          */
-        void setLut(vtkSmartPointer <vtkScalarsToColors> m_Lut );
+        void setLut(vtkSmartPointer <vtkScalarsToColors> m_Lut , std::string Title );
 
         /* Init the display
          * add all the actors to the renderer

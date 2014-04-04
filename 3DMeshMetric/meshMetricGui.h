@@ -160,6 +160,7 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             void ChangeSignedDistance();
             void ApplyDistance();
             void ChangeDisplayError();
+            void HideColorBar();
 
             /* Change the parameters for the color map
              * Update the color map
@@ -170,7 +171,6 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             void ChangeValueDelta();
             void ChangeValueCenter();
             void UpdateColor();
-            void ChangeDisplayColorBar();
             void RefreshColorBar();
 
 
