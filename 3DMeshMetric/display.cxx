@@ -120,6 +120,7 @@ void display::setLut( vtkSmartPointer <vtkScalarsToColors> Lut , std::string Tit
     m_Lut = Lut;
     m_ScalarBar -> SetLookupTable( m_Lut );
     m_ScalarBar -> SetTitle( Title.c_str() );
+    m_ScalarBar -> GetTitleTextProperty() -> SetOpacity( 0.0 );
     m_Renderer->AddActor2D( m_ScalarBar );
 }
 

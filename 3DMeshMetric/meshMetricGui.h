@@ -195,6 +195,7 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             QIcon m_DeleteIcon;
             QIcon m_DisplayIcon;
             QIcon m_ResetIcon;
+            QIcon m_MeshMetricIcon;
 
             QString m_Visible;
             QString m_Unvisible;
@@ -204,6 +205,8 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             QString m_Minus;
             QString m_Delete;
             QString m_Display;
+            QString m_MeshMetric;
+
             QString m_Reset;
             QString m_MiniBubble;
             QString m_MaxiBubble;

@@ -222,6 +222,9 @@ void meshMetricGui::InitIcon()
     std::string reset = m_Path;
     reset += "/icons/reset.png";
 
+    std::string meshMetric = m_Path;
+    meshMetric += "/icons/MeshMetric.png";
+
     std::string minBubble = m_Path;
     minBubble += "/icons/miniBubble.png";
 
@@ -237,6 +240,8 @@ void meshMetricGui::InitIcon()
     m_Delete = QString::fromStdString( deleteAll );
     m_Display = QString::fromStdString( display );
     m_Reset = QString::fromStdString( reset );
+    m_MeshMetric = QString::fromStdString( meshMetric );
+
     m_MiniBubble = QString::fromStdString( minBubble );
     m_MaxiBubble = QString::fromStdString( maxBubble );
 
@@ -249,6 +254,7 @@ void meshMetricGui::InitIcon()
     m_DeleteIcon = QIcon( m_Delete );
     m_DisplayIcon = QIcon( m_Display );
     m_ResetIcon = QIcon( m_Reset );
+    m_MeshMetricIcon = QIcon( m_MeshMetric );
 
     pushButtonAdd -> setIcon( m_PlusIcon );
     pushButtonDeleteOne -> setIcon( m_MinusIcon );
@@ -256,6 +262,8 @@ void meshMetricGui::InitIcon()
     pushButtonDisplayAll -> setIcon( m_VisibleIcon );
     pushButtonHideAll -> setIcon( m_UnvisibleIcon );
     pushButtonResetAll -> setIcon( m_ResetIcon );
+
+    this->setWindowIcon( m_MeshMetricIcon );
 
     // style sheet eyes icon
     std::string styleSheetLoadedMesh = "QListWidget::indicator:checked{ image: url(";
@@ -591,6 +599,7 @@ double meshMetricGui::calculNewY( double X , double Min , double Max )
 void meshMetricGui::MeshMetric()
 {
     QMessageBox MsgBox;
+    MsgBox.setIconPixmap( m_MeshMetric );
     QString text( "\t3DMeshMetric\n\nVersion: " );
     text += MESHMETRIC3D_VERSION;
     text += "\n\nSoftware Developers:\n";
