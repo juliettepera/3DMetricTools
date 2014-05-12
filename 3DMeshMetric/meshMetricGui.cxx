@@ -160,9 +160,21 @@ void meshMetricGui::dropEvent(QDropEvent* Qevent)
         {
             QString filePath = urlList.at(i).toLocalFile();
 
-            if( filePath.endsWith( ".vtk" ) && QFileInfo( filePath ).exists() )
+            if( ( filePath.endsWith( ".vtk" ) || filePath.endsWith( ".obj" ) || filePath.endsWith( ".stl" ) ) && QFileInfo( filePath ).exists() )
             {
                 m_DataList.push_back( filePath.toStdString() );
+                if( filePath.endsWith( ".vtk" ) )
+                {
+                    m_DataList[ m_NumberOfMesh ].setTypeFile(1);
+                }
+                else if( filePath.endsWith( ".obj" ) )
+                {
+                    m_DataList[ m_NumberOfMesh ].setTypeFile(2);
+                }
+                else if( filePath.endsWith( ".stl" ) )
+                {
+                    m_DataList[ m_NumberOfMesh ].setTypeFile(3);
+                }
                 m_DataList[ m_NumberOfMesh ].initialization();
 
                 QFileInfo File = QFileInfo(filePath);
@@ -632,7 +644,8 @@ void meshMetricGui::About()
 //*************************************************************************************************
 void meshMetricGui::OpenBrowseWindowFile()
 {
-    QStringList browseMesh = QFileDialog::getOpenFileNames( this , "Open a VTK file" , QString() , "vtk mesh (*.vtk)" );
+    QStringList browseMesh = QFileDialog::getOpenFileNames( this , "Open a VTK, OBJ or STL file" , QString() ,
+                                                            "ALL FILES *.vtk , *.obj , *.stl ;; VTK(*.vtk) ;; OBJ(*.obj) ;; STL(*.stl)" );
     QLineEdit *lineEditLoad = new QLineEdit;
 
     if( ! browseMesh.isEmpty() )
@@ -644,10 +657,21 @@ void meshMetricGui::OpenBrowseWindowFile()
         if( !lineEditLoad->text().isEmpty() )
         {
             m_DataList.push_back( ( lineEditLoad -> text() ).toStdString() );
-            m_DataList[ m_NumberOfMesh ].initialization();
 
             QFileInfo File = ( lineEditLoad -> text() );
-
+            if( File.suffix() == "vtk" )
+            {
+                m_DataList[ m_NumberOfMesh ].setTypeFile(1);
+            }
+            else if( File.suffix() == "obj" )
+            {
+                m_DataList[ m_NumberOfMesh ].setTypeFile(2);
+            }
+            else if( File.suffix() == "stl" )
+            {
+                m_DataList[ m_NumberOfMesh ].setTypeFile(3);
+            }
+            m_DataList[ m_NumberOfMesh ].initialization();
             listWidgetLoadedMesh -> addItem( File.fileName().toStdString().c_str() );
 
             QListWidgetItem* currentIndex = listWidgetLoadedMesh -> item( m_NumberOfMesh );
@@ -682,13 +706,13 @@ void meshMetricGui::OpenBrowseWindowFile()
 void meshMetricGui::OpenBrowseWindowRepository()
 {
     QString path;
-    QString dir = QFileDialog::getExistingDirectory( this , tr("Open .vtk Directory") , path , QFileDialog::ShowDirsOnly );
+    QString dir = QFileDialog::getExistingDirectory( this , tr("Open Directory with VTK, OBJ or STL files") , path , QFileDialog::ShowDirsOnly );
 
     if( !dir.isEmpty() )
     {
         QDir vtkDir( dir );
         vtkDir.setFilter( QDir::NoDotAndDotDot | QDir::Files );
-        vtkDir.setNameFilters( QStringList() << "*.vtk" );
+        vtkDir.setNameFilters( QStringList() << "*.vtk" << "*.obj" << "*.stl" );
 
         QList <QFileInfo > FileList;
         FileList.append( vtkDir.entryInfoList() );
@@ -697,7 +721,7 @@ void meshMetricGui::OpenBrowseWindowRepository()
         {
             QString FileName = FileList.at(i).canonicalFilePath();
 
-            if ( !FileName.endsWith(".vtk") )
+            if ( !FileName.endsWith(".vtk") && !FileName.endsWith(".obj") && !FileName.endsWith(".stl") )
             {
                 FileList.removeAt(i);
                 i--;
@@ -707,6 +731,18 @@ void meshMetricGui::OpenBrowseWindowRepository()
         for( int i = 0 ; i < FileList.size() ; i++ )
         {
             m_DataList.push_back( FileList.at(i).canonicalFilePath().toStdString() );
+            if( FileList.at(i).suffix() == "vtk" )
+            {
+                m_DataList[ m_NumberOfMesh ].setTypeFile(1);
+            }
+            else if( FileList.at(i).suffix() == "obj" )
+            {
+                m_DataList[ m_NumberOfMesh ].setTypeFile(2);
+            }
+            else if( FileList.at(i).suffix() == "stl" )
+            {
+                m_DataList[ m_NumberOfMesh ].setTypeFile(3);
+            }
             m_DataList[ m_NumberOfMesh ].initialization();
 
             listWidgetLoadedMesh -> addItem( FileList.at(i).fileName().toStdString().c_str() );
@@ -741,11 +777,38 @@ QString meshMetricGui::SaveFile()
     if( !m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
     {
         QFileInfo CurrentMesh = QString::fromStdString( m_DataList[ m_MeshSelected ].getName() );
-        QString fileName = QFileDialog::getSaveFileName( this , " Create a new vtk file or open an existing one" , CurrentMesh.absolutePath() , "vtk file (*.vtk)" );
+        QString fileName = QFileDialog::getSaveFileName( this , "Create new file or select an existing one" , CurrentMesh.absolutePath() ,
+                                                         "ALL FILES *.vtk , *.obj , *.stl ;; VTK(*.vtk) ;; OBJ(*.obj) ;; STL(*.stl)" );
         if( ! fileName.isEmpty() )
         {
-            std::cout << fileName.toStdString() << std::endl;
-            int out = m_MyProcess.SaveFile( fileName.toStdString() , m_DataList[ m_MeshSelected ] );
+            QFileInfo NewFile = fileName;
+            std::cout << NewFile.suffix().toStdString() << std::endl;
+            int out = -1;
+
+            if( NewFile.suffix() == "vtk" )
+            {
+                out = m_MyProcess.SaveFile( fileName.toStdString() , m_DataList[ m_MeshSelected ] , 1 );
+            }
+            else if( NewFile.suffix() == "obj" )
+            {
+                out = m_MyProcess.SaveFile( fileName.toStdString() , m_DataList[ m_MeshSelected ] , 2 );
+            }
+            else if( NewFile.suffix() == "stl" )
+            {
+                out = m_MyProcess.SaveFile( fileName.toStdString() , m_DataList[ m_MeshSelected ] , 3 );
+            }
+            else if( NewFile.suffix().isEmpty() )
+            {
+                out = m_MyProcess.SaveFile( fileName.toStdString()+".vtk" , m_DataList[ m_MeshSelected ] , 1 );
+            }
+            else
+            {
+                QMessageBox MsgBox;
+                MsgBox.setText( " please enter a name with a valid extention ( vtk , stl ) " );
+                MsgBox.exec();
+                out = -1;
+            }
+
             if( out != 0 )
             {
                 SaveFile();

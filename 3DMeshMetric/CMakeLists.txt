@@ -20,6 +20,7 @@ dataM.cxx
 processing.cxx
 display.cxx
 colorBar.cxx
+vtkOBJWriter.cxx
 ${QtProject_HEADERS_MOC}
 ${UI_FILES}
 )

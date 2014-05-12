@@ -29,6 +29,7 @@
 dataM::dataM( std::string Name )
 {
     m_Name = Name;
+    m_Type = 0;
     m_PolyData = vtkSmartPointer <vtkPolyData>::New();
     m_Mapper = vtkSmartPointer <vtkPolyDataMapper>::New();
     m_Actor = vtkSmartPointer <vtkActor>::New();
@@ -61,6 +62,17 @@ void dataM::setName( std::string Name )
 std::string dataM::getName()
 {
     return m_Name;
+}
+
+//*************************************************************************************************
+void dataM::setTypeFile( int Type )
+{
+    m_TypeFile = Type;
+}
+
+int dataM::getTypeFile()
+{
+    return m_TypeFile;
 }
 
 //*************************************************************************************************
@@ -245,14 +257,35 @@ double dataM::getDelta()
 //*************************************************************************************************
 void dataM::initialization()
 {
-    vtkSmartPointer <vtkPolyDataReader> Reader = vtkSmartPointer <vtkPolyDataReader>::New();
     vtkSmartPointer <vtkTriangleFilter> Triangler = vtkSmartPointer <vtkTriangleFilter>::New();
     vtkSmartPointer <vtkCleanPolyData> Cleaner = vtkSmartPointer <vtkCleanPolyData>::New();
 
-    Reader -> SetFileName( m_Name.c_str() );
-    Reader -> Update();
+    if( m_TypeFile == 0 )
+    {
+       std::cout << " problem.... " << std::endl;
+    }
+    else if( m_TypeFile == 1 )
+    {
+       vtkSmartPointer <vtkPolyDataReader> ReaderVTK = vtkSmartPointer <vtkPolyDataReader>::New();
+       ReaderVTK -> SetFileName( m_Name.c_str() );
+       ReaderVTK -> Update();
+       Cleaner -> SetInputData( ReaderVTK -> GetOutput() );
+    }
+    else if( m_TypeFile == 2 )
+    {
+       vtkSmartPointer <vtkOBJReader> ReaderOBJ = vtkSmartPointer <vtkOBJReader>::New();
+       ReaderOBJ -> SetFileName( m_Name.c_str() );
+       ReaderOBJ -> Update();
+       Cleaner -> SetInputData( ReaderOBJ -> GetOutput() );
+    }
+    else if( m_TypeFile == 3 )
+    {
+       vtkSmartPointer <vtkSTLReader> ReaderSTL = vtkSmartPointer <vtkSTLReader>::New();
+       ReaderSTL -> SetFileName( m_Name.c_str() );
+       ReaderSTL -> Update();
+       Cleaner -> SetInputData( ReaderSTL -> GetOutput() );
+    }
 
-    Cleaner -> SetInputData( Reader -> GetOutput() );
     Cleaner -> Update();
 
     Triangler -> SetInputData( Cleaner -> GetOutput() );
@@ -428,5 +461,7 @@ QString dataM::getScalarValue( vtkIdType MyId )
        Value = "Not a Point";
     }
     return Value;
+
 }
+
 

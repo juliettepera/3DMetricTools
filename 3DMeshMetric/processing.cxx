@@ -305,41 +305,38 @@ int processing::CheckPreviousError( dataM &Data1 )
 
 
 //*************************************************************************************************
-int processing::SaveFile(std::string Name, dataM &Data1)
+int processing::SaveFile( std::string Name, dataM &Data1 , int format )
 {
-    vtkSmartPointer <vtkPolyDataWriter> Writer = vtkSmartPointer <vtkPolyDataWriter>::New();
 
-    for( unsigned int i = 0 ; i < Name.size() ; i++ )
+    if( format == 1 )
     {
-        if( Name[i] == 46 && i != 0 )
-        {
-            if( Name[i+1] == 118 && Name[i+2] == 116 && Name[i+3] == 107 && i+3 == Name.size()-1 )
-            {
-                Writer -> SetInputData( Data1.getPolyData() );
-                Writer -> SetFileName( Name.c_str() );
-                Writer -> Update();
-                return 0;
-            }
-            else
-            {
-                QMessageBox MsgBox;
-                MsgBox.setText( " please enter a name with a valid extention ( .vtk ) " );
-                MsgBox.exec();
-                return 1;
-            }
-        }
+        vtkSmartPointer <vtkPolyDataWriter> WriterVTK = vtkSmartPointer <vtkPolyDataWriter>::New();
+        WriterVTK -> SetInputData( Data1.getPolyData() );
+        WriterVTK -> SetFileName( Name.c_str() );
+        WriterVTK -> Update();
+        return 0;
     }
-
-    if( Name.compare( Name.size()-4 , 4 , ".vtk" ) != 0 )
+    else if( format == 2 )
     {
-        Name += ".vtk";
+        vtkSmartPointer <vtkOBJWriter> WriterOBJ = vtkSmartPointer <vtkOBJWriter>::New();
+        WriterOBJ -> SetInputData( Data1.getPolyData() );
+        WriterOBJ -> SetFileName( Name.c_str() );
+        WriterOBJ -> Update();
+
+        return 0;
     }
-
-    Writer -> SetInputData( Data1.getPolyData() );
-    Writer -> SetFileName( Name.c_str() );
-    Writer -> Update();
-
-    return 0;
+    else if( format == 3 )
+    {
+        vtkSmartPointer <vtkSTLWriter> WriterSTL = vtkSmartPointer <vtkSTLWriter>::New();
+        WriterSTL -> SetInputData( Data1.getPolyData() );
+        WriterSTL -> SetFileName( Name.c_str() );
+        WriterSTL -> Update();
+        return 0;
+    }
+    else
+    {
+        return -1;
+    }
 }
 
 

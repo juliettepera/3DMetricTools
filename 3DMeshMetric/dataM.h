@@ -31,6 +31,8 @@
 #include <vtkSmartPointer.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataReader.h>
+#include <vtkOBJReader.h>
+#include <vtkSTLReader.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkActor.h>
 #include <vtkSmoothPolyDataFilter.h>
@@ -60,6 +62,11 @@ class dataM
          */
         void setName( std::string Name );
         std::string getName();
+
+        /* set and get the type of the file
+         */
+        void setTypeFile( int type );
+        int getTypeFile();
 
         /* set and get the polydata file
          */
@@ -147,6 +154,7 @@ class dataM
 
     private:
         std::string m_Name;
+        int m_TypeFile; //1=vtk 2=obj 3=stl
         vtkSmartPointer <vtkPolyData> m_PolyData;
         vtkSmartPointer <vtkPolyDataMapper> m_Mapper;
         vtkSmartPointer <vtkActor> m_Actor;

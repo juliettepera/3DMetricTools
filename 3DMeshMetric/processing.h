@@ -35,6 +35,7 @@
 #include <vtkPolyData.h>
 #include <vtkColorTransferFunction.h>
 #include <vtkPolyDataWriter.h>
+#include <vtkSTLWriter.h>
 #include <vtkDataArray.h>
 #include <vtkContourFilter.h>
 
@@ -46,6 +47,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include "vtkOBJWriter.h"
 
 class processing
 {
@@ -70,7 +72,7 @@ class processing
 
         /* save the file
          */
-        int SaveFile( std::string Name , dataM &Data1 );
+        int SaveFile(std::string Name , dataM &Data1 , int format);
 
         /* update the color map
          */
