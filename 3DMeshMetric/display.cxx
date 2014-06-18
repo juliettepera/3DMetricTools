@@ -151,8 +151,6 @@ void display::initWindow()
     m_Marker -> SetViewport( 0.0, 0.0, 0.2, 0.2 );
     m_Marker -> SetEnabled( 1 );
     m_Marker -> InteractiveOff();
-
-    //m_Renderer -> AddActor2D( m_ScalarBar );
 }
 
 
