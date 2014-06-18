@@ -276,6 +276,7 @@ void dataM::initialization()
        vtkSmartPointer <vtkOBJReader> ReaderOBJ = vtkSmartPointer <vtkOBJReader>::New();
        ReaderOBJ -> SetFileName( m_Name.c_str() );
        ReaderOBJ -> Update();
+       ReaderOBJ -> GetOutput() -> GetPointData() -> SetNormals(NULL);
        Cleaner -> SetInputData( ReaderOBJ -> GetOutput() );
     }
     else if( m_TypeFile == 3 )

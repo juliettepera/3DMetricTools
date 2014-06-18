@@ -775,14 +775,14 @@ void meshMetricGui::OpenBrowseWindowRepository()
 QString meshMetricGui::SaveFile()
 {
     if( !m_DataList.empty() && m_NumberOfDisplay != 0 && m_MeshSelected != -1 )
-    {
+    {       
         QFileInfo CurrentMesh = QString::fromStdString( m_DataList[ m_MeshSelected ].getName() );
         QString fileName = QFileDialog::getSaveFileName( this , "Create new file or select an existing one" , CurrentMesh.absolutePath() ,
-                                                         "ALL FILES *.vtk , *.obj , *.stl ;; VTK(*.vtk) ;; OBJ(*.obj) ;; STL(*.stl)" );
+                                                         "ALL FILES *.vtk , *.obj , *.stl ;; VTK(*.vtk) ;; OBJ(*.obj) ;; STL(*.stl)" );  
+
         if( ! fileName.isEmpty() )
         {
             QFileInfo NewFile = fileName;
-            std::cout << NewFile.suffix().toStdString() << std::endl;
             int out = -1;
 
             if( NewFile.suffix() == "vtk" )
@@ -791,11 +791,37 @@ QString meshMetricGui::SaveFile()
             }
             else if( NewFile.suffix() == "obj" )
             {
-                out = m_MyProcess.SaveFile( fileName.toStdString() , m_DataList[ m_MeshSelected ] , 2 );
+                QMessageBox MsgBox;
+                MsgBox.addButton( QMessageBox::Ok );
+                MsgBox.addButton( QMessageBox::Cancel );
+                MsgBox.setText( " WARNING: If you want to save the distance information, please use VTK format " );
+                int selection = MsgBox.exec();
+
+                if( selection == QMessageBox::Ok )
+                {
+                    out = m_MyProcess.SaveFile( fileName.toStdString() , m_DataList[ m_MeshSelected ] , 2 );
+                }
+                else if( selection == QMessageBox::Cancel )
+                {
+                    out = -1;
+                }
             }
             else if( NewFile.suffix() == "stl" )
             {
-                out = m_MyProcess.SaveFile( fileName.toStdString() , m_DataList[ m_MeshSelected ] , 3 );
+                QMessageBox MsgBox;
+                MsgBox.addButton( QMessageBox::Ok );
+                MsgBox.addButton( QMessageBox::Cancel );
+                MsgBox.setText( " WARNING: If you want to save the distance information, please use VTK format " );
+                int selection = MsgBox.exec();
+
+                if( selection == QMessageBox::Ok )
+                {
+                    out = m_MyProcess.SaveFile( fileName.toStdString() , m_DataList[ m_MeshSelected ] , 3 );
+                }
+                else if( selection == QMessageBox::Cancel )
+                {
+                    out = -1;
+                }
             }
             else if( NewFile.suffix().isEmpty() )
             {
