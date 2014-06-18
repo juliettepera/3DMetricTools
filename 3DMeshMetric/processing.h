@@ -70,6 +70,7 @@ class processing
         /* search if there is an error in the file
          */
         int CheckPreviousError( dataM &Data1 );
+        double CheckForDelta( double Rmax , double Rmin );
 
         /* save the file
          */

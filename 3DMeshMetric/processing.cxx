@@ -162,15 +162,8 @@ int processing::processError( dataM &Data1 , dataM &Data2 )
             Data1.setMax( range[1] );
 
             // check for delta
-            double Delta = ( range[1] - range[0] )/2.0 ;
-            if( Delta >= 0.5 )
-            {
-                Data1.setDelta( 0.5 );
-            }
-            else
-            {
-                Data1.setDelta( 0.02 );
-            }
+            double Delta = CheckForDelta( range[1] , range[0] );
+            Data1.setDelta( Delta );
 
             //check for center
             Data1.setCenter( range[0] );
@@ -241,14 +234,8 @@ int processing::CheckPreviousError( dataM &Data1 )
 
             Data1.setMax( range[ 1 ] );
 
-            if( (range[1] - range[0])/2.0 >= 0.5 )
-            {
-                Data1.setDelta( 0.5 );
-            }
-            else
-            {
-                Data1.setDelta( 0.02 );
-            }
+            double Delta = CheckForDelta( range[1] , range[0] );
+            Data1.setDelta( Delta );
 
             if( strcmp( NameDistance , "Signed" ) == 0 )
             {
@@ -445,6 +432,18 @@ int processing::testPolyData( vtkSmartPointer <vtkPolyData> inData , vtkSmartPoi
     return 0;
 }
 
-
+double processing::CheckForDelta( double Rmax , double Rmin )
+{
+    double Delta = ( Rmax - Rmin )/2.0 ;
+    if( Delta >= 0.5 )
+    {
+        Delta = 0.5;
+    }
+    else
+    {
+        Delta = 0.02;
+    }
+    return Delta;
+}
 
 
