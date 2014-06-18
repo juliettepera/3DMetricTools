@@ -162,8 +162,8 @@ int processing::processError( dataM &Data1 , dataM &Data2 )
             Data1.setMax( range[1] );
 
             // check for delta
-            double Delta = rint( ( range[1] - range[0] )/2.0 );
-            if( Delta >= 1 )
+            double Delta = ( range[1] - range[0] )/2.0 ;
+            if( Delta >= 0.5 )
             {
                 Data1.setDelta( 0.5 );
             }
@@ -214,17 +214,19 @@ int processing::CheckPreviousError( dataM &Data1 )
     }
     else // some arrays
     {
-        const char* Names[ NumberOfArrays ];
+        const char* Names ;
+		const char* NameDistance ;
         for( int i = 0; i < NumberOfArrays ; i++ )
         {
-            Names[ i ] = PolyData -> GetPointData() -> GetArrayName( i );
+            Names = PolyData -> GetPointData() -> GetArrayName( i );
 
-            if( strcmp( Names[ i ] , "Signed" ) == 0 || strcmp( Names[ i ] , "Absolute" ) == 0 || strcmp( Names[ i ] , "Correspondant" ) == 0 )
+            if( strcmp( Names , "Signed" ) == 0 || strcmp( Names , "Absolute" ) == 0 || strcmp( Names , "Correspondant" ) == 0 )
             {
                 Check = Check + 1;
                 Indice = i;
+				NameDistance = Names ;
             }
-            if( strcmp( Names[ i ] , "Original" ) == 0 )
+            if( strcmp( Names , "Original" ) == 0 )
             {
                 Check = Check + 2;
             }
@@ -239,7 +241,7 @@ int processing::CheckPreviousError( dataM &Data1 )
 
             Data1.setMax( range[ 1 ] );
 
-            if( rint( (range[1] - range[0])/2.0 ) >= 1 )
+            if( (range[1] - range[0])/2.0 >= 0.5 )
             {
                 Data1.setDelta( 0.5 );
             }
@@ -248,7 +250,7 @@ int processing::CheckPreviousError( dataM &Data1 )
                 Data1.setDelta( 0.02 );
             }
 
-            if( strcmp( Names[ Indice ] , "Signed" ) == 0 )
+            if( strcmp( NameDistance , "Signed" ) == 0 )
             {
                 Data1.setMin( range[ 0 ] );
                 Data1.setCenter( (range[1] + range[0])/2.0 );
@@ -256,7 +258,7 @@ int processing::CheckPreviousError( dataM &Data1 )
                 Data1.setTypeDistance( 1 );
                 return 31;
             }
-            else if( strcmp( Names[ Indice ] , "Absolute" ) == 0 )
+            else if( strcmp( NameDistance , "Absolute" ) == 0 )
             {
                 if( range[ 0 ] >= 0 )
                 {
@@ -272,7 +274,7 @@ int processing::CheckPreviousError( dataM &Data1 )
                 Data1.setTypeDistance( 0 );
                 return 32;
             }
-            else if( strcmp( Names[ Indice ] , "Correspondant" ) == 0 )
+            else if( strcmp( NameDistance , "Correspondant" ) == 0 )
             {
                 if( range[ 0 ] >= 0 )
                 {

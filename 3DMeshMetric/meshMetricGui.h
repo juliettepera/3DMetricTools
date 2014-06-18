@@ -220,7 +220,7 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
             // attributs for the lists of file
             int m_NumberOfMesh;
             int m_MeshSelected;
-            std::vector <dataM::dataM> m_DataList;
+            std::vector <dataM> m_DataList;
             QColor m_Color;
 
             // attributs for the camera

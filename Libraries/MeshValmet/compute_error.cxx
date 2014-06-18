@@ -376,7 +376,7 @@ static double get_cell_size(const struct triangle_list *tl,
    * as the side of an equilateral triangle which's surface equals the average
    * triangle surface of m2. The cubic cell side is then CELL_TRIAG_RATIO
    * times that. */
-  cell_sz = CELL_TRIAG_RATIO*sqrt(tl->area/tl->n_triangles*4/sqrt(3));
+  cell_sz = CELL_TRIAG_RATIO*sqrt(tl->area/tl->n_triangles*4/sqrt(3.0));
 
   /* Avoid values that can overflow or underflow */
   if (cell_sz < DBL_MIN*DMARGIN) { /* Avoid division by zero with cell_sz */

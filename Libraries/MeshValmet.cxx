@@ -852,8 +852,8 @@ void meshValmet::CreateLutError()
     m_Lut -> SetColorSpaceToRGB();
 
     // check for delta
-    double Delta = rint( (m_Dmax - m_Dmin)/2.0 );
-    if( Delta >= 1 )
+    double Delta = (m_Dmax - m_Dmin)/2.0;
+    if( Delta >= 0.5 )
     {
         m_Delta = 0.5;
     }

@@ -615,7 +615,7 @@ void meshMetricGui::MeshMetric()
     QString text( "\t3DMeshMetric\n\nVersion: " );
     text += MESHMETRIC3D_VERSION;
     text += "\n\nSoftware Developers:\n";
-    text += MESHMETRIC3D_CONTRIBUTOR;
+ //   text += MESHMETRIC3D_CONTRIBUTOR;
     text += "\n\nDocumentation:\n";
     text += MESHMETRIC3D_DOCUMENTATION;
     MsgBox.setText( text );

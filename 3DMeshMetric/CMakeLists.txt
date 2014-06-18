@@ -38,7 +38,7 @@ string(REGEX MATCH "<contributor>.*</contributor>" ext "${var}")
 string(REPLACE "<contributor>" "" contributor_names ${ext} )
 string(REPLACE "</contributor>" "" contributor_names ${contributor_names})
 
-ADD_DEFINITIONS(-DMESHMETRIC3D_CONTRIBUTOR="${contributor_names}")
+#ADD_DEFINITIONS(-DMESHMETRIC3D_CONTRIBUTOR="${contributor_names}")
 
 string(REGEX MATCH "<documentation-url>.*</documentation-url>" ext "${var}")
 string(REPLACE "<documentation-url>" "" documentation-url ${ext} )

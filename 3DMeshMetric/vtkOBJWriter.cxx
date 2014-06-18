@@ -1,4 +1,6 @@
 /*=========================================================================
+ *  Modified by Juliette Pera
+ *=========================================================================
  *
  *  Copyright David Doria 2011 daviddoria@gmail.com
  *
@@ -89,7 +91,6 @@ int vtkOBJWriter::RequestData(vtkInformation *vtkNotUsed(request),
   vtkSmartPointer<vtkDataArray> tcoords;
   int i, i1, i2, idNext;
   int idStart = 1;
-  double *tempd;
   double p[3];
   vtkCellArray *cells;
   vtkIdType npts = 0;
@@ -257,7 +258,7 @@ int vtkOBJWriter::RequestData(vtkInformation *vtkNotUsed(request),
     }
 
   idStart = idNext;
-
+  return 0 ;
 }
 
 
