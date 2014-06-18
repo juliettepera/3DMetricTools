@@ -158,37 +158,21 @@ void meshMetricGui::dropEvent(QDropEvent* Qevent)
         QList <QUrl> urlList = mimeData->urls();
         for( int i = 0 ; i < urlList.size() ; i++ )
         {
-            QString filePath = urlList.at(i).toLocalFile();
-
-            if( ( filePath.endsWith( ".vtk" ) || filePath.endsWith( ".obj" ) || filePath.endsWith( ".stl" ) || filePath.endsWith( ".vtp" ) ) && QFileInfo( filePath ).exists() )
+            QFileInfo FileName = urlList.at(i).toLocalFile();
+            int TypeFile = FindExtenstion( FileName );
+            if( TypeFile == 1 || TypeFile == 2 || TypeFile == 3 || TypeFile == 4 )
             {
-                m_DataList.push_back( filePath.toStdString() );
-                if( filePath.endsWith( ".vtk" ) )
-                {
-                    m_DataList[ m_NumberOfMesh ].setTypeFile(1);
-                }
-                else if( filePath.endsWith( ".obj" ) )
-                {
-                    m_DataList[ m_NumberOfMesh ].setTypeFile(2);
-                }
-                else if( filePath.endsWith( ".stl" ) )
-                {
-                    m_DataList[ m_NumberOfMesh ].setTypeFile(3);
-                }
-                else if( filePath.endsWith( ".vtp" ) )
-                {
-                    m_DataList[ m_NumberOfMesh ].setTypeFile(4);
-                }
+                m_DataList.push_back( FileName.filePath().toStdString() );
+                m_DataList[ m_NumberOfMesh ].setTypeFile( TypeFile );
                 m_DataList[ m_NumberOfMesh ].initialization();
 
-                QFileInfo File = QFileInfo(filePath);
-                listWidgetLoadedMesh -> addItem( File.fileName().toStdString().c_str() );
+                listWidgetLoadedMesh -> addItem( FileName.fileName().toStdString().c_str() );
 
                 QListWidgetItem* currentIndex = listWidgetLoadedMesh -> item( m_NumberOfMesh );
                 currentIndex -> setFlags( listWidgetLoadedMesh -> item( m_NumberOfMesh ) -> flags() | Qt::ItemIsUserCheckable );
                 currentIndex -> setCheckState( Qt::Checked );
 
-                comboBoxMeshB -> addItem( m_NotOkIcon , File.fileName().toStdString().c_str() );
+                comboBoxMeshB -> addItem( m_NotOkIcon , FileName.fileName().toStdString().c_str() );
 
                 m_MyWindowMesh.addData( m_DataList[ m_NumberOfMesh ].getActor() );
 
@@ -663,22 +647,8 @@ void meshMetricGui::OpenBrowseWindowFile()
             m_DataList.push_back( ( lineEditLoad -> text() ).toStdString() );
 
             QFileInfo File = ( lineEditLoad -> text() );
-            if( File.suffix() == "vtk" )
-            {
-                m_DataList[ m_NumberOfMesh ].setTypeFile(1);
-            }
-            else if( File.suffix() == "obj" )
-            {
-                m_DataList[ m_NumberOfMesh ].setTypeFile(2);
-            }
-            else if( File.suffix() == "stl" )
-            {
-                m_DataList[ m_NumberOfMesh ].setTypeFile(3);
-            }
-            else if( File.suffix() == "vtp" )
-            {
-                m_DataList[ m_NumberOfMesh ].setTypeFile(4);
-            }
+            int TypeFile = FindExtenstion( File );
+            m_DataList[ m_NumberOfMesh ].setTypeFile( TypeFile );
             m_DataList[ m_NumberOfMesh ].initialization();
             listWidgetLoadedMesh -> addItem( File.fileName().toStdString().c_str() );
 
@@ -713,67 +683,46 @@ void meshMetricGui::OpenBrowseWindowFile()
 //*************************************************************************************************
 void meshMetricGui::OpenBrowseWindowRepository()
 {
-    QString path;
-    QString dir = QFileDialog::getExistingDirectory( this , tr("Open Directory with VTK, OBJ or STL files") , path , QFileDialog::ShowDirsOnly );
+    QString directory = QFileDialog::getExistingDirectory(this, tr("Open Directory with VTK, OBJ, STL or VTP files"), QString() , QFileDialog::DontResolveSymlinks);
 
-    if( !dir.isEmpty() )
+    if( !directory.isEmpty() )
     {
-        QDir vtkDir( dir );
-        vtkDir.setFilter( QDir::NoDotAndDotDot | QDir::Files );
-        vtkDir.setNameFilters( QStringList() << "*.vtk" << "*.obj" << "*.stl" << "*.vtp" );
+        QDir folderDir( directory );
+        folderDir.setFilter( QDir::NoDotAndDotDot | QDir::Files );
+        folderDir.setNameFilters( QStringList() << "*.vtk" << "*.obj" << "*.stl" << "*.vtp" );
 
         QList <QFileInfo > FileList;
-        FileList.append( vtkDir.entryInfoList() );
+        FileList = folderDir.entryInfoList();
+        int NumberOfFiles = FileList.size();
 
-        for ( int i = 0 ; i < FileList.size() ; i++ )
+        for( int i = 0 ; i < NumberOfFiles ; i++ )
         {
-            QString FileName = FileList.at(i).canonicalFilePath();
-
-            if ( !FileName.endsWith(".vtk") && !FileName.endsWith(".obj") && !FileName.endsWith(".stl") && FileName.endsWith(".vtp") )
+            QFileInfo FileName = FileList.at(i);
+            int TypeFile = FindExtenstion( FileName );
+            if( TypeFile == 1 || TypeFile == 2 || TypeFile == 3 || TypeFile == 4 )
             {
-                FileList.removeAt(i);
-                i--;
+                m_DataList.push_back( FileName.filePath().toStdString() );
+                m_DataList[ m_NumberOfMesh ].setTypeFile( TypeFile );
+                m_DataList[ m_NumberOfMesh ].initialization();
+
+                listWidgetLoadedMesh -> addItem( FileName.fileName().toStdString().c_str() );
+                QListWidgetItem* currentIndex = listWidgetLoadedMesh -> item( m_NumberOfMesh );
+                currentIndex -> setFlags( listWidgetLoadedMesh -> item( m_NumberOfMesh ) -> flags() | Qt::ItemIsUserCheckable );
+                currentIndex -> setCheckState( Qt::Checked );
+
+                comboBoxMeshB -> addItem( m_NotOkIcon , FileName.fileName().toStdString().c_str() );
+
+                m_MyWindowMesh.addData( m_DataList[ m_NumberOfMesh ].getActor() );
+
+                m_ErrorComputed.push_back( false );
+                m_Visibility.push_back( true );
+
+                m_MeshSelected = m_NumberOfMesh;
+                m_NumberOfMesh++;
+                listWidgetLoadedMesh -> setCurrentRow( m_MeshSelected );
+
+                PreviousError();
             }
-        }
-
-        for( int i = 0 ; i < FileList.size() ; i++ )
-        {
-            m_DataList.push_back( FileList.at(i).canonicalFilePath().toStdString() );
-            if( FileList.at(i).suffix() == "vtk" )
-            {
-                m_DataList[ m_NumberOfMesh ].setTypeFile(1);
-            }
-            else if( FileList.at(i).suffix() == "obj" )
-            {
-                m_DataList[ m_NumberOfMesh ].setTypeFile(2);
-            }
-            else if( FileList.at(i).suffix() == "stl" )
-            {
-                m_DataList[ m_NumberOfMesh ].setTypeFile(3);
-            }
-            else if( FileList.at(i).suffix() == "vtp" )
-            {
-                m_DataList[ m_NumberOfMesh ].setTypeFile(4);
-            }
-            m_DataList[ m_NumberOfMesh ].initialization();
-
-            listWidgetLoadedMesh -> addItem( FileList.at(i).fileName().toStdString().c_str() );
-            QListWidgetItem* currentIndex = listWidgetLoadedMesh -> item( m_NumberOfMesh );
-            currentIndex -> setFlags( listWidgetLoadedMesh -> item( m_NumberOfMesh ) -> flags() | Qt::ItemIsUserCheckable );
-            currentIndex -> setCheckState( Qt::Checked );
-
-            comboBoxMeshB -> addItem( m_NotOkIcon , FileList.at(i).fileName().toStdString().c_str() );
-
-            m_MyWindowMesh.addData( m_DataList[ m_NumberOfMesh ].getActor() );
-
-            m_ErrorComputed.push_back( false );
-            m_Visibility.push_back( true );
-
-            m_MeshSelected = m_NumberOfMesh;
-            m_NumberOfMesh++;
-            listWidgetLoadedMesh -> setCurrentRow( m_MeshSelected );
-
-            PreviousError();
         }
 
         FileList.clear();
@@ -1865,3 +1814,27 @@ void meshMetricGui::ChangeColorCloud()
     }
 }
 
+//*************************************************************************************************
+int meshMetricGui::FindExtenstion( QFileInfo FileName )
+{
+    if( FileName.suffix() == "vtk" )
+    {
+        return 1;
+    }
+    else if( FileName.suffix() == "obj" )
+    {
+        return 2;
+    }
+    else if( FileName.suffix() == "stl" )
+    {
+        return 3;
+    }
+    else if( FileName.suffix() == "vtp" )
+    {
+        return 4;
+    }
+    else
+    {
+        return -1;
+    }
+}
