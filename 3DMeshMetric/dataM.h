@@ -33,6 +33,7 @@
 #include <vtkPolyDataReader.h>
 #include <vtkOBJReader.h>
 #include <vtkSTLReader.h>
+#include <vtkXMLPolyDataReader.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkActor.h>
 #include <vtkSmoothPolyDataFilter.h>

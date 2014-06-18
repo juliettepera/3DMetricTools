@@ -269,6 +269,7 @@ void dataM::initialization()
        vtkSmartPointer <vtkPolyDataReader> ReaderVTK = vtkSmartPointer <vtkPolyDataReader>::New();
        ReaderVTK -> SetFileName( m_Name.c_str() );
        ReaderVTK -> Update();
+       //ReaderVTK -> ReadAllNormalsOff();
        Cleaner -> SetInputData( ReaderVTK -> GetOutput() );
     }
     else if( m_TypeFile == 2 )
@@ -276,7 +277,7 @@ void dataM::initialization()
        vtkSmartPointer <vtkOBJReader> ReaderOBJ = vtkSmartPointer <vtkOBJReader>::New();
        ReaderOBJ -> SetFileName( m_Name.c_str() );
        ReaderOBJ -> Update();
-       ReaderOBJ -> GetOutput() -> GetPointData() -> SetNormals(NULL);
+       //ReaderOBJ -> GetOutput() -> GetPointData() -> SetNormals(NULL);
        Cleaner -> SetInputData( ReaderOBJ -> GetOutput() );
     }
     else if( m_TypeFile == 3 )
@@ -284,7 +285,16 @@ void dataM::initialization()
        vtkSmartPointer <vtkSTLReader> ReaderSTL = vtkSmartPointer <vtkSTLReader>::New();
        ReaderSTL -> SetFileName( m_Name.c_str() );
        ReaderSTL -> Update();
+       ReaderSTL -> GetOutput() -> GetPointData() -> SetNormals(NULL);
        Cleaner -> SetInputData( ReaderSTL -> GetOutput() );
+    }
+    else if( m_TypeFile == 4 )
+    {
+       vtkSmartPointer <vtkXMLPolyDataReader> ReaderVTP = vtkSmartPointer <vtkXMLPolyDataReader>::New();
+       ReaderVTP -> SetFileName( m_Name.c_str() );
+       ReaderVTP -> Update();
+       //ReaderVTP -> GetOutput() -> GetPointData() -> SetNormals(NULL);
+       Cleaner -> SetInputData( ReaderVTP -> GetOutput() );
     }
 
     Cleaner -> Update();

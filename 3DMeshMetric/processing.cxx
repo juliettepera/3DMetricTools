@@ -333,6 +333,15 @@ int processing::SaveFile( std::string Name, dataM &Data1 , int format )
         WriterSTL -> Update();
         return 0;
     }
+    else if( format == 4 )
+    {
+        vtkSmartPointer <vtkXMLPolyDataWriter> WriterVTP = vtkSmartPointer <vtkXMLPolyDataWriter>::New();
+        WriterVTP -> SetInputData( Data1.getPolyData() );
+        WriterVTP -> SetFileName( Name.c_str() );
+        WriterVTP -> SetDataModeToBinary();
+        WriterVTP -> Update();
+        return 0;
+    }
     else
     {
         return -1;

@@ -5,7 +5,7 @@
   <description>
    This module computes distance between 2 meshes
   </description>
-  <version>1.2</version>
+  <version>1.4.3</version>
   <documentation-url>http://www.nitrc.org/projects/meshmetric3d</documentation-url>
   <license></license>
   <contributor>Juliette Pera, Francois Budin, Beatriz Paniagua</contributor>

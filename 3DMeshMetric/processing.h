@@ -35,6 +35,7 @@
 #include <vtkPolyData.h>
 #include <vtkColorTransferFunction.h>
 #include <vtkPolyDataWriter.h>
+#include <vtkXMLPolyDataWriter.h>
 #include <vtkSTLWriter.h>
 #include <vtkDataArray.h>
 #include <vtkContourFilter.h>

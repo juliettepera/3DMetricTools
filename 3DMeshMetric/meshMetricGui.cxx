@@ -160,7 +160,7 @@ void meshMetricGui::dropEvent(QDropEvent* Qevent)
         {
             QString filePath = urlList.at(i).toLocalFile();
 
-            if( ( filePath.endsWith( ".vtk" ) || filePath.endsWith( ".obj" ) || filePath.endsWith( ".stl" ) ) && QFileInfo( filePath ).exists() )
+            if( ( filePath.endsWith( ".vtk" ) || filePath.endsWith( ".obj" ) || filePath.endsWith( ".stl" ) || filePath.endsWith( ".vtp" ) ) && QFileInfo( filePath ).exists() )
             {
                 m_DataList.push_back( filePath.toStdString() );
                 if( filePath.endsWith( ".vtk" ) )
@@ -174,6 +174,10 @@ void meshMetricGui::dropEvent(QDropEvent* Qevent)
                 else if( filePath.endsWith( ".stl" ) )
                 {
                     m_DataList[ m_NumberOfMesh ].setTypeFile(3);
+                }
+                else if( filePath.endsWith( ".vtp" ) )
+                {
+                    m_DataList[ m_NumberOfMesh ].setTypeFile(4);
                 }
                 m_DataList[ m_NumberOfMesh ].initialization();
 
@@ -645,7 +649,7 @@ void meshMetricGui::About()
 void meshMetricGui::OpenBrowseWindowFile()
 {
     QStringList browseMesh = QFileDialog::getOpenFileNames( this , "Open a VTK, OBJ or STL file" , QString() ,
-                                                            "ALL FILES *.vtk , *.obj , *.stl ;; VTK(*.vtk) ;; OBJ(*.obj) ;; STL(*.stl)" );
+                                                            "ALL FILES *.vtk , *.obj , *.stl , *.vtp ;; VTK(*.vtk) ;; OBJ(*.obj) ;; STL(*.stl) ;; VTP(*.vtp)" );
     QLineEdit *lineEditLoad = new QLineEdit;
 
     if( ! browseMesh.isEmpty() )
@@ -670,6 +674,10 @@ void meshMetricGui::OpenBrowseWindowFile()
             else if( File.suffix() == "stl" )
             {
                 m_DataList[ m_NumberOfMesh ].setTypeFile(3);
+            }
+            else if( File.suffix() == "vtp" )
+            {
+                m_DataList[ m_NumberOfMesh ].setTypeFile(4);
             }
             m_DataList[ m_NumberOfMesh ].initialization();
             listWidgetLoadedMesh -> addItem( File.fileName().toStdString().c_str() );
@@ -712,7 +720,7 @@ void meshMetricGui::OpenBrowseWindowRepository()
     {
         QDir vtkDir( dir );
         vtkDir.setFilter( QDir::NoDotAndDotDot | QDir::Files );
-        vtkDir.setNameFilters( QStringList() << "*.vtk" << "*.obj" << "*.stl" );
+        vtkDir.setNameFilters( QStringList() << "*.vtk" << "*.obj" << "*.stl" << "*.vtp" );
 
         QList <QFileInfo > FileList;
         FileList.append( vtkDir.entryInfoList() );
@@ -721,7 +729,7 @@ void meshMetricGui::OpenBrowseWindowRepository()
         {
             QString FileName = FileList.at(i).canonicalFilePath();
 
-            if ( !FileName.endsWith(".vtk") && !FileName.endsWith(".obj") && !FileName.endsWith(".stl") )
+            if ( !FileName.endsWith(".vtk") && !FileName.endsWith(".obj") && !FileName.endsWith(".stl") && FileName.endsWith(".vtp") )
             {
                 FileList.removeAt(i);
                 i--;
@@ -742,6 +750,10 @@ void meshMetricGui::OpenBrowseWindowRepository()
             else if( FileList.at(i).suffix() == "stl" )
             {
                 m_DataList[ m_NumberOfMesh ].setTypeFile(3);
+            }
+            else if( FileList.at(i).suffix() == "vtp" )
+            {
+                m_DataList[ m_NumberOfMesh ].setTypeFile(4);
             }
             m_DataList[ m_NumberOfMesh ].initialization();
 
@@ -778,7 +790,7 @@ QString meshMetricGui::SaveFile()
     {       
         QFileInfo CurrentMesh = QString::fromStdString( m_DataList[ m_MeshSelected ].getName() );
         QString fileName = QFileDialog::getSaveFileName( this , "Create new file or select an existing one" , CurrentMesh.absolutePath() ,
-                                                         "ALL FILES *.vtk , *.obj , *.stl ;; VTK(*.vtk) ;; OBJ(*.obj) ;; STL(*.stl)" );  
+                                                         "ALL FILES *.vtk , *.obj , *.stl , *.vtp ;; VTK(*.vtk) ;; OBJ(*.obj) ;; STL(*.stl) ;; VTP(*.vtp)" );
 
         if( ! fileName.isEmpty() )
         {
@@ -794,7 +806,7 @@ QString meshMetricGui::SaveFile()
                 QMessageBox MsgBox;
                 MsgBox.addButton( QMessageBox::Ok );
                 MsgBox.addButton( QMessageBox::Cancel );
-                MsgBox.setText( " WARNING: If you want to save the distance information, please use VTK format " );
+                MsgBox.setText( " WARNING: If you want to save the distance information, please use VTK or VTP format " );
                 int selection = MsgBox.exec();
 
                 if( selection == QMessageBox::Ok )
@@ -811,7 +823,7 @@ QString meshMetricGui::SaveFile()
                 QMessageBox MsgBox;
                 MsgBox.addButton( QMessageBox::Ok );
                 MsgBox.addButton( QMessageBox::Cancel );
-                MsgBox.setText( " WARNING: If you want to save the distance information, please use VTK format " );
+                MsgBox.setText( " WARNING: If you want to save the distance information, please use VTK or VTP format " );
                 int selection = MsgBox.exec();
 
                 if( selection == QMessageBox::Ok )
@@ -823,6 +835,10 @@ QString meshMetricGui::SaveFile()
                     out = -1;
                 }
             }
+            else if( NewFile.suffix() == "vtp" )
+            {
+                out = m_MyProcess.SaveFile( fileName.toStdString() , m_DataList[ m_MeshSelected ] , 4 );
+            }
             else if( NewFile.suffix().isEmpty() )
             {
                 out = m_MyProcess.SaveFile( fileName.toStdString()+".vtk" , m_DataList[ m_MeshSelected ] , 1 );
@@ -830,7 +846,7 @@ QString meshMetricGui::SaveFile()
             else
             {
                 QMessageBox MsgBox;
-                MsgBox.setText( " please enter a name with a valid extention ( vtk , stl ) " );
+                MsgBox.setText( " please enter a name with a valid extention ( vtk , stl , obj or vtp ) " );
                 MsgBox.exec();
                 out = -1;
             }
