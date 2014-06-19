@@ -102,7 +102,7 @@ class meshMetricGui : public QMainWindow , public Ui::MainWindow
              * Delete one or all the files
              */
             int FindExtenstion(QFileInfo FileName );
-            void OpenBrowseWindowFile();
+            int OpenBrowseWindowFile();
             void OpenBrowseWindowRepository();
             QString SaveFile();
             void DeleteBoxOne();

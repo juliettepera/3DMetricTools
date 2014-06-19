@@ -255,22 +255,32 @@ double dataM::getDelta()
 }
 
 //*************************************************************************************************
-void dataM::initialization()
+int dataM::initialization()
 {
     vtkSmartPointer <vtkTriangleFilter> Triangler = vtkSmartPointer <vtkTriangleFilter>::New();
     vtkSmartPointer <vtkCleanPolyData> Cleaner = vtkSmartPointer <vtkCleanPolyData>::New();
 
     if( m_TypeFile == 0 )
     {
-       std::cout << " problem.... " << std::endl;
+       return -1;
     }
     else if( m_TypeFile == 1 )
     {
        vtkSmartPointer <vtkPolyDataReader> ReaderVTK = vtkSmartPointer <vtkPolyDataReader>::New();
        ReaderVTK -> SetFileName( m_Name.c_str() );
-       ReaderVTK -> Update();
-       ReaderVTK -> GetOutput() -> GetPointData() -> SetNormals(NULL);
-       Cleaner -> SetInputData( ReaderVTK -> GetOutput() );
+
+       if( ! ReaderVTK -> IsFileStructuredPoints() )
+       {
+            ReaderVTK -> Update();
+            Cleaner -> SetInputData( ReaderVTK -> GetOutput() );
+       }
+       else
+       {
+           QMessageBox MsgBox;
+           MsgBox.setText( " Structured_points cannot be read ");
+           MsgBox.exec();
+           return -1;
+       }
     }
     else if( m_TypeFile == 2 )
     {
@@ -293,7 +303,6 @@ void dataM::initialization()
        vtkSmartPointer <vtkXMLPolyDataReader> ReaderVTP = vtkSmartPointer <vtkXMLPolyDataReader>::New();
        ReaderVTP -> SetFileName( m_Name.c_str() );
        ReaderVTP -> Update();
-       ReaderVTP -> GetOutput() -> GetPointData() -> SetNormals(NULL);
        Cleaner -> SetInputData( ReaderVTP -> GetOutput() );
     }
 
@@ -310,6 +319,8 @@ void dataM::initialization()
     updateTypeOfDisplay();
 
     m_Actor -> SetMapper( m_Mapper );
+
+    return 0;
 }
 
 //*************************************************************************************************

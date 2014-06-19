@@ -630,7 +630,7 @@ void meshMetricGui::About()
 
 
 //*************************************************************************************************
-void meshMetricGui::OpenBrowseWindowFile()
+int meshMetricGui::OpenBrowseWindowFile()
 {
     QStringList browseMesh = QFileDialog::getOpenFileNames( this , "Open a VTK, OBJ or STL file" , QString() ,
                                                             "ALL FILES *.vtk , *.obj , *.stl , *.vtp ;; VTK(*.vtk) ;; OBJ(*.obj) ;; STL(*.stl) ;; VTP(*.vtp)" );
@@ -649,7 +649,11 @@ void meshMetricGui::OpenBrowseWindowFile()
             QFileInfo File = ( lineEditLoad -> text() );
             int TypeFile = FindExtenstion( File );
             m_DataList[ m_NumberOfMesh ].setTypeFile( TypeFile );
-            m_DataList[ m_NumberOfMesh ].initialization();
+            if( m_DataList[ m_NumberOfMesh ].initialization() )
+            {
+                m_DataList.pop_back();
+                return -1;
+            }
             listWidgetLoadedMesh -> addItem( File.fileName().toStdString().c_str() );
 
             QListWidgetItem* currentIndex = listWidgetLoadedMesh -> item( m_NumberOfMesh );
@@ -676,6 +680,8 @@ void meshMetricGui::OpenBrowseWindowFile()
       delete lineEditLoad;
       DisplayInit();
       ChangeMeshSelected();
+
+      return 0;
     }
 }
 

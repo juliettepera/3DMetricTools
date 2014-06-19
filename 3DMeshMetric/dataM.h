@@ -125,7 +125,7 @@ class dataM
          * Pass by a cleaner and triangler filter
          * Then connect to the mapper and actor
          */
-        void initialization();
+        int initialization();
 
         /* Update the actor properties
          * the opacity and color
