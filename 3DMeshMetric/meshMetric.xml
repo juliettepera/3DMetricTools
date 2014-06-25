@@ -5,10 +5,10 @@
   <description>
    This module computes distance between 2 meshes
   </description>
-  <version>1.4.3</version>
+  <version>1.4.4</version>
   <documentation-url>http://www.nitrc.org/projects/meshmetric3d</documentation-url>
   <license></license>
-  <contributor>Juliette Pera, Francois Budin, Beatriz Paniagua</contributor>
+  <contributor>Juliette Pera / Beatriz Paniagua / Francois Budin</contributor>
 <acknowledgements>
 This work was funded by National Institute of Dental and Craniofacial Research (NIDCR) and the National Institute of Biomedical Imaging and Bioengineering (NIBIB) through the Grant R01 DE024450
 </acknowledgements>
